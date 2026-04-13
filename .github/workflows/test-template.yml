@@ -27,5 +27,5 @@ jobs:
 
       - name: Run main
         run: |
-          cd alpha-zero-game-tic-tac-toe
-          ./cmake_external_project/build/TicTacToe/tic-tac-toe
+          cd alpha-zero-game-tic-tac-toe/cmake_external_project/build/TicTacToe
+          ./tictactoe
