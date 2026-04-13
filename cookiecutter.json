@@ -1,6 +1,6 @@
 {
   "game_name": "Tic Tac Toe",
-  "game_slug_kebab": "{{ cookiecutter.game_name | lower | replace(' ', '-') }}",
-  "game_slug_snake": "{{ cookiecutter.game_name | lower | replace(' ', '_') }}",
+  "game_name_kebab": "{{ cookiecutter.game_name | lower | replace(' ', '-') }}",
+  "game_name_snake": "{{ cookiecutter.game_name | lower | replace(' ', '_') }}",
   "game_name_camel": "{{ cookiecutter.game_name | replace(' ', '') }}"
 }

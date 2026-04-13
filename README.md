@@ -19,14 +19,14 @@ uvx cookiecutter gh:shuyangsun/alpha-zero-game
 | Parameter         | Description         | Examples      |
 | ----------------- | ------------------- | ------------- |
 | `game_name`       | Human-readable name | `Tic Tac Toe` |
-| `game_slug_kebab` | `game_name`         | `tic-tac-toe` |
-| `game_slug_snake` | `game_name`         | `tic_tac_toe` |
+| `game_name_kebab` | `game_name`         | `tic-tac-toe` |
+| `game_name_snake` | `game_name`         | `tic_tac_toe` |
 | `game_name_camel` | `game_name`         | `TicTacToe`   |
 
 ### Build
 
 ```bash
-cd <game_slug_kebab>
+cd <game_name_kebab>
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
