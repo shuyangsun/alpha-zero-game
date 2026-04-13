@@ -18,11 +18,12 @@ uv self update
 uvx cookiecutter gh:shuyangsun/alpha-zero-game
 ```
 
-| Parameter   | Description                        | Examples                    |
-| ----------- | ---------------------------------- | --------------------------- |
-| `game_name` | Human-readable name of the game    | `Tic Tac Toe`               |
-| `game_slug` | Lowercase one-word game identifier | `ttt`                       |
-| `license`   | Project license                    | `None`, `Apache-2.0`, `MIT` |
+| Parameter        | Description                        | Examples                    |
+| ---------------- | ---------------------------------- | --------------------------- |
+| `game_name`      | Human-readable name of the game    | `Tic Tac Toe`               |
+| `game_slug`      | Lowercase one-word game identifier | `ttt`                       |
+| `github_actions` | Add GitHub Actions CI workflow     | `y`, `n`                    |
+| `license`        | Project license                    | `None`, `Apache-2.0`, `MIT` |
 
 ### Build
 

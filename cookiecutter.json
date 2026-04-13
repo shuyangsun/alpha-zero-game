@@ -3,6 +3,7 @@
   "game_name_kebab": "{{ cookiecutter.game_name | lower | replace(' ', '-') }}",
   "game_slug": "{{ cookiecutter.game_name | lower | replace(' ', '') | replace('-', '') | replace('_', '') }}",
   "license": ["None", "Apache-2.0", "MIT"],
+  "github_actions": ["y", "n"],
   "__game_name_camel": "{{cookiecutter.game_name | title | replace(' ', '') | replace('-', '') | replace('_', '') }}",
   "__board": "{{cookiecutter.game_slug | title}}B",
   "__action": "{{cookiecutter.game_slug | title}}A",
@@ -14,6 +15,7 @@
   "__prompts__": {
     "game_name": "Human-readable name of the game",
     "game_slug": "Lowercase one-word game identifier",
+    "github_actions": "Add GitHub CI for testing and build automation",
     "license": {
       "None": "No license",
       "Apache-2.0": "Apache License 2.0 (recommended)",
