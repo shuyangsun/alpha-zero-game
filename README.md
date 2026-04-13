@@ -1,12 +1,32 @@
 # AlphaZero Game Template
 
+A [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template for bootstrapping AlphaZero game projects with C++23 and CMake.
+
 ## Getting Started
 
-Install `uv` following the [official guide](https://docs.astral.sh/uv/getting-started/installation/).
+### Prerequisites
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/).
+
+### Generate a New Project
 
 ```bash
-# Install coockie cutter
-uv tool install cookiecutter
-
 uvx cookiecutter gh:shuyangsun/alpha-zero-game
+```
+
+### Parameters
+
+| Parameter         | Description         | Examples      |
+| ----------------- | ------------------- | ------------- |
+| `game_name`       | Human-readable name | `Tic Tac Toe` |
+| `game_slug_kebab` | `game_name`         | `tic-tac-toe` |
+| `game_slug_snake` | `game_name`         | `tic_tac_toe` |
+| `game_name_camel` | `game_name`         | `TicTacToe`   |
+
+### Build
+
+```bash
+cd <game_slug_kebab>
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 ```
