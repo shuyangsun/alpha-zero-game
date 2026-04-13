@@ -11,7 +11,7 @@ namespace alphazero::game::{{cookiecutter.game_slug}} {
 using {{cookiecutter.__board}} = std::array<std::array<int8_t, 3>, 3>;  // TODO: change type
 using {{cookiecutter.__action}} = int;                                  // TODO: change type
 using {{cookiecutter.__player}} = bool;                                 // TODO: change type
-using {{cookiecutter.__game_interface}} = ::alphazero::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}}, {{cookiecutter.__player}}>;
+using {{cookiecutter.__game_interface}} = ::alphazero::game::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}}, {{cookiecutter.__player}}>;
 
 class {{cookiecutter.__game_cls}}: public {{cookiecutter.__game_interface}} {
 public:
