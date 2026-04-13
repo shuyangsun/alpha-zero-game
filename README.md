@@ -6,29 +6,28 @@ A [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template for boot
 
 ## Getting Started
 
-### Prerequisites
-
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/).
-
-### Generate a New Project
-
 ```bash
+# Install uv
+# https://docs.astral.sh/uv/getting-started/installation/
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Update uv if it's already installed
+uv self update
+
+# Run Cookiecutter pointing to this repo
 uvx cookiecutter gh:shuyangsun/alpha-zero-game
 ```
 
-### Parameters
-
-| Parameter         | Description                        | Examples                    |
-| ----------------- | ---------------------------------- | --------------------------- |
-| `game_name`       | Human-readable name of the game    | `Tic Tac Toe`               |
-| `game_name_kebab` | Game name in kebab-case (derived)  | `tic-tac-toe`               |
-| `game_slug`       | Lowercase one-word game identifier | `ttt`                       |
-| `license`         | Project license                    | `None`, `Apache-2.0`, `MIT` |
+| Parameter   | Description                        | Examples                    |
+| ----------- | ---------------------------------- | --------------------------- |
+| `game_name` | Human-readable name of the game    | `Tic Tac Toe`               |
+| `game_slug` | Lowercase one-word game identifier | `ttt`                       |
+| `license`   | Project license                    | `None`, `Apache-2.0`, `MIT` |
 
 ### Build
 
 ```bash
-cd <game_name_kebab>
+cd ./game-name-kebab
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
