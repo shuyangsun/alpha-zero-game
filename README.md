@@ -16,6 +16,12 @@ uv self update
 
 # Run Cookiecutter pointing to this repo
 uvx cookiecutter gh:shuyangsun/alpha-zero-game
+
+# Or without interactive shell
+uvx cookiecutter gh:shuyangsun/alpha-zero-game \
+  --no-input . \
+  game_name="Tic Tac Toe" \
+  game_slug="ttt" # Other parameters...
 ```
 
 | Parameter        | Description                        | Examples                    |
