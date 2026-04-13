@@ -28,4 +28,4 @@ jobs:
       - name: Run main
         run: |
           cd alpha-zero-game-tic-tac-toe
-          ./build/tic-tac-toe
+          ./build/tictactoe
