@@ -1,4 +1,4 @@
-name: Test Game Project Template
+name: Test Template
 
 on: [push, pull_request]
 
