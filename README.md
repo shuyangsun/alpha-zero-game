@@ -18,12 +18,12 @@ uvx cookiecutter gh:shuyangsun/alpha-zero-game
 
 ### Parameters
 
-| Parameter         | Description             | Examples      |
-| ----------------- | ----------------------- | ------------- |
-| `game_name`       | Human-readable name     | `Tic Tac Toe` |
-| `game_name_kebab` | Game name in kebab-case | `tic-tac-toe` |
-| `game_name_snake` | Game name in snake_case | `tic_tac_toe` |
-| `game_name_camel` | Game name in CamelCase  | `TicTacToe`   |
+| Parameter         | Description                        | Examples                    |
+| ----------------- | ---------------------------------- | --------------------------- |
+| `game_name`       | Human-readable name of the game    | `Tic Tac Toe`               |
+| `game_name_kebab` | Game name in kebab-case (derived)  | `tic-tac-toe`               |
+| `game_slug`       | Lowercase one-word game identifier | `tictactoe`                 |
+| `license`         | Project license                    | `None`, `Apache-2.0`, `MIT` |
 
 ### Build
 

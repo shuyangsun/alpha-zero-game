@@ -15,7 +15,7 @@
     "game_name": "Human-readable name of the game",
     "game_slug": "Lowercase one-word game identifier",
     "license": {
-      "None": "Proprietary",
+      "None": "No license",
       "Apache-2.0": "Apache License 2.0 (recommended)",
       "MIT": "MIT License"
     }
