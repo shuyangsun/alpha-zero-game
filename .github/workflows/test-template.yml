@@ -1,0 +1,31 @@
+name: Test Game Project Template
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout template repository
+        uses: actions/checkout@v6.0.2
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Generate project from template
+        run: uvx cookiecutter --no-input .
+
+      - name: Configure CMake
+        run: |
+          cd alpha-zero-game-tic-tac-toe
+          cmake -S . -B build
+
+      - name: Build the C++ project
+        run: |
+          cd alpha-zero-game-tic-tac-toe
+          cmake --build build
+
+      - name: Run main
+        run: |
+          cd alpha-zero-game-tic-tac-toe
+          ./build/tic-tac-toe
