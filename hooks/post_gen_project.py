@@ -10,13 +10,9 @@ print("Next steps:")
 print()
 print("> cd ./alpha-zero-game-{{ cookiecutter.game_name_kebab }}")
 print()
-print(
-    "> cmake -S cmake_external_project -B cmake_external_project/build -DCMAKE_BUILD_TYPE=Release"
-)
+print("> cmake -S . -B build -DCMAKE_BUILD_TYPE=Release")
 print()
-print("> cmake --build cmake_external_project/build")
+print("> cmake --build build")
 print()
-print(
-    "> ./cmake_external_project/build/{{ cookiecutter.__game_name_camel }}/{{ cookiecutter.game_slug }} --help"
-)
+print("> ./build/{{ cookiecutter.game_slug }} --help")
 print()

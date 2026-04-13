@@ -10,10 +10,10 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: Configure CMake
-        run: cmake -S cmake_external_project -B cmake_external_project/build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build cmake_external_project/build
+        run: cmake --build build
 
       - name: Run
-        run: ./cmake_external_project/build/{{ cookiecutter.__game_name_camel }}/{{ cookiecutter.game_slug }}
+        run: ./build/{{ cookiecutter.game_slug }}

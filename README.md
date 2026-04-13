@@ -36,9 +36,9 @@ uvx cookiecutter gh:shuyangsun/alpha-zero-game \
 ```bash
 cd ./alpha-zero-game-<game-name-kebab-case>
 
-cmake -S cmake_external_project -B cmake_external_project/build -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
-cmake --build cmake_external_project/build
+cmake --build build
 
-./cmake_external_project/build/<GameNameCamelCase>/<game_slug>
+./build/<game_slug>
 ```

@@ -18,14 +18,14 @@ jobs:
       - name: Configure CMake
         run: |
           cd alpha-zero-game-tic-tac-toe
-          cmake -S cmake_external_project -B cmake_external_project/build -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build the C++ project
         run: |
           cd alpha-zero-game-tic-tac-toe
-          cmake --build cmake_external_project/build
+          cmake --build build
 
       - name: Run main
         run: |
-          cd alpha-zero-game-tic-tac-toe/cmake_external_project/build/TicTacToe
-          ./tictactoe
+          cd alpha-zero-game-tic-tac-toe
+          ./build/tictactoe
