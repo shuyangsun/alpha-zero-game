@@ -89,12 +89,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        name: [defaults-on, defaults-off]
+        preset: [debug, release]
         include:
           - name: defaults-on
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: build (${{ matrix.name }})
+    name: build (${{ matrix.name }}, ${{ matrix.preset }})
     steps:
       - name: Download formatted project
         uses: actions/download-artifact@v8.0.1
@@ -103,19 +105,17 @@ jobs:
           path: alpha-zero-game-tic-tac-toe
 
       - name: Configure CMake
-        run: |
-          cd alpha-zero-game-tic-tac-toe
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+        working-directory: alpha-zero-game-tic-tac-toe
+        run: cmake --preset ${{ matrix.preset }}
 
       - name: Build the C++ project
-        run: |
-          cd alpha-zero-game-tic-tac-toe
-          cmake --build build
+        working-directory: alpha-zero-game-tic-tac-toe
+        run: cmake --build --preset ${{ matrix.preset }}
 
       - name: Upload built project
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: project-built-${{ matrix.name }}
+          name: project-built-${{ matrix.name }}-${{ matrix.preset }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
 
@@ -124,21 +124,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        name: [defaults-on, defaults-off]
+        preset: [debug, release]
         include:
           - name: defaults-on
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: run (${{ matrix.name }})
+    name: run (${{ matrix.name }}, ${{ matrix.preset }})
     steps:
       - name: Download built project
         uses: actions/download-artifact@v8.0.1
         with:
-          name: project-built-${{ matrix.name }}
+          name: project-built-${{ matrix.name }}-${{ matrix.preset }}
           path: alpha-zero-game-tic-tac-toe
 
       - name: Run main
+        working-directory: alpha-zero-game-tic-tac-toe
         run: |
-          chmod +x alpha-zero-game-tic-tac-toe/build/ttt
-          cd alpha-zero-game-tic-tac-toe
-          ./build/ttt
+          chmod +x build/${{ matrix.preset }}/ttt
+          ./build/${{ matrix.preset }}/ttt
