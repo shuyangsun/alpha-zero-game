@@ -1,4 +1,5 @@
 import glob
+import os
 import shutil
 import subprocess
 
@@ -11,6 +12,10 @@ def lower_first_ch(s: str) -> str:
 
 if lower_first_ch("{{ cookiecutter.github_actions }}") != "y":
     shutil.rmtree(".github")
+
+if lower_first_ch("{{ cookiecutter.llm }}") != "y":
+    os.remove("AGENTS.md")
+    os.remove("CLAUDE.md")
 
 # Format C++ source and header files with clang-format
 cpp_files = glob.glob("**/*.h", recursive=True) + glob.glob("**/*.cc", recursive=True)

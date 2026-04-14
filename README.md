@@ -38,30 +38,15 @@ pip install cmake-format
 # Run Cookiecutter pointing to this repo
 uvx cookiecutter gh:shuyangsun/alpha-zero-game
 
-# Or without interactive shell
+# Without interactive shell, see cookiecutter.json for available parameters.
 uvx cookiecutter gh:shuyangsun/alpha-zero-game \
   --no-input . \
   game_name="Tic Tac Toe" \
-  game_slug="ttt" # Other parameters...
+  game_name_kebab="tic-tac-toe" \
+  game_slug="ttt" \
+  defaults="no" \
+  github_actions="no" \
+  llm="yes"
 ```
 
-| Parameter   | Description                        | Examples                    |
-| ----------- | ---------------------------------- | --------------------------- |
-| `game_name` | Human-readable name of the game    | `Tic Tac Toe`               |
-| `game_slug` | Lowercase one-word game identifier | `ttt`                       |
-| `license`   | Project license                    | `None`, `Apache-2.0`, `MIT` |
-
-### Build
-
-```bash
-cd ./alpha-zero-game-<game-name-kebab-case>
-
-# Debug
-cmake --preset debug && cmake --build --preset debug
-
-# Release
-cmake --preset release && cmake --build --preset release
-
-./build/debug/<game_slug>    # Debug build
-./build/release/<game_slug>  # Release build
-```
+Then follow instructions in `./alpha-zero-game-<game-name-kebab-case>/README.md`.

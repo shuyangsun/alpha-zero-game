@@ -1,5 +1,7 @@
 # {{cookiecutter.game_name}}
 
+**TODO(Task-001)**: add one-sentence game description based on game name.
+
 ## Build
 
 ```bash

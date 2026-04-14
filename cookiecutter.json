@@ -4,6 +4,7 @@
   "game_slug": "{{ cookiecutter.game_name | lower | replace(' ', '') | replace('-', '') | replace('_', '') }}",
   "defaults": ["no", "yes"],
   "github_actions": ["yes", "no"],
+  "llm": ["yes", "no"],
   "license": ["None", "Apache-2.0", "MIT"],
   "__game_name_camel": "{{cookiecutter.game_name | title | replace(' ', '') | replace('-', '') | replace('_', '') }}",
   "__board": "{{cookiecutter.game_slug | title}}B",
@@ -18,6 +19,7 @@
     "game_slug": "Lowercase one-word game identifier",
     "defaults": "Include common types (e.g., Standard2DBoard, Action2D, BinaryPlayer, etc.)",
     "github_actions": "Add GitHub CI for testing and build automation",
+    "llm": "Include LLM prompts and skills for guided game implementation",
     "license": {
       "None": "No license",
       "Apache-2.0": "Apache License 2.0 (recommended)",

@@ -43,6 +43,8 @@ jobs:
           game_name="Tic Tac Toe"
           game_name_kebab="tic-tac-toe"
           game_slug="ttt"
+          github_actions="yes"
+          llm="yes"
           defaults="${{ matrix.defaults }}"
 
       - name: Upload generated project
