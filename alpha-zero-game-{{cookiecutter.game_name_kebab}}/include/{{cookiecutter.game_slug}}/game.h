@@ -35,8 +35,49 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
 
   ~{{cookiecutter.__game_cls}}() override = default;
 
-  // Actions
+  // --------------------------------- Actions ---------------------------------
+
+  /**
+   * @brief Returns a vector of all valid actions for the current player in the
+   * current game state.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   *
+   * TODO(TASK-003): tailor this docstring to be {{cookiecutter.game_name}} specific.
+{%- endif %}
+   *
+   * The size of the vector is dynamic, there should be no duplicate actions.
+   * This vector should be empty if and only if the game is over. While the game
+   * is not over, even if there is no valid action for the current player, the
+   * vector should contain at least one action to represent the "pass" action,
+   * because the GameAfterAction method requires an action as input.
+   *
+   * @return std::vector<TttAction> Vector of all valid actions for the current
+   * player.
+   */
   std::vector<{{cookiecutter.__action}}> ValidActions() const final;
+
+  /**
+   * @brief Returns a new game state after the current player takes the given
+   * action.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   *
+   * TODO(TASK-003): tailor this docstring to be {{cookiecutter.game_name}} specific.
+{%- endif %}
+   *
+   * The action passed in should be only one of the actions returned by the
+   * ValidActions() method. The behavior is undefined if the action is invalid.
+   * The implementation may choose to return nullptr after checking the validity
+   * of the action, or it may return an invalid game state without paying the
+   * performance penalty of validation. Most implementations should choose the
+   * latter approach, because the library user is responsible for passing a
+   * valid action. However, the library user should program defensively and
+   * avoid null pointer dereference.
+   *
+   * @param action The action to be taken by the current player.
+   *
+   * @return std::unique_ptr<const TttGameInterface> A pointer to the new game
+   * state after taking the action.
+   */
   std::unique_ptr<const {{cookiecutter.__game_interface}}> GameAfterAction(
       const {{cookiecutter.__action}}& action) const final;
   bool IsOver() const final;
@@ -51,7 +92,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
  private:
   uint32_t round_ = 0;
   {{cookiecutter.__board}} board_ = {{cookiecutter.__board}}{};
-  {{cookiecutter.__player}} cur_player_;
+  {{cookiecutter.__player}} cur_player_ = {{cookiecutter.__player}}{};
   std::optional<{{cookiecutter.__action}}> last_action_ = std::nullopt;
 };
 
