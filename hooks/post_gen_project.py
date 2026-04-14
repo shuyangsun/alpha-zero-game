@@ -17,6 +17,7 @@ cpp_files = glob.glob("**/*.h", recursive=True) + glob.glob("**/*.cc", recursive
 if cpp_files:
     try:
         subprocess.run(["clang-format", "--style=file", "-i"] + cpp_files, check=True)
+        print("C++ files formatted successfully with clang-format.")
     except FileNotFoundError:
         print("WARNING: clang-format not found, skipping C++ formatting.")
 
@@ -27,6 +28,7 @@ cmake_files = glob.glob("**/CMakeLists.txt", recursive=True) + glob.glob(
 if cmake_files:
     try:
         subprocess.run(["cmake-format", "-i"] + cmake_files, check=True)
+        print("CMake files formatted successfully with cmake-format.")
     except FileNotFoundError:
         print("WARNING: cmake-format not found, skipping CMake formatting.")
 
