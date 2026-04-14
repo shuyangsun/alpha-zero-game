@@ -3,7 +3,7 @@ name: Test Template
 on: [push, pull_request]
 
 jobs:
-  build-and-test:
+  generate:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -12,7 +12,7 @@ jobs:
             defaults: "yes"
           - name: without-defaults
             defaults: "NO"
-    name: build-and-test (${{ matrix.name }})
+    name: generate (${{ matrix.name }})
     steps:
       - name: Checkout template repository
         uses: actions/checkout@v6.0.2
@@ -30,6 +30,68 @@ jobs:
           game_slug="ttt"
           defaults="${{ matrix.defaults }}"
 
+      - name: Upload generated project
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-${{ matrix.name }}
+          path: alpha-zero-game-tic-tac-toe
+
+  format:
+    needs: generate
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: with-defaults
+            defaults: "yes"
+          - name: without-defaults
+            defaults: "NO"
+    name: format (${{ matrix.name }})
+    steps:
+      - name: Download generated project
+        uses: actions/download-artifact@v4
+        with:
+          name: project-${{ matrix.name }}
+          path: alpha-zero-game-tic-tac-toe
+
+      - name: Install formatters
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+          pip install cmake-format
+
+      - name: Run clang-format
+        run: |
+          find alpha-zero-game-tic-tac-toe -name '*.h' -o -name '*.cc' | xargs clang-format -i --dry-run --Werror
+
+      - name: Run cmake-format
+        run: |
+          find alpha-zero-game-tic-tac-toe -name 'CMakeLists.txt' -o -name '*.cmake' | xargs cmake-format --check
+
+      - name: Upload formatted project
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-formatted-${{ matrix.name }}
+          path: alpha-zero-game-tic-tac-toe
+
+  build:
+    needs: format
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: with-defaults
+            defaults: "yes"
+          - name: without-defaults
+            defaults: "NO"
+    name: build (${{ matrix.name }})
+    steps:
+      - name: Download formatted project
+        uses: actions/download-artifact@v4
+        with:
+          name: project-formatted-${{ matrix.name }}
+          path: alpha-zero-game-tic-tac-toe
+
       - name: Configure CMake
         run: |
           cd alpha-zero-game-tic-tac-toe
@@ -40,7 +102,32 @@ jobs:
           cd alpha-zero-game-tic-tac-toe
           cmake --build build
 
+      - name: Upload built project
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-built-${{ matrix.name }}
+          path: alpha-zero-game-tic-tac-toe
+
+  run:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: with-defaults
+            defaults: "yes"
+          - name: without-defaults
+            defaults: "NO"
+    name: run (${{ matrix.name }})
+    steps:
+      - name: Download built project
+        uses: actions/download-artifact@v4
+        with:
+          name: project-built-${{ matrix.name }}
+          path: alpha-zero-game-tic-tac-toe
+
       - name: Run main
         run: |
+          chmod +x alpha-zero-game-tic-tac-toe/build/ttt
           cd alpha-zero-game-tic-tac-toe
           ./build/ttt

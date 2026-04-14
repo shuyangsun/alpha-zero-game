@@ -1,4 +1,6 @@
+import glob
 import shutil
+import subprocess
 
 
 def lower_first_ch(s: str) -> str:
@@ -9,6 +11,24 @@ def lower_first_ch(s: str) -> str:
 
 if lower_first_ch("{{ cookiecutter.github_actions }}") != "y":
     shutil.rmtree(".github")
+
+# Format C++ source and header files with clang-format
+cpp_files = glob.glob("**/*.h", recursive=True) + glob.glob("**/*.cc", recursive=True)
+if cpp_files:
+    try:
+        subprocess.run(["clang-format", "-i"] + cpp_files, check=True)
+    except FileNotFoundError:
+        print("WARNING: clang-format not found, skipping C++ formatting.")
+
+# Format CMake files with cmake-format
+cmake_files = glob.glob("**/CMakeLists.txt", recursive=True) + glob.glob(
+    "**/*.cmake", recursive=True
+)
+if cmake_files:
+    try:
+        subprocess.run(["cmake-format", "-i"] + cmake_files, check=True)
+    except FileNotFoundError:
+        print("WARNING: cmake-format not found, skipping CMake formatting.")
 
 print()
 print("Project generated successfully!")

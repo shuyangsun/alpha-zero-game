@@ -4,16 +4,37 @@
 
 A [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template for bootstrapping AlphaZero game projects with C++23 and CMake.
 
+## Prerequisites
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), [clang-format](https://clang.llvm.org/docs/ClangFormat.html), and [cmake-format](https://github.com/cheshirekow/cmake_format).
+
+### macOS
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+brew install clang-format
+pip install cmake-format
+```
+
+### Linux (Debian/Ubuntu)
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+sudo apt-get install clang-format
+pip install cmake-format
+```
+
+### Windows
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+winget install LLVM.LLVM        # includes clang-format
+pip install cmake-format
+```
+
 ## Getting Started
 
 ```bash
-# Install uv
-# https://docs.astral.sh/uv/getting-started/installation/
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Update uv if it's already installed
-uv self update
-
 # Run Cookiecutter pointing to this repo
 uvx cookiecutter gh:shuyangsun/alpha-zero-game
 
