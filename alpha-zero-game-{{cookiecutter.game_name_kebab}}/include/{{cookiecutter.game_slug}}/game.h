@@ -35,6 +35,16 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
 
   ~{{cookiecutter.__game_cls}}() override = default;
 
+  std::unique_ptr<const {{cookiecutter.__game_interface}}> Copy() const final;
+  const {{cookiecutter.__board}}& GetBoard() const final;
+  uint32_t CurrentRound() const final;
+  {{cookiecutter.__player}} CurrentPlayer() const final;
+  std::optional<{{cookiecutter.__player}}> LastPlayer() const final;
+  std::optional<{{cookiecutter.__action}}> LastAction() const final;
+  {{cookiecutter.__board}} CanonicalBoard() const final;
+  bool IsOver() const final;
+  float GetScore(const {{cookiecutter.__player}}& player) const final;
+
   // --------------------------------- Actions ---------------------------------
 
   /**
@@ -51,7 +61,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * vector should contain at least one action to represent the "pass" action,
    * because the GameAfterAction method requires an action as input.
    *
-   * @return std::vector<TttAction> Vector of all valid actions for the current
+   * @return std::vector<{{cookiecutter.__action}}> Vector of all valid actions for the current
    * player.
    */
   std::vector<{{cookiecutter.__action}}> ValidActions() const final;
@@ -75,13 +85,11 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    *
    * @param action The action to be taken by the current player.
    *
-   * @return std::unique_ptr<const TttGameInterface> A pointer to the new game
+   * @return std::unique_ptr<const {{cookiecutter.__game_interface}}> A pointer to the new game
    * state after taking the action.
    */
   std::unique_ptr<const {{cookiecutter.__game_interface}}> GameAfterAction(
       const {{cookiecutter.__action}}& action) const final;
-  bool IsOver() const final;
-  float GetScore(const {{cookiecutter.__player}}& player) const final;
 
   // String conversions
   std::string BoardReadableString() const final;
