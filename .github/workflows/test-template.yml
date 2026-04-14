@@ -22,6 +22,12 @@ jobs:
         with:
           enable-cache: false
 
+      - name: Install formatters
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+          pip install cmake-format
+
       - name: Generate project from template
         run: >-
           uvx cookiecutter --no-input .
@@ -61,12 +67,14 @@ jobs:
           pip install cmake-format
 
       - name: Run clang-format
+        working-directory: alpha-zero-game-tic-tac-toe
         run: |
-          find alpha-zero-game-tic-tac-toe -name '*.h' -o -name '*.cc' | xargs clang-format -i --dry-run --Werror
+          find . -name '*.h' -o -name '*.cc' | xargs clang-format --style=file --dry-run --Werror
 
       - name: Run cmake-format
+        working-directory: alpha-zero-game-tic-tac-toe
         run: |
-          find alpha-zero-game-tic-tac-toe -name 'CMakeLists.txt' -o -name '*.cmake' | xargs cmake-format --check
+          find . -name 'CMakeLists.txt' -o -name '*.cmake' | xargs cmake-format --check
 
       - name: Upload formatted project
         uses: actions/upload-artifact@v4

@@ -16,7 +16,7 @@ if lower_first_ch("{{ cookiecutter.github_actions }}") != "y":
 cpp_files = glob.glob("**/*.h", recursive=True) + glob.glob("**/*.cc", recursive=True)
 if cpp_files:
     try:
-        subprocess.run(["clang-format", "-i"] + cpp_files, check=True)
+        subprocess.run(["clang-format", "--style=file", "-i"] + cpp_files, check=True)
     except FileNotFoundError:
         print("WARNING: clang-format not found, skipping C++ formatting.")
 
