@@ -1,7 +1,6 @@
 #ifndef ALPHA_ZERO_GAME_{{cookiecutter.__include_guard_prj}}_INCLUDE_{{cookiecutter.__include_guard_slug}}_GAME_H_
 #define ALPHA_ZERO_GAME_{{cookiecutter.__include_guard_prj}}_INCLUDE_{{cookiecutter.__include_guard_slug}}_GAME_H_
 
-#include <array>
 #include <expected>
 #include <cstdint>
 #include <optional>
@@ -10,13 +9,22 @@
 #include <string_view>
 #include <vector>
 
+{% if cookiecutter.defaults[0] | lower == 'y' -%}
+#include "alpha-zero-api/defaults/game.h"
+{%- endif %}
 #include "alpha-zero-api/game.h"
 
 namespace alphazero::game::{{cookiecutter.game_slug}} {
 
-using {{cookiecutter.__board}} = std::array<std::array<int8_t, 3>, 3>;  // TODO: change type
-using {{cookiecutter.__action}} = int;                                   // TODO: change type
-using {{cookiecutter.__player}} = bool;                                  // TODO: change type
+{% if cookiecutter.defaults[0] | lower == 'y' -%}
+using {{cookiecutter.__board}} = ::alphazero::game::api::Standard2DBoard<3, 3>;  // TODO: change type
+using {{cookiecutter.__action}} = ::alphazero::game::api::Action2D;               // TODO: change type
+using {{cookiecutter.__player}} = ::alphazero::game::api::BinaryPlayer;           // TODO: change type
+{% else -%}
+using {{cookiecutter.__board}} = uint64_t;  // TODO: change type
+using {{cookiecutter.__action}} = int;       // TODO: change type
+using {{cookiecutter.__player}} = bool;      // TODO: change type
+{%- endif %}
 using {{cookiecutter.__game_interface}} = ::alphazero::game::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}}, {{cookiecutter.__player}}>;
 
 class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {

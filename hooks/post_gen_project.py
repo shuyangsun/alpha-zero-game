@@ -1,6 +1,13 @@
 import shutil
 
-if "{{ cookiecutter.github_actions }}" != "y":
+
+def lower_first_ch(s: str) -> str:
+    if not s:
+        return s
+    return s[0].lower()
+
+
+if lower_first_ch("{{ cookiecutter.github_actions }}") != "y":
     shutil.rmtree(".github")
 
 print()

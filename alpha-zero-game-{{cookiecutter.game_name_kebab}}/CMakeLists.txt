@@ -13,6 +13,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -Wall -DNDEBUG")
 include(FetchContent)
 
 set(ALPHA_ZERO_API_GIT_TAG "main" CACHE STRING "Git tag or branch for AlphaZeroAPI (e.g., main, v1.0.0)")
+set(DEFAULTS {% if cookiecutter.defaults[0] | lower == 'y' -%} ON {% else %} OFF {% endif -%} CACHE BOOL "" FORCE)
 
 FetchContent_Declare(
     AlphaZeroAPI
@@ -21,6 +22,11 @@ FetchContent_Declare(
     GIT_SHALLOW TRUE)
 
 FetchContent_MakeAvailable(AlphaZeroAPI)
+
+add_library(game_{{cookiecutter.game_slug}} STATIC ${CMAKE_CURRENT_SOURCE_DIR}/src/{{ cookiecutter.game_slug }}/game.cc)
+target_link_libraries(game_{{cookiecutter.game_slug}} PUBLIC AlphaZeroAPI::api {% if cookiecutter.defaults[0] | lower == 'y' -%}AlphaZeroAPI::defaults{% endif -%})
+
+target_include_directories(game_{{cookiecutter.game_slug}} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable({{ cookiecutter.game_slug }} src/main.cc)
 target_include_directories({{ cookiecutter.game_slug }} PRIVATE ${PROJECT_SOURCE_DIR})
