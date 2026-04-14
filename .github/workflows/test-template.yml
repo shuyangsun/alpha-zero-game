@@ -41,6 +41,7 @@ jobs:
         with:
           name: project-${{ matrix.name }}
           path: alpha-zero-game-tic-tac-toe
+          include-hidden-files: true
 
   format:
     needs: generate
@@ -81,6 +82,7 @@ jobs:
         with:
           name: project-formatted-${{ matrix.name }}
           path: alpha-zero-game-tic-tac-toe
+          include-hidden-files: true
 
   build:
     needs: format
@@ -115,6 +117,7 @@ jobs:
         with:
           name: project-built-${{ matrix.name }}
           path: alpha-zero-game-tic-tac-toe
+          include-hidden-files: true
 
   run:
     needs: build
