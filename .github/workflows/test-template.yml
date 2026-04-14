@@ -4,15 +4,17 @@ on: [push, pull_request]
 
 jobs:
   generate:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
+        name: [defaults-on, defaults-off]
         include:
           - name: defaults-on
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: generate (${{ matrix.name }})
+    name: generate (${{ matrix.name == 'defaults-on' && 'defaults-on, ' || '' }}${{ matrix.os }})
     steps:
       - name: Checkout template repository
         uses: actions/checkout@v6.0.2
@@ -22,11 +24,18 @@ jobs:
         with:
           enable-cache: false
 
-      - name: Install formatters
+      - name: Install formatters (Linux)
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y clang-format
           pip install cmake-format
+
+      - name: Install formatters (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install clang-format
+          pip3 install cmake-format
 
       - name: Generate project from template
         run: >-
@@ -39,33 +48,42 @@ jobs:
       - name: Upload generated project
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: project-${{ matrix.name }}
+          name: project-${{ matrix.name }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
 
   format:
     needs: generate
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
+        name: [defaults-on, defaults-off]
         include:
           - name: defaults-on
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: format (${{ matrix.name }})
+    name: format (${{ matrix.name == 'defaults-on' && 'defaults-on, ' || '' }}${{ matrix.os }})
     steps:
       - name: Download generated project
         uses: actions/download-artifact@v8.0.1
         with:
-          name: project-${{ matrix.name }}
+          name: project-${{ matrix.name }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
 
-      - name: Install formatters
+      - name: Install formatters (Linux)
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y clang-format
           pip install cmake-format
+
+      - name: Install formatters (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install clang-format
+          pip3 install cmake-format
 
       - name: Run clang-format
         working-directory: alpha-zero-game-tic-tac-toe
@@ -80,15 +98,16 @@ jobs:
       - name: Upload formatted project
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: project-formatted-${{ matrix.name }}
+          name: project-formatted-${{ matrix.name }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
 
   build:
     needs: format
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         name: [defaults-on, defaults-off]
         preset: [debug, release]
         include:
@@ -96,12 +115,12 @@ jobs:
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: build (${{ matrix.name }}, ${{ matrix.preset }})
+    name: build (${{ matrix.name == 'defaults-on' && 'defaults-on, ' || '' }}${{ matrix.preset }}, ${{ matrix.os }})
     steps:
       - name: Download formatted project
         uses: actions/download-artifact@v8.0.1
         with:
-          name: project-formatted-${{ matrix.name }}
+          name: project-formatted-${{ matrix.name }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
 
       - name: Configure CMake
@@ -115,15 +134,16 @@ jobs:
       - name: Upload built project
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: project-built-${{ matrix.name }}-${{ matrix.preset }}
+          name: project-built-${{ matrix.name }}-${{ matrix.preset }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
 
   run:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         name: [defaults-on, defaults-off]
         preset: [debug, release]
         include:
@@ -131,12 +151,12 @@ jobs:
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: run (${{ matrix.name }}, ${{ matrix.preset }})
+    name: run (${{ matrix.name == 'defaults-on' && 'defaults-on, ' || '' }}${{ matrix.preset }}, ${{ matrix.os }})
     steps:
       - name: Download built project
         uses: actions/download-artifact@v8.0.1
         with:
-          name: project-built-${{ matrix.name }}-${{ matrix.preset }}
+          name: project-built-${{ matrix.name }}-${{ matrix.preset }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
 
       - name: Run main
