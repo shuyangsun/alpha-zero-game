@@ -8,10 +8,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: with-defaults
+          - name: defaults-on
             defaults: "yes"
-          - name: without-defaults
-            defaults: "NO"
+          - name: defaults-off
+            defaults: "no"
     name: generate (${{ matrix.name }})
     steps:
       - name: Checkout template repository
@@ -37,7 +37,7 @@ jobs:
           defaults="${{ matrix.defaults }}"
 
       - name: Upload generated project
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: project-${{ matrix.name }}
           path: alpha-zero-game-tic-tac-toe
@@ -49,14 +49,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: with-defaults
+          - name: defaults-on
             defaults: "yes"
-          - name: without-defaults
-            defaults: "NO"
+          - name: defaults-off
+            defaults: "no"
     name: format (${{ matrix.name }})
     steps:
       - name: Download generated project
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8.0.1
         with:
           name: project-${{ matrix.name }}
           path: alpha-zero-game-tic-tac-toe
@@ -78,7 +78,7 @@ jobs:
           find . -name 'CMakeLists.txt' -o -name '*.cmake' | xargs cmake-format --check
 
       - name: Upload formatted project
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: project-formatted-${{ matrix.name }}
           path: alpha-zero-game-tic-tac-toe
@@ -90,14 +90,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: with-defaults
+          - name: defaults-on
             defaults: "yes"
-          - name: without-defaults
-            defaults: "NO"
+          - name: defaults-off
+            defaults: "no"
     name: build (${{ matrix.name }})
     steps:
       - name: Download formatted project
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8.0.1
         with:
           name: project-formatted-${{ matrix.name }}
           path: alpha-zero-game-tic-tac-toe
@@ -113,7 +113,7 @@ jobs:
           cmake --build build
 
       - name: Upload built project
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: project-built-${{ matrix.name }}
           path: alpha-zero-game-tic-tac-toe
@@ -125,14 +125,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: with-defaults
+          - name: defaults-on
             defaults: "yes"
-          - name: without-defaults
-            defaults: "NO"
+          - name: defaults-off
+            defaults: "no"
     name: run (${{ matrix.name }})
     steps:
       - name: Download built project
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8.0.1
         with:
           name: project-built-${{ matrix.name }}
           path: alpha-zero-game-tic-tac-toe
