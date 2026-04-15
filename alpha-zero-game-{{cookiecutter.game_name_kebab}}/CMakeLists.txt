@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
 
-set(ALPHA_ZERO_API_GIT_TAG "main" CACHE STRING "Git tag or branch for AlphaZeroAPI (e.g., main, v1.0.0)")
+set(ALPHA_ZERO_API_GIT_TAG "v0.0.1" CACHE STRING "Git tag or branch for AlphaZeroAPI (e.g., main, v1.0.0)")
 set(DEFAULTS {% if cookiecutter.defaults[0] | lower == 'y' -%} ON {% else %} OFF {% endif -%} CACHE BOOL "" FORCE)
 
 FetchContent_Declare(
