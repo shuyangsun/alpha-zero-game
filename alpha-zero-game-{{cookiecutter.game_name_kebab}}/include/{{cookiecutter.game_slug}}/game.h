@@ -242,6 +242,17 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
   std::string ActionToString(const {{cookiecutter.__action}}& action) const final;
 
  private:
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-002): design private members to keep track of the game state.
+  //
+  // `round_`, `cur_player_`, `last_action_`, and `board_`, likely won't change
+  // much, but maybe changing them can help.
+  //
+  // Should we keep track of certain (maybe all) past actions or states that's
+  // not fully in the board state? Some game rules may require previous
+  // histories. Should they be tracked separately or just baked into the board
+  // state?
+{%- endif %}
   uint32_t round_ = 0;
   {{cookiecutter.__board}} board_ = {{cookiecutter.__board}}{};
   {{cookiecutter.__player}} cur_player_ = {{cookiecutter.__player}}{};
