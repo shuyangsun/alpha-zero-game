@@ -16,14 +16,28 @@
 
 namespace alphazero::game::{{cookiecutter.game_slug}} {
 
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+// TODO(TASK-002): design board type, action type, and player type.
+//
+// Type aliases below are only placeholders generated from the Cookiecutter template.
+//
+// Board type: what is intuitive and efficient in memory? Do we need to
+// sacrifice runtime efficiency for memory efficiency?
+//
+// Action type: can we use a small integer type (e.g., uint8_t) to represent all
+// possible actions? What's the smallest type we can use here?
+//
+// Player type: is it a two-player game? Is it a group game? For most two-player
+// games, boolean is sufficient.
+{%- endif %}
 {% if cookiecutter.defaults[0] | lower == 'y' -%}
-using {{cookiecutter.__board}} = ::alphazero::game::api::Standard2DBoard<3, 3>;  // TODO: change type
-using {{cookiecutter.__action}} = ::alphazero::game::api::Action2D;               // TODO: change type
-using {{cookiecutter.__player}} = ::alphazero::game::api::BinaryPlayer;           // TODO: change type
+using {{cookiecutter.__board}} = ::alphazero::game::api::Standard2DBoard<3, 3>;
+using {{cookiecutter.__action}} = ::alphazero::game::api::Action2D;
+using {{cookiecutter.__player}} = ::alphazero::game::api::BinaryPlayer;
 {% else -%}
-using {{cookiecutter.__board}} = uint64_t;  // TODO: change type
-using {{cookiecutter.__action}} = int;       // TODO: change type
-using {{cookiecutter.__player}} = bool;      // TODO: change type
+using {{cookiecutter.__board}} = uint64_t;
+using {{cookiecutter.__action}} = int;
+using {{cookiecutter.__player}} = bool;
 {%- endif %}
 using {{cookiecutter.__game_interface}} = ::alphazero::game::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}}, {{cookiecutter.__player}}>;
 

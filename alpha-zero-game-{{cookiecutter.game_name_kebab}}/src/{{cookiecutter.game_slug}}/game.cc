@@ -1,4 +1,4 @@
-#include "include/{{ cookiecutter.game_slug }}/game.h"
+#include "include/{{cookiecutter.game_slug}}/game.h"
 
 namespace alphazero::game::{{cookiecutter.game_slug}} {
 
