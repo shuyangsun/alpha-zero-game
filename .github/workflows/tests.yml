@@ -9,12 +9,17 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         name: [defaults-on, defaults-off]
+        llm: [llm-on, llm-off]
         include:
           - name: defaults-on
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: generate (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }})
+          - llm: llm-on
+            llm_value: "yes"
+          - llm: llm-off
+            llm_value: "no"
+    name: generate (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }}${{ matrix.llm == 'llm-on' && ', llm' || '' }})
     steps:
       - name: Checkout template repository
         uses: actions/checkout@v6.0.2
@@ -44,13 +49,13 @@ jobs:
           game_name_kebab="tic-tac-toe"
           game_slug="ttt"
           github_actions="yes"
-          llm="yes"
+          llm="${{ matrix.llm_value }}"
           defaults="${{ matrix.defaults }}"
 
       - name: Upload generated project
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: project-${{ matrix.name }}-${{ matrix.os }}
+          name: project-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
 
@@ -61,17 +66,22 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         name: [defaults-on, defaults-off]
+        llm: [llm-on, llm-off]
         include:
           - name: defaults-on
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: format (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }})
+          - llm: llm-on
+            llm_value: "yes"
+          - llm: llm-off
+            llm_value: "no"
+    name: format (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }}${{ matrix.llm == 'llm-on' && ', llm' || '' }})
     steps:
       - name: Download generated project
         uses: actions/download-artifact@v8.0.1
         with:
-          name: project-${{ matrix.name }}-${{ matrix.os }}
+          name: project-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
 
       - name: Install formatters (Linux)
@@ -100,7 +110,7 @@ jobs:
       - name: Upload formatted project
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: project-formatted-${{ matrix.name }}-${{ matrix.os }}
+          name: project-formatted-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
 
@@ -111,18 +121,23 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         name: [defaults-on, defaults-off]
+        llm: [llm-on, llm-off]
         preset: [debug, release]
         include:
           - name: defaults-on
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: build (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}, ${{ matrix.preset }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }})
+          - llm: llm-on
+            llm_value: "yes"
+          - llm: llm-off
+            llm_value: "no"
+    name: build (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}, ${{ matrix.preset }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }}${{ matrix.llm == 'llm-on' && ', llm' || '' }})
     steps:
       - name: Download formatted project
         uses: actions/download-artifact@v8.0.1
         with:
-          name: project-formatted-${{ matrix.name }}-${{ matrix.os }}
+          name: project-formatted-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
 
       - name: Configure CMake
@@ -136,7 +151,7 @@ jobs:
       - name: Upload built project
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: project-built-${{ matrix.name }}-${{ matrix.preset }}-${{ matrix.os }}
+          name: project-built-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
 
@@ -147,18 +162,23 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         name: [defaults-on, defaults-off]
+        llm: [llm-on, llm-off]
         preset: [debug, release]
         include:
           - name: defaults-on
             defaults: "yes"
           - name: defaults-off
             defaults: "no"
-    name: run (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}, ${{ matrix.preset }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }})
+          - llm: llm-on
+            llm_value: "yes"
+          - llm: llm-off
+            llm_value: "no"
+    name: run (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}, ${{ matrix.preset }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }}${{ matrix.llm == 'llm-on' && ', llm' || '' }})
     steps:
       - name: Download built project
         uses: actions/download-artifact@v8.0.1
         with:
-          name: project-built-${{ matrix.name }}-${{ matrix.preset }}-${{ matrix.os }}
+          name: project-built-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
 
       - name: Run main
