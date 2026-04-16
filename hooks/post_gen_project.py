@@ -2,6 +2,9 @@ import glob
 import os
 import shutil
 import subprocess
+import sys
+
+from pathlib import Path
 
 
 def lower_first_ch(s: str) -> str:
@@ -10,12 +13,52 @@ def lower_first_ch(s: str) -> str:
     return s[0].lower()
 
 
-if lower_first_ch("{{ cookiecutter.github_actions }}") != "y":
-    shutil.rmtree(".github")
+has_ci: bool = lower_first_ch("{{ cookiecutter.github_actions }}") == "y"
+has_llm: bool = lower_first_ch("{{ cookiecutter.llm }}") == "y"
 
-if lower_first_ch("{{ cookiecutter.llm }}") != "y":
+
+def remove_ci():
+    shutil.rmtree(".github/workflows")
+
+
+def remove_llm():
     os.remove("AGENTS.md")
-    os.remove("CLAUDE.md")
+
+    shutil.rmtree("prompts/")
+    shutil.rmtree("tasks/")
+
+    shutil.rmtree(".claude/")
+    shutil.rmtree(".gemini/")
+
+    os.remove(".github/copilot-instructions.md")
+    shutil.rmtree(".github/instructions")
+    shutil.rmtree(".github/prompts")
+
+
+def symlink_llm():
+    root = Path.cwd()
+    for name in ("CLAUDE.md", "GEMINI.md"):
+        target = root / name
+        if target.exists():
+            target.unlink()
+        try:
+            target.symlink_to("AGENTS.md")
+        except (OSError, NotImplementedError):
+            # Windows without dev-mode/admin: fall back to copy + warn
+            shutil.copy(root / "AGENTS.md", target)
+            print(
+                f"Note: copied {name} (symlinks unavailable on this platform).",
+                file=sys.stderr,
+            )
+
+
+if has_llm:
+    symlink_llm()
+else:
+    remove_llm()
+
+if not has_ci and not has_llm:
+    shutil.rmtree(".github")
 
 # Format C++ source and header files with clang-format
 cpp_files = glob.glob("**/*.h", recursive=True) + glob.glob("**/*.cc", recursive=True)
@@ -42,11 +85,7 @@ print("Project generated successfully!")
 print()
 print("Next steps:")
 print()
-print("> cd ./alpha-zero-game-{{ cookiecutter.game_name_kebab }}")
-print()
-print("> cmake --preset debug")
-print()
-print("> cmake --build --preset debug")
-print()
-print("> ./build/debug/{{ cookiecutter.game_slug }} --help")
+print("cd ./alpha-zero-game-{{ cookiecutter.game_name_kebab }}")
+print("cmake --preset debug && cmake --build --preset debug")
+print("./build/debug/{{ cookiecutter.game_slug }} --help")
 print()
