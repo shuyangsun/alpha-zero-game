@@ -56,7 +56,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
   /**
    * @brief Get the current game board state.
    *
-   * @return const TttBoard& Const reference to the current game board state.
+   * @return const {{cookiecutter.__board}}& Const reference to the current game board state.
    */
   const {{cookiecutter.__board}}& GetBoard() const final;
 
@@ -114,7 +114,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * in the training data, that should be handled by augmenters. More details at
    * https://github.com/shuyangsun/alpha-zero-api/blob/main/src/include/alpha-zero-api/augmenter.h
    *
-   * @return TttBoard The canonical representation of the current board state.
+   * @return {{cookiecutter.__board}} The canonical representation of the current board state.
    */
   {{cookiecutter.__board}} CanonicalBoard() const final;
 
@@ -188,10 +188,43 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
   std::unique_ptr<const {{cookiecutter.__game_interface}}> GameAfterAction(
       const {{cookiecutter.__action}}& action) const final;
 
-  // String conversions
+  // --------------------------- String Conversions ----------------------------
+
+  /**
+   * @brief Human-readable string to represent the current game state during
+   * gameplay in terminal or for debugging.
+   *
+   * This is the most basic form of user interface for the game, should be easy
+   * to understand for both human and LLM players. LLM agents may choose to run
+   * the main binary in the terminal to debug game implementation.
+   *
+   * @return std::string A human-readable string representing the current game
+   * state.
+   */
   std::string BoardReadableString() const final;
+
+  /**
+   * @brief Convert a human-readable string to an action.
+   *
+   * May be used by a human player or an LLM agent to play the game in the
+   * terminal.
+   *
+   * @param action_str The string representing the action.
+   * @return std::expected<{{cookiecutter.__action}}, std::string> The action if the string is
+   * valid, or an error message if the string is invalid.
+   */
   std::expected<{{cookiecutter.__action}}, std::string> ActionFromString(
       std::string_view action_str) const final;
+
+  /**
+   * @brief Convert an action to a human-readable string.
+   *
+   * Used to display past actions or available actions to human players or LLM
+   * agents in the terminal.
+   *
+   * @param action The action to be converted to string.
+   * @return std::string A human-readable string representing the action.
+   */
   std::string ActionToString(const {{cookiecutter.__action}}& action) const final;
 
  private:
