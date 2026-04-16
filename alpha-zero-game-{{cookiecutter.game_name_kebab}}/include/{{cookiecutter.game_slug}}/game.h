@@ -50,8 +50,22 @@ using {{cookiecutter.__game_interface}} = ::alphazero::game::api::IGame<{{cookie
  */
 class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
  public:
-  {{cookiecutter.__game_cls}}() = default;
+
+  /**
+   * @brief Construct a new {{cookiecutter.game_name}} Game object.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   * 
+   * TODO(TASK-002): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
+   *
+   * Does a default constructor make sense? Should we always explicitly pass in
+   * the current player to the constructor? Do we need more than one
+   * constructor? Delete or add constructor based on your design.
+{%- endif %}
+   */
+  {{cookiecutter.__game_cls}}(const {{cookiecutter.__player}}& player);
+
   {{cookiecutter.__game_cls}}(const {{cookiecutter.__game_cls}}& other) = default;
+
   {{cookiecutter.__game_cls}}({{cookiecutter.__game_cls}}&& other) = default;
 
   ~{{cookiecutter.__game_cls}}() override = default;

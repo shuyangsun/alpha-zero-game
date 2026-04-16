@@ -29,7 +29,7 @@ target_include_directories(game_{{cookiecutter.game_slug}} PUBLIC ${CMAKE_CURREN
 
 add_executable({{ cookiecutter.game_slug }} src/main.cc)
 target_include_directories({{ cookiecutter.game_slug }} PRIVATE ${PROJECT_SOURCE_DIR})
-target_link_libraries({{ cookiecutter.game_slug }} PRIVATE AlphaZeroAPI::api)
+target_link_libraries({{ cookiecutter.game_slug }} PRIVATE AlphaZeroAPI::api game_{{cookiecutter.game_slug}})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     if(APPLE)
