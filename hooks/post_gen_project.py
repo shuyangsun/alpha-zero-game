@@ -25,7 +25,7 @@ def remove_llm():
     os.remove("AGENTS.md")
 
     shutil.rmtree("prompts/")
-    shutil.rmtree("tasks/")
+    shutil.rmtree("memory/")
 
     shutil.rmtree(".claude/")
     shutil.rmtree(".gemini/")
