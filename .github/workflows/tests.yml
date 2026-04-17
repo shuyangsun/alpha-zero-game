@@ -156,7 +156,7 @@ jobs:
           include-hidden-files: true
 
   test:
-    needs: generate
+    needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -177,7 +177,7 @@ jobs:
       - name: Download generated project
         uses: actions/download-artifact@v8.0.1
         with:
-          name: project-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
+          name: project-formatted-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
 
       - name: Run tests
