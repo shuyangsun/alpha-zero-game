@@ -58,6 +58,7 @@ jobs:
           name: project-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
+          retention-days: 1
 
   format:
     needs: generate
@@ -113,6 +114,7 @@ jobs:
           name: project-formatted-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
+          retention-days: 1
 
   build:
     needs: format
@@ -154,6 +156,7 @@ jobs:
           name: project-built-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
+          retention-days: 1
 
   tests:
     needs: build
