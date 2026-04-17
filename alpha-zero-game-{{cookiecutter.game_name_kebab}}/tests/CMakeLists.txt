@@ -19,6 +19,4 @@ if(_HAS_WCHARACTER_CONVERSION)
     endforeach()
 endif()
 
-enable_testing()
-
 add_subdirectory(unit)
