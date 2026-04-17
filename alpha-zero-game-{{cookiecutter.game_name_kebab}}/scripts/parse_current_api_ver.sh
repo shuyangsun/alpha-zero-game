@@ -10,14 +10,12 @@ if [[ ! -f "$CMAKE_FILE" ]]; then
     exit 1
 fi
 
-# Extract the tag using sed:
-# -nE: suppress automatic printing, enable extended regular expressions
-# .*[sS][eE][tT]: matches 'set' (case-insensitive) anywhere on the line
-# [[:space:]]*\(: handles flexible spacing around the opening parenthesis
-# [[:space:]]*ALPHA_ZERO_API_GIT_TAG: matches the variable name with flexible spacing
-# [[:space:]]+"([^"]+)": captures the value inside the double quotes into group \1
-# .*/\1/p: replaces the entire matched line with just the captured group and prints it
-GIT_TAG=$(sed -nE 's/.*[sS][eE][tT][[:space:]]*\([[:space:]]*ALPHA_ZERO_API_GIT_TAG[[:space:]]+"([^"]+)".*/\1/p' "$CMAKE_FILE")
+# Extract the tag using perl:
+# -0777: slurp the entire file so the regex can match across lines
+# \bset\s*\(\s*: matches 'set(' (case-insensitive) with flexible spacing
+# ALPHA_ZERO_API_GIT_TAG\s+: matches the variable name followed by whitespace
+# "([^"]+)": captures the value inside the double quotes
+GIT_TAG=$(perl -0777 -nE 'print $1 if /\bset\s*\(\s*ALPHA_ZERO_API_GIT_TAG\s+"([^"]+)"/i' "$CMAKE_FILE")
 
 # Check if the extraction was successful
 if [[ -z "$GIT_TAG" ]]; then
