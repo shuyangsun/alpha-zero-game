@@ -4,6 +4,7 @@
   },
   "tools": {
     "allowed": [
+      "edit_file",
       "run_shell_command(cmake)",
       "run_shell_command(ctest)",
       "run_shell_command(./build/debug/)",
