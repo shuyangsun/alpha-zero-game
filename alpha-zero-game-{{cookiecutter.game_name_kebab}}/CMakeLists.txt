@@ -40,3 +40,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         target_link_options({{ cookiecutter.game_slug }} PRIVATE -Wl,--gc-sections -Wl,--discard-all)
     endif()
 endif()
+
+option(BUILD_TESTING "Build unit tests" OFF)
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()

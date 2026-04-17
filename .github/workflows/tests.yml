@@ -157,41 +157,6 @@ jobs:
           path: alpha-zero-game-tic-tac-toe
           include-hidden-files: true
           retention-days: 1
-
-  tests:
-    needs: build
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        name: [defaults-on, defaults-off]
-        llm: [llm-on, llm-off]
-        preset: [debug, release]
-        include:
-          - name: defaults-on
-            defaults: "yes"
-          - name: defaults-off
-            defaults: "no"
-          - llm: llm-on
-            llm_value: "yes"
-          - llm: llm-off
-            llm_value: "no"
-    name: tests (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}, ${{ matrix.preset }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }}${{ matrix.llm == 'llm-on' && ', llm' || '' }})
-    steps:
-      - name: Download built project
-        uses: actions/download-artifact@v8.0.1
-        with:
-          name: project-built-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
-
-      - name: Run tests
-        working-directory: alpha-zero-game-tic-tac-toe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          chmod +x tests/*.sh scripts/*.sh
-          ./tests/test_fetch_migration_guides.sh
-
   run:
     needs: build
     runs-on: ${{ matrix.os }}
@@ -223,3 +188,109 @@ jobs:
         run: |
           chmod +x build/${{ matrix.preset }}/ttt
           ./build/${{ matrix.preset }}/ttt
+
+  build-tests:
+    needs: format
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        name: [defaults-on, defaults-off]
+        llm: [llm-on, llm-off]
+        preset: [debug, release]
+        include:
+          - name: defaults-on
+            defaults: "yes"
+          - name: defaults-off
+            defaults: "no"
+          - llm: llm-on
+            llm_value: "yes"
+          - llm: llm-off
+            llm_value: "no"
+    name: build-tests (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}, ${{ matrix.preset }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }}${{ matrix.llm == 'llm-on' && ', llm' || '' }})
+    steps:
+      - name: Download formatted project
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: project-formatted-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
+          path: alpha-zero-game-tic-tac-toe
+
+      - name: Configure CMake (tests)
+        working-directory: alpha-zero-game-tic-tac-toe
+        run: cmake --preset ${{ matrix.preset }}-test
+
+      - name: Build tests
+        working-directory: alpha-zero-game-tic-tac-toe
+        run: cmake --build --preset ${{ matrix.preset }}-test
+
+      - name: Upload built test project
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: project-built-test-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
+          path: alpha-zero-game-tic-tac-toe
+          include-hidden-files: true
+          retention-days: 1
+
+  unittests:
+    needs: build-tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        name: [defaults-on, defaults-off]
+        llm: [llm-on, llm-off]
+        preset: [debug, release]
+        include:
+          - name: defaults-on
+            defaults: "yes"
+          - name: defaults-off
+            defaults: "no"
+          - llm: llm-on
+            llm_value: "yes"
+          - llm: llm-off
+            llm_value: "no"
+    name: unittests (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}, ${{ matrix.preset }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }}${{ matrix.llm == 'llm-on' && ', llm' || '' }})
+    steps:
+      - name: Download built test project
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: project-built-test-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
+          path: alpha-zero-game-tic-tac-toe
+
+      - name: Run unit tests
+        working-directory: alpha-zero-game-tic-tac-toe
+        run: ctest --preset ${{ matrix.preset }}-test
+
+  test-scripts:
+    needs: build-tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        name: [defaults-on, defaults-off]
+        llm: [llm-on, llm-off]
+        preset: [debug, release]
+        include:
+          - name: defaults-on
+            defaults: "yes"
+          - name: defaults-off
+            defaults: "no"
+          - llm: llm-on
+            llm_value: "yes"
+          - llm: llm-off
+            llm_value: "no"
+    name: test-scripts (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}, ${{ matrix.preset }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }}${{ matrix.llm == 'llm-on' && ', llm' || '' }})
+    steps:
+      - name: Download built test project
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: project-built-test-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
+          path: alpha-zero-game-tic-tac-toe
+
+      - name: Run tests
+        working-directory: alpha-zero-game-tic-tac-toe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x tests/*.sh scripts/*.sh
+          ./tests/test_fetch_migration_guides.sh

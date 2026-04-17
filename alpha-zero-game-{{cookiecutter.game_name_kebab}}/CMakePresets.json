@@ -25,6 +25,22 @@
         "CMAKE_EXE_LINKER_FLAGS_RELEASE": "-flto",
         "CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE": "ON"
       }
+    },
+    {
+      "name": "debug-test",
+      "displayName": "Debug (Tests)",
+      "inherits": "debug",
+      "cacheVariables": {
+        "BUILD_TESTING": "ON"
+      }
+    },
+    {
+      "name": "release-test",
+      "displayName": "Release (Tests)",
+      "inherits": "release",
+      "cacheVariables": {
+        "BUILD_TESTING": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -37,6 +53,34 @@
       "name": "release",
       "displayName": "Release",
       "configurePreset": "release"
+    },
+    {
+      "name": "debug-test",
+      "displayName": "Debug (Tests)",
+      "configurePreset": "debug-test"
+    },
+    {
+      "name": "release-test",
+      "displayName": "Release (Tests)",
+      "configurePreset": "release-test"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "debug-test",
+      "displayName": "Debug (Tests)",
+      "configurePreset": "debug-test",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "release-test",
+      "displayName": "Release (Tests)",
+      "configurePreset": "release-test",
+      "output": {
+        "outputOnFailure": true
+      }
     }
   ]
 }

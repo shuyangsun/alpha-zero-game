@@ -13,7 +13,7 @@ Install [uv](https://docs.astral.sh/uv/getting-started/installation/), [clang-fo
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 brew install clang-format
-pip install cmake-format
+pip install cmakelang
 ```
 
 ### Linux (Debian/Ubuntu)
@@ -50,3 +50,25 @@ uvx cookiecutter gh:shuyangsun/alpha-zero-game \
 ```
 
 Then follow instructions in `./alpha-zero-game-<game-name-kebab-case>/README.md`.
+
+## Build & Run
+
+```bash
+cd alpha-zero-game-<game-name-kebab-case>
+
+# Debug
+cmake --preset debug && cmake --build --preset debug
+
+# Release
+cmake --preset release && cmake --build --preset release
+```
+
+## Tests
+
+```bash
+# Build and run tests (debug)
+cmake --preset debug-test && cmake --build --preset debug-test && ctest --preset debug-test
+
+# Build and run tests (release)
+cmake --preset release-test && cmake --build --preset release-test && ctest --preset release-test
+```
