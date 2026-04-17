@@ -257,6 +257,10 @@ jobs:
           name: project-built-test-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
           path: alpha-zero-game-tic-tac-toe
 
+      - name: Set test binary permissions
+        working-directory: alpha-zero-game-tic-tac-toe
+        run: chmod +x build/${{ matrix.preset }}/tests/unit/*_test
+
       - name: Run unit tests
         working-directory: alpha-zero-game-tic-tac-toe
         run: ctest --preset ${{ matrix.preset }}-test
