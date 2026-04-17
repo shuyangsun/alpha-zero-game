@@ -11,9 +11,12 @@ if [ "${ALPHA_ZERO_API_CURRENT_VER}" = "${ALPHA_ZERO_API_LATEST_VER}" ]; then
 fi
 
 # Fetch and format the migration guides as markdown checklists
-MIGRATION_TASKS=$(curl -sS -L \
-  -H "Accept: application/vnd.github+json" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
+CURL_ARGS=(-sS -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
+if [ -n "${GITHUB_TOKEN:-}" ]; then
+    CURL_ARGS+=(-H "Authorization: Bearer $GITHUB_TOKEN")
+fi
+
+MIGRATION_TASKS=$(curl "${CURL_ARGS[@]}" \
   https://api.github.com/repos/shuyangsun/alpha-zero-api/contents/doc/migration-guides \
 | jq -r --arg curr "$ALPHA_ZERO_API_CURRENT_VER" --arg latest "$ALPHA_ZERO_API_LATEST_VER" '
   if type == "object" and .message == "Not Found" then

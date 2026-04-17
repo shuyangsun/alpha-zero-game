@@ -183,6 +183,8 @@ jobs:
 
       - name: Run tests
         working-directory: alpha-zero-game-tic-tac-toe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           chmod +x tests/*.sh scripts/*.sh
           ./tests/test_fetch_migration_guides.sh
