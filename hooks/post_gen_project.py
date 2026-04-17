@@ -78,6 +78,41 @@ if cmake_files:
     except FileNotFoundError:
         print("WARNING: cmake-format not found, skipping CMake formatting.")
 
+# Initialize Git repository and make initial commit
+_git_env = {**os.environ, "GIT_TERMINAL_PROMPT": "0"}
+try:
+    subprocess.run(["git", "init"], check=True, capture_output=True, env=_git_env)
+    subprocess.run(
+        ["git", "branch", "-m", "main"], check=True, capture_output=True, env=_git_env
+    )
+    subprocess.run(["git", "add", "."], check=True, capture_output=True, env=_git_env)
+
+    # Detect whether GPG/SSH commit signing is enabled
+    _gpg_sign = subprocess.run(
+        ["git", "config", "--get", "commit.gpgsign"],
+        capture_output=True,
+        text=True,
+        env=_git_env,
+    )
+    _will_sign = _gpg_sign.returncode == 0 and _gpg_sign.stdout.strip() == "true"
+
+    if _will_sign:
+        print(
+            "Waiting for initial Git commit signature...",
+            flush=True,
+        )
+
+    subprocess.run(
+        ["git", "commit", "-m", "Initial commit (cookiecutter)"],
+        check=True,
+        capture_output=True,
+        env=_git_env,
+    )
+except FileNotFoundError:
+    print("WARNING: git not found, skipping repository initialization.")
+except subprocess.CalledProcessError as e:
+    print(f"WARNING: git command failed: {e}", file=sys.stderr)
+
 print()
 print("Project generated successfully!")
 print()
