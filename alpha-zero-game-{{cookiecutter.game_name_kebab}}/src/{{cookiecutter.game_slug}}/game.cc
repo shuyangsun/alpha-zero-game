@@ -8,270 +8,127 @@
 #include <string_view>
 #include <vector>
 
-namespace alphazero::game::{
-{
-  cookiecutter.game_slug
+namespace alphazero::game::{{cookiecutter.game_slug}} {
+
+namespace {
+
+// Using statements, constexpr, helper functions here.
+
+}  // namespace
+
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+// TODO(TASK-003): change, add, or delete this constructor implementation if necessary.
+{%- endif %}
+{{cookiecutter.__game_cls}}::{{cookiecutter.__game_cls}}(const {{cookiecutter.__player}}& player)
+    : cur_player_{player} {}
+
+std::unique_ptr<const {{cookiecutter.__game_interface}}> {{cookiecutter.__game_cls}}::Copy() const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return nullptr;
 }
-}  // namespace alphazero::game::
-{
-  namespace {
 
-  // Using statements, constexpr, helper functions here.
+const {{cookiecutter.__board}}& {{cookiecutter.__game_cls}}::GetBoard() const {
+  return board_;
+}
 
-  }  // namespace
+uint32_t {{cookiecutter.__game_cls}}::CurrentRound() const {
+  return round_;
+}
 
-  {
-    % if cookiecutter.llm[0] | lower == 'y' - %
-  }
-  // TODO(TASK-003): change, add, or delete this constructor implementation if
-  // necessary.
-  {
-    % -endif %
-  }
-  {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::{{cookiecutter.__game_cls}}(const {{cookiecutter.__player}} & player)
-      : cur_player_{player} {}
+{{cookiecutter.__player}} {{cookiecutter.__game_cls}}::CurrentPlayer() const {
+  return cur_player_;
+}
 
-  std::unique_ptr<const {{cookiecutter.__game_interface}}> {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::Copy() const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return nullptr;
-  }
+std::optional<{{cookiecutter.__player}}> {{cookiecutter.__game_cls}}::LastPlayer() const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return {};
+}
 
-  const {{cookiecutter.__board}}& {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::GetBoard() const { return board_; }
+std::optional<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::LastAction() const {
+  return last_action_;
+}
 
-  uint32_t {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::CurrentRound() const { return round_; }
+{{cookiecutter.__board}} {{cookiecutter.__game_cls}}::CanonicalBoard() const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return board_;
+}
 
-  {
-    {
-      cookiecutter.__player
-    }
-  }
-  {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::CurrentPlayer() const { return cur_player_; }
+bool {{cookiecutter.__game_cls}}::IsOver() const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return false;
+}
 
-  std::optional<{{cookiecutter.__player}}> {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::LastPlayer() const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return {};
-  }
+float {{cookiecutter.__game_cls}}::GetScore(const {{cookiecutter.__player}}& player) const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return 0.0f;
+}
 
-  std::optional<{{cookiecutter.__action}}> {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::LastAction() const { return last_action_; }
+std::vector<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::ValidActions() const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return {};
+}
 
-  {
-    {
-      cookiecutter.__board
-    }
-  }
-  {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::CanonicalBoard() const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return board_;
-  }
+std::unique_ptr<const {{cookiecutter.__game_interface}}> {{cookiecutter.__game_cls}}::GameAfterAction(
+      const {{cookiecutter.__action}}& action) const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return nullptr;
+}
 
-  bool {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::IsOver() const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return false;
-  }
+std::string {{cookiecutter.__game_cls}}::BoardReadableString() const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return "\"BoardReadableString()\" is not implemented!";
+}
 
-  float {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::GetScore(const {{cookiecutter.__player}} & player) const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return 0.0f;
-  }
+std::expected<{{cookiecutter.__action}}, std::string> {{cookiecutter.__game_cls}}::ActionFromString(
+      std::string_view action_str) const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return std::unexpected("\"ActionFromString(...)\" is not implemented!");
+}
 
-  std::vector<{{cookiecutter.__action}}> {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::ValidActions() const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return {};
-  }
-
-  std::unique_ptr<const {{cookiecutter.__game_interface}}> {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::GameAfterAction(const {{cookiecutter.__action}} & action) const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return nullptr;
-  }
-
-  std::string {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::BoardReadableString() const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return "\"BoardReadableString()\" is not implemented!";
-  }
-
-  std::expected<{{cookiecutter.__action}}, std::string> {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::ActionFromString(std::string_view action_str) const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return std::unexpected("\"ActionFromString(...)\" is not implemented!");
-  }
-
-  std::string {
-    {
-      cookiecutter.__game_cls
-    }
-  }
-  ::ActionToString(const {{cookiecutter.__action}} & action) const {
-    {
-      % if cookiecutter.llm[0] | lower == 'y' - %
-    }
-    // TODO(TASK-005): implementation
-    {
-      % else - %
-    }
-    // TODO: implementation
-    {
-      % -endif %
-    }
-    return "\"ActionToString(...)\" is not implemented!";
-  }
+std::string {{cookiecutter.__game_cls}}::ActionToString(const {{cookiecutter.__action}}& action) const {
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-005): implementation
+{% else -%}
+  // TODO: implementation
+{%- endif %}
+  return "\"ActionToString(...)\" is not implemented!";
+}
 
 }  // namespace alphazero::game::{{ cookiecutter.game_slug }}
+
