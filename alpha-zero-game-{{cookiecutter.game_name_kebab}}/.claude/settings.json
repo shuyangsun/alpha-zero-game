@@ -1,28 +1,19 @@
 {
   "permissions": {
     "allow": [
-      // Build
       "Bash(cmake --preset *)",
       "Bash(cmake --build --preset *)",
       "Bash(cmake --preset * && cmake --build --preset *)",
-
-      // Test
       "Bash(ctest --preset *)",
       "Bash(cmake --preset * && cmake --build --preset * && ctest --preset *)",
-
-      // Run game binary
       "Bash(./build/debug/{{cookiecutter.game_slug}})",
       "Bash(./build/release/{{cookiecutter.game_slug}})",
       "Bash(cmake --preset debug && cmake --build --preset debug && ./build/debug/{{cookiecutter.game_slug}})",
       "Bash(cmake --preset release && cmake --build --preset release && ./build/release/{{cookiecutter.game_slug}})",
-
-      // Project scripts
       "Bash(./scripts/fetch_latest_api_ver.sh)",
       "Bash(./scripts/fetch_migration_guides.sh)",
       "Bash(./scripts/find_task.sh)",
       "Bash(./scripts/parse_current_api_ver.sh)",
-
-      // Safe read-only
       "Bash(git status*)",
       "Bash(git diff *)",
       "Bash(git log *)",
@@ -33,8 +24,6 @@
       "Bash(head *)",
       "Bash(tail *)",
       "Bash(wc *)",
-
-      // File ops
       "Read",
       "Glob",
       "Grep",
