@@ -8,11 +8,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-# Google Test v1.17.0 triggers -Wcharacter-conversion in gtest-printers.h
-# (char8_t -> char32_t) under C++23 + Clang. Downgrade the error back to a
-# warning for GTest targets so the global -Werror from the preset is bypassed.
-# The flag only exists in upstream LLVM Clang (not Apple Clang or GCC), so
-# verify support before applying.
+# Suppress gtest-printers.h warning (char8_t -> char32_t)
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-Wcharacter-conversion _HAS_WCHARACTER_CONVERSION)
 if(_HAS_WCHARACTER_CONVERSION)
