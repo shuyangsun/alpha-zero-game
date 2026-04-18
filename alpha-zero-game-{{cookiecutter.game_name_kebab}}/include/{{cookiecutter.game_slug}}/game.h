@@ -123,7 +123,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * current player's perspective.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
-   * TODO(TASK-004): tailor this docstring to be {{cookiecutter.game_name}} specific, describe the canonical representation in
+   * TODO(TASK-005): tailor this docstring to be {{cookiecutter.game_name}} specific, describe the canonical representation in
    * detail, the length should still be suitable for docstring.
 {%- endif %}
    *
@@ -177,7 +177,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * current game state.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
-   * TODO(TASK-004): tailor this docstring to be {{cookiecutter.game_name}} specific.
+   * TODO(TASK-005): tailor this docstring to be {{cookiecutter.game_name}} specific.
 {%- endif %}
    *
    * The size of the vector is dynamic, there should be no duplicate actions.
@@ -196,7 +196,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * action.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
-   * TODO(TASK-004): tailor this docstring to be {{cookiecutter.game_name}} specific.
+   * TODO(TASK-005): tailor this docstring to be {{cookiecutter.game_name}} specific.
 {%- endif %}
    *
    * The action passed in should be only one of the actions returned by the

@@ -24,7 +24,7 @@ namespace {
 
 std::unique_ptr<const {{cookiecutter.__game_interface}}> {{cookiecutter.__game_cls}}::Copy() const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -45,7 +45,7 @@ uint32_t {{cookiecutter.__game_cls}}::CurrentRound() const {
 
 std::optional<{{cookiecutter.__player}}> {{cookiecutter.__game_cls}}::LastPlayer() const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -58,7 +58,7 @@ std::optional<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::LastAction
 
 {{cookiecutter.__board}} {{cookiecutter.__game_cls}}::CanonicalBoard() const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -67,7 +67,7 @@ std::optional<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::LastAction
 
 bool {{cookiecutter.__game_cls}}::IsOver() const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -76,7 +76,7 @@ bool {{cookiecutter.__game_cls}}::IsOver() const {
 
 float {{cookiecutter.__game_cls}}::GetScore(const {{cookiecutter.__player}}& player) const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -85,7 +85,7 @@ float {{cookiecutter.__game_cls}}::GetScore(const {{cookiecutter.__player}}& pla
 
 std::vector<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::ValidActions() const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -95,7 +95,7 @@ std::vector<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::ValidActions
 std::unique_ptr<const {{cookiecutter.__game_interface}}> {{cookiecutter.__game_cls}}::GameAfterAction(
       const {{cookiecutter.__action}}& action) const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -104,7 +104,7 @@ std::unique_ptr<const {{cookiecutter.__game_interface}}> {{cookiecutter.__game_c
 
 std::string {{cookiecutter.__game_cls}}::BoardReadableString() const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -114,7 +114,7 @@ std::string {{cookiecutter.__game_cls}}::BoardReadableString() const {
 std::expected<{{cookiecutter.__action}}, std::string> {{cookiecutter.__game_cls}}::ActionFromString(
       std::string_view action_str) const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -123,7 +123,7 @@ std::expected<{{cookiecutter.__action}}, std::string> {{cookiecutter.__game_cls}
 
 std::string {{cookiecutter.__game_cls}}::ActionToString(const {{cookiecutter.__action}}& action) const {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-005): implementation
+  // TODO(TASK-100): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
