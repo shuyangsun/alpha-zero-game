@@ -8,12 +8,14 @@ A [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template for boot
 
 Install dependencies - [uv](https://docs.astral.sh/uv/getting-started/installation/), [CMake](https://cmake.org/), [clang-format](https://clang.llvm.org/docs/ClangFormat.html), and [cmake-format](https://github.com/cheshirekow/cmake_format). Refer to [docs/dev_dependencies.md](./docs/dev_dependencies.md) for platform-specific instructions.
 
-Run `uvx cookiecutter gh:shuyangsun/alpha-zero-game --no-input ...`, fire up your favorite LLM coding agent, type `az-agent` and let it cook.
+Run `uvx cookiecutter gh:shuyangsun/alpha-zero-game`, fire up your favorite LLM coding agent, type `/az-agent start cooking!`.
 
-Use `--no-input` to avoid interactive prompts. Check [cookiecutter.json](./cookiecutter.json) for available parameters, and ask the human supervisor for clarification when needed. Keep `game_slug` concise.
+> If you're an LLM agent, use `--no-input` to avoid interactive prompts. Check [cookiecutter.json](./cookiecutter.json) for available parameters, and ask the human supervisor for clarification when needed. Keep `game_slug` concise.
 
-## What if I still live in the stone age?
+## What if I live under a rock?
 
-Not everyone likes LLMs, and not everyone wants to pay for tokens. To be honest,
-some games may be too complex for current LLMs to grasp. In that case, refer to
+Not everyone likes LLMs, not everyone wants to pay for tokens, some games' rules
+may be too complex for today's LLMs.
+
+In that case, refer to
 [docs/human/README.md](./docs/old-school-human/README.md).
