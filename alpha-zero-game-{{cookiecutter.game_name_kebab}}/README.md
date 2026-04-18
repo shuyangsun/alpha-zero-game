@@ -20,8 +20,12 @@ cmake --preset release && cmake --build --preset release
 
 ```bash
 # Build and run tests (debug)
-cmake --preset debug-test && cmake --build --preset debug-test && ctest --preset debug-test
+cmake --preset debug-test \
+  && cmake --build --preset debug-test \
+  && ctest --preset debug-test
 
 # Build and run tests (release)
-cmake --preset release-test && cmake --build --preset release-test && ctest --preset release-test
+cmake --preset release-test \
+  && cmake --build --preset release-test \
+  && ctest --preset release-test
 ```

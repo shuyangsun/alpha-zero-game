@@ -18,4 +18,4 @@ Not everyone likes LLMs, not everyone wants to pay for tokens, some games' rules
 may be too complex for today's LLMs.
 
 In that case, refer to
-[docs/old-school-human/README.md](./docs/old-school-human/README.md).
+[docs/old_school_human/README.md](./docs/old_school_human/README.md).
