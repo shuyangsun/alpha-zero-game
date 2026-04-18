@@ -8,7 +8,7 @@
 #include <string_view>
 #include <vector>
 
-namespace alphazero::game::{{cookiecutter.game_slug}} {
+namespace az::game::{{cookiecutter.game_slug}} {
 
 namespace {
 
@@ -130,5 +130,5 @@ std::string {{cookiecutter.__game_cls}}::ActionToString(const {{cookiecutter.__a
   return "\"ActionToString(...)\" is not implemented!";
 }
 
-}  // namespace alphazero::game::{{ cookiecutter.game_slug }}
+}  // namespace az::game::{{ cookiecutter.game_slug }}
 

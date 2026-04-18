@@ -3,11 +3,11 @@
 #include "gtest/gtest.h"
 #include "include/{{cookiecutter.game_slug}}/game.h"
 
-namespace alphazero::game::{{cookiecutter.game_slug}} {
+namespace az::game::{{cookiecutter.game_slug}} {
 namespace {
 
-using ::alphazero::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_interface}};
-using ::alphazero::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_interface}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
 
 TEST(GameConstructors, DefaultConstructor) {
   std::unique_ptr<const {{cookiecutter.__game_interface}}> game = std::make_unique<{{cookiecutter.__game_cls}}>({{ cookiecutter.__player }}{});
@@ -15,5 +15,5 @@ TEST(GameConstructors, DefaultConstructor) {
 }
 
 }  // namespace
-}  // namespace alphazero::game::{{cookiecutter.game_slug}}
+}  // namespace az::game::{{cookiecutter.game_slug}}
 

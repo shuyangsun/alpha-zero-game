@@ -14,7 +14,7 @@
 {%- endif %}
 #include "alpha-zero-api/game.h"
 
-namespace alphazero::game::{{cookiecutter.game_slug}} {
+namespace az::game::{{cookiecutter.game_slug}} {
 
 {% if cookiecutter.llm[0] | lower == 'y' -%}
 // TODO(TASK-003): design board type, action type, and player type.
@@ -31,15 +31,15 @@ namespace alphazero::game::{{cookiecutter.game_slug}} {
 // games, boolean is sufficient.
 {%- endif %}
 {% if cookiecutter.defaults[0] | lower == 'y' -%}
-using {{cookiecutter.__board}} = ::alphazero::game::api::Standard2DBoard<3, 3>;
-using {{cookiecutter.__action}} = ::alphazero::game::api::Action2D;
-using {{cookiecutter.__player}} = ::alphazero::game::api::BinaryPlayer;
+using {{cookiecutter.__board}} = ::az::game::api::Standard2DBoard<3, 3>;
+using {{cookiecutter.__action}} = ::az::game::api::Action2D;
+using {{cookiecutter.__player}} = ::az::game::api::BinaryPlayer;
 {% else -%}
 using {{cookiecutter.__board}} = uint64_t;
 using {{cookiecutter.__action}} = int;
 using {{cookiecutter.__player}} = bool;
 {%- endif %}
-using {{cookiecutter.__game_interface}} = ::alphazero::game::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}}, {{cookiecutter.__player}}>;
+using {{cookiecutter.__game_interface}} = ::az::game::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}}, {{cookiecutter.__player}}>;
 
 /**
  * @brief An implementation of the {{cookiecutter.game_name}} game.
@@ -273,7 +273,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
   std::optional<{{cookiecutter.__action}}> last_action_ = std::nullopt;
 };
 
-}  // namespace alphazero::game::{{cookiecutter.game_slug}}
+}  // namespace az::game::{{cookiecutter.game_slug}}
 
 #endif  // ALPHA_ZERO_GAME_{{cookiecutter.__include_guard_prj}}_INCLUDE_{{cookiecutter.__include_guard_slug}}_GAME_H_
 

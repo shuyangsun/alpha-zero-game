@@ -5,9 +5,9 @@
 
 namespace {
 
-using ::alphazero::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_interface}};
-using ::alphazero::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_cls}};
-using ::alphazero::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_interface}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_cls}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
 
 } // namespace
 
