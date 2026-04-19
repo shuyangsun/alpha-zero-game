@@ -18,8 +18,11 @@ serialization, so the board should not duplicate long-term history.
 ```cpp
 namespace az::game::gd {
 
-enum class GdComboType : uint8_t {
+enum class ComboType : uint8_t {
   kPass = 0,
+  kTribute,
+  kReturnTribute,
+  kAntiTribute,
   kSingle,
   kPair,
   kTriple,
@@ -35,28 +38,29 @@ enum class GdComboType : uint8_t {
 // 54 distinct card identities:
 // 52 suit-rank cards + small joker + big joker.
 // Each identity appears 0, 1, or 2 times because GuanDan uses two decks.
-struct GdCardMultiset {
+struct CardMultiset {
   uint64_t at_least_one = 0;
   uint64_t both_copies = 0;
 
-  bool operator==(const GdCardMultiset&) const = default;
+  bool operator==(const CardMultiset&) const = default;
 };
 
 struct GdAction {
-  GdCardMultiset cards{};           // empty together with kPass means pass
-  GdComboType type = GdComboType::kPass;
-  uint8_t key_rank = 0;             // raw declared rank; compare with level-aware helpers
+  CardMultiset cards{}; // empty together with kPass means pass
+  uint8_t combo_key_rank_; // first 4 bits combo type, last 4 bits key rank
 };
 
 struct GdBoard {
-  std::array<GdCardMultiset, 4> hands{};  // seat order 0,1,2,3
+  std::array<CardMultiset, 4> hands{};  // seat order 0,1,2,3
 
   // Current benchmark for the active trick.
   // Empty + kPass means there is no benchmark and the next player is leading.
   GdAction trick_action{};
-  uint8_t trick_player = 0;         // player who set trick_action
 
-  uint8_t current_player = 0;       // player to act next
+  // Player who set trick_action and the current player packed into one byte.
+  // The first two bits are the trick player, the second two bits are the
+  // current player.
+  uint8_t trick_and_cur_player = 0;
 
   // Team levels packed into one byte:
   // low nibble  = team 0 (players 0 and 2)
@@ -65,8 +69,8 @@ struct GdBoard {
 
   // Four 2-bit finish slots packed into one byte.
   // Slot i stores the player who finished in place i.
-  uint8_t finish_order_packed = 0;
-  uint8_t num_finished = 0;
+  // Slot value `0b11` indicates empty finish slot.
+  uint8_t finish_order_packed = 0xFF;
 };
 
 using GdB = GdBoard;
@@ -84,13 +88,13 @@ seat rotation, array indexing, and team lookup cheap. A struct of booleans does
 not save memory in practice and makes arithmetic and indexing worse. A scoped
 enum would also work, but `uint8_t` fits the current API ergonomics better.
 
-## Why `GdCardMultiset`
+## Why `CardMultiset`
 
 The core hidden-information object in GuanDan is a two-deck multiset of
 specific card identities. The board needs four of them, one per player hand,
 and actions need one to say exactly which cards were played.
 
-`GdCardMultiset` uses two 64-bit masks:
+`CardMultiset` uses two 64-bit masks:
 
 - `at_least_one` marks card identities present at least once.
 - `both_copies` marks card identities present twice.
@@ -103,7 +107,7 @@ pointer chasing of `std::vector<CardId>`.
 The representation also matches the actual game rule: each of the 54 card
 identities can occur 0, 1, or 2 times.
 
-## Why `GdA` Is Not Just `GdCardMultiset`
+## Why `GdA` Is Not Just `CardMultiset`
 
 Using only the raw played cards would be smaller, but it would throw away legal
 choice. In GuanDan, especially with heart wild cards, the same physical cards
@@ -126,7 +130,7 @@ Pass is represented directly as an action value:
 
 ```cpp
 GdAction pass{};
-// pass.cards is empty, pass.type == GdComboType::kPass, pass.key_rank == 0
+// pass.cards is empty, pass.type == ComboType::kPass, pass.key_rank == 0
 ```
 
 That satisfies the API requirement that `LastAction()` still return a concrete
@@ -139,11 +143,10 @@ the hand, skip finished players, and score the result.
 
 - `hands` is the dominant cost and contains the actual hidden game state.
 - `trick_action` stores the current benchmark declaration to beat.
-- `trick_player` identifies who currently owns that benchmark.
-- `current_player` identifies who acts next.
+- `trick_and_current_player` identifies who currently owns that benchmark and
+  who acts next.
 - `levels` carries both teams' current level ranks in one byte.
-- `finish_order_packed` and `num_finished` track who has already gone out and
-  in what order.
+- `finish_order_packed` track who has already gone out and in what order.
 
 The board intentionally does not store:
 
@@ -155,7 +158,7 @@ The board intentionally does not store:
 
 On typical 64-bit ABIs this layout is about 96 bytes:
 
-- `4 * GdCardMultiset` for hands: 64 bytes.
+- `4 * CardMultiset` for hands: 64 bytes.
 - `GdAction trick_action`: 24 bytes.
 - five `uint8_t` metadata fields plus alignment padding: about 8 bytes.
 
