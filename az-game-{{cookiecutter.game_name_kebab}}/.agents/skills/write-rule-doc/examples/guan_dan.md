@@ -54,8 +54,10 @@ plus both wild hearts. This is very rare, but a legal move.
 
 ### Other Legal Actions
 
-- tribute: the previous hand's loser gives a card to the winner (进贡)
-- return tribute: the previous hand's winner gives back a card (还贡)
+- tribute: a pre-hand card exchange based on the previous hand's finish
+  order (进贡)
+- return tribute: the player who receives a tribute gives back one card to
+  that same player (还贡)
 - pass: decline to play a hand (过牌)
 
 ## How Hands Are Compared
@@ -97,10 +99,38 @@ plus both wild hearts. This is very rare, but a legal move.
 
 ## Tribute
 
-- Tribute and return-tribute depend on the finishing order of the previous
-  hand.
-- They are handled before the next hand begins, while the new hand is being set
-  up.
+- Tribute starts with the second hand. The first hand has no tribute.
+- Tribute and return-tribute happen after the new hand is dealt, but before
+  the first trick starts.
 - They are not part of ordinary trick-taking play.
-- If players need to choose exactly which card to return, treat that as a
-  separate pre-hand step.
+- In the usual single-tribute case, the previous hand's fourth-place player
+  gives one card to the previous hand's first-place player. This can be a
+  tribute to an opponent or to a partner; the rule depends on finish order,
+  not team membership.
+- In the double-tribute case, one team finished first and second in the
+  previous hand. Then both players on the other team each give one card.
+- A tribute card is always the giver's highest eligible single card under the
+  current single-card rank order. This can force the giver to break up a
+  bomb, straight, or other combination.
+- The heart level card is never eligible to be tributed. If a player has
+  several equally high eligible cards, any one of them may be given.
+- In double tribute, compare the two tribute cards. The higher one goes to the
+  previous hand's first-place player, and the lower one goes to the previous
+  hand's second-place player.
+- If the two tribute cards tie in rank, break the tie by clockwise seat order.
+  Starting from the previous hand's first-place player and moving clockwise,
+  the first tribute giver you meet gives to first place, and the other giver
+  gives to second place.
+- Each player who receives a tribute must return one card to that same giver.
+  The returned card must have printed rank `10` or lower. If no such card is
+  available, return the smallest card in hand.
+- After a single tribute, the tribute giver leads the first trick of the new
+  hand.
+- After a double tribute, the player who gave to the previous hand's
+  first-place player leads the first trick.
+- Anti-tribute cancels the whole tribute step. In single tribute, it happens
+  if the would-be tribute giver holds both big jokers in the new hand. In
+  double tribute, it happens if the two tribute givers together hold both big
+  jokers, whether split across the two hands or both in one hand.
+- When anti-tribute happens, no cards are exchanged and the previous hand's
+  first-place player leads the first trick.
