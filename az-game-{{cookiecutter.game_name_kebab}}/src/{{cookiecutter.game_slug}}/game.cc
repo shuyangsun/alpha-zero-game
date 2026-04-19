@@ -17,7 +17,7 @@ namespace {
 }  // namespace
 
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-// TODO(TASK-003): change, add, or delete this constructor implementation if necessary.
+// TODO(TASK-004): change, add, or delete this constructor implementation if necessary.
 {%- endif %}
 {{cookiecutter.__game_cls}}::{{cookiecutter.__game_cls}}(const {{cookiecutter.__player}}& player)
     : cur_player_{player} {}

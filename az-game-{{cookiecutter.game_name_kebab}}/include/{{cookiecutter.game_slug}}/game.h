@@ -17,7 +17,7 @@
 namespace az::game::{{cookiecutter.game_slug}} {
 
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-// TODO(TASK-003): design board type, action type, and player type.
+// TODO(TASK-004): design board type, action type, and player type.
 //
 // Type aliases below are only placeholders generated from the Cookiecutter template.
 //
@@ -55,7 +55,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @brief Construct a new {{cookiecutter.game_name}} Game object.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    * 
-   * TODO(TASK-003): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
+   * TODO(TASK-004): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
    *
    * Does a default constructor make sense? Should we always explicitly pass in
    * the current player to the constructor? Do we need more than one
@@ -257,7 +257,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
 
  private:
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-003): design private members to keep track of the game state.
+  // TODO(TASK-004): design private members to keep track of the game state.
   //
   // `round_`, `cur_player_`, `last_action_`, and `board_`, likely won't change
   // much, but maybe changing them can help.
