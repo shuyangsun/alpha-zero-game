@@ -11,7 +11,7 @@ namespace az::game::gd {
 // Guan Dan player type.
 //
 // Values 0 through 3.
-using GcP = uint8_t;
+using GdP = uint8_t;
 
 // 4-bits are enough, no need for 8
 enum class ActionType : uint8_t {
@@ -77,16 +77,14 @@ struct GdBoard {
 
   // First 4 bits = team 0 (players 0 and 2)
   // Last 4 bits = team 1 (players 1 and 3)
-  // Levels do not represent the highest-ranked card. For example, at level 0,
-  // the highest ranked card is 2.
-  // Level 12 is the first time that team is playing with Ace as the
-  // highest-ranked card (game point).
-  // Level 13 and 14 also represent the highest ranked card being Ace. However,
-  // they also encode the number of consecutive losses after reaching game
-  // point. Level 13 means they already lost once at game point, and level 14
-  // means they already lost twice at game point. At level 14, if they lose
-  // again, their team level returns to 0. Note that it has to be three
-  // consecutive losses.
+  // Team levels are persistent match levels:
+  //   0 -> 2, 1 -> 3, ..., 11 -> K, 12 -> A.
+  // Official competitive Guan Dan does not use extra in-play post-A
+  // pseudo-levels to count failed attempts. Instead, a team at level A wins
+  // the match only by passing A: one player must finish first and the partner
+  // must not finish last.
+  // A 1-4 finish at level A does not end the match; the team stays at A and
+  // must play A again.
   uint8_t team_levels = 0;
 
   // The current active trick

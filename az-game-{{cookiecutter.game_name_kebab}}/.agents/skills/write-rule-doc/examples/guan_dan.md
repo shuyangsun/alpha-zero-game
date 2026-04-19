@@ -15,8 +15,13 @@ This guide describes the standard four-player partnership version of Guan Dan
 
 - Each team keeps its own level from hand to hand, and the two teams may be on
   different levels.
-- At the start of the game, the level card is `2`. As teams level up, it moves
-  to `3`, `4`, and so on up to ace.
+- At the start of the game, both teams begin at level `2`.
+- Teams level up through `3`, `4`, and so on up to ace.
+- You cannot skip `A`. A team must play an `A`-level hand before it can win the
+  match.
+- The match-winning result is passing `A` (`过A`). Older official Jiangsu
+  material also refers to that terminal result as `A+`, but it is not a normal
+  extra level that you keep playing through.
 - The current level card ranks above the ordinary non-joker cards when hands
   are compared.
 - Only the heart copy of the current level card is wild. Because two decks are
@@ -98,6 +103,21 @@ plus both wild hearts. This is very rare, but a legal move.
 - If partners finish first and second, it is a triple-up.
 - If partners finish first and third, it is a double-up.
 - If partners finish first and fourth, it is a single-up.
+
+## Passing Ace and Winning the Match
+
+- Guan Dan is won by the first team to pass `A` (`过A`).
+- A team playing at level `A` passes `A` only if one teammate finishes first
+  and the partner does not finish last.
+- In four-player Guan Dan, that means only a `1-2` finish or a `1-3` finish at
+  level `A` wins the match.
+- A `1-4` finish at level `A` does not pass `A`; the hand ends, but that team
+  must play `A` again.
+- This document follows the current national competitive rule text and the
+  official Jiangsu simplified rule text that define winning as passing `A`.
+- Some local or tournament variants add a separate "three failed `A` attempts
+  then reset to `2`" rule. That variant is not treated here as part of the
+  current national competitive rule text.
 
 ## Tribute
 
