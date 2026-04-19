@@ -61,13 +61,13 @@ using {{cookiecutter.__game_result}} = std::expected<{{cookiecutter.__game_ptr}}
  *
  * All methods on this class are const, the game state is immutable. The only
  * way to create a new game state is to call GameAfterAction() with a valid
- * action, which returns an unique pointer to the new game state.
+ * action, which returns a {{cookiecutter.__game_ptr}} to the new game state.
  */
 class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
  public:
 
   /**
-   * @brief Construct a pointer to a new {{cookiecutter.game_name}} Game object.
+   * @brief Construct a new {{cookiecutter.game_name}} game state.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    * 
    * TODO(TASK-004): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
@@ -76,6 +76,9 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * the current player to the constructor? Do we need more than one
    * constructor? Delete or add constructor based on your design.
 {%- endif %}
+   *
+   * @return {{cookiecutter.__game_result}} Result containing the constructed
+   * game state.
    */
   [[nodiscard]] static {{cookiecutter.__game_result}} Create(
       {{cookiecutter.__player}} starting_player = false) noexcept;
@@ -91,31 +94,31 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * The returned pointer cannot be nullptr, and it points to a new game state
    * that is identical to the current one.
    *
-   * @return std::unique_ptr<const {{cookiecutter.__game_interface}}> Unique pointer to the new
-   * copy of the game state.
+   * @return {{cookiecutter.__game_ptr}} Unique pointer to the new copy of the
+   * game state.
    */
-  std::unique_ptr<const {{cookiecutter.__game_interface}}> Copy() const final;
+  [[nodiscard]] {{cookiecutter.__game_ptr}} Copy() const noexcept final;
 
   /**
    * @brief Get the current game board state.
    *
    * @return const {{cookiecutter.__board}}& Const reference to the current game board state.
    */
-  const {{cookiecutter.__board}}& GetBoard() const final;
+  [[nodiscard]] const {{cookiecutter.__board}}& GetBoard() const noexcept final;
 
   /**
    * @brief Get the current round number.
    *
    * @return uint32_t The current round number.
    */
-  uint32_t CurrentRound() const final;
+  [[nodiscard]] uint32_t CurrentRound() const noexcept final;
 
   /**
    * @brief Get the current player.
    *
    * @return {{cookiecutter.__player}} The current player.
    */
-  {{cookiecutter.__player}} CurrentPlayer() const final;
+  [[nodiscard]] {{cookiecutter.__player}} CurrentPlayer() const noexcept final;
 
   /**
    * @brief Get the player from last round.
@@ -123,7 +126,8 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @return std::optional<{{cookiecutter.__player}}> The player from last round, or
    * std::nullopt if the game has not started yet.
    */
-  std::optional<{{cookiecutter.__player}}> LastPlayer() const final;
+  [[nodiscard]] std::optional<{{cookiecutter.__player}}> LastPlayer()
+      const noexcept final;
 
   /**
    * @brief Get the last action taken by the last player.
@@ -131,7 +135,8 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @return std::optional<{{cookiecutter.__action}}> The last action taken by the last player,
    * or std::nullopt if the game has not started yet.
    */
-  std::optional<{{cookiecutter.__action}}> LastAction() const final;
+  [[nodiscard]] std::optional<{{cookiecutter.__action}}> LastAction()
+      const noexcept final;
 
   /**
    * @brief The canonical representation of the current board state from the
@@ -159,7 +164,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    *
    * @return {{cookiecutter.__board}} The canonical representation of the current board state.
    */
-  {{cookiecutter.__board}} CanonicalBoard() const final;
+  [[nodiscard]] {{cookiecutter.__board}} CanonicalBoard() const noexcept final;
 
   /**
    * @brief Check if the game is over.
@@ -170,7 +175,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @return true If the game is over.
    * @return false If the game is not over.
    */
-  bool IsOver() const final;
+  [[nodiscard]] bool IsOver() const noexcept final;
 
   /**
    * @brief Get the score of the given player in the current game state.
@@ -183,7 +188,8 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @param player The player for which to get the score.
    * @return float The score of the player.
    */
-  float GetScore(const {{cookiecutter.__player}}& player) const final;
+  [[nodiscard]] float GetScore(const {{cookiecutter.__player}}& player)
+      const noexcept final;
 
   // --------------------------------- Actions ---------------------------------
 
@@ -204,7 +210,8 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @return std::vector<{{cookiecutter.__action}}> Vector of all valid actions for the current
    * player.
    */
-  std::vector<{{cookiecutter.__action}}> ValidActions() const final;
+  [[nodiscard]] std::vector<{{cookiecutter.__action}}> ValidActions()
+      const noexcept final;
 
   /**
    * @brief Returns a new game state after the current player takes the given
@@ -225,11 +232,11 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    *
    * @param action The action to be taken by the current player.
    *
-   * @return std::unique_ptr<const {{cookiecutter.__game_interface}}> A pointer to the new game
-   * state after taking the action.
+   * @return {{cookiecutter.__game_ptr}} A pointer to the new game state after
+   * taking the action.
    */
-  std::unique_ptr<const {{cookiecutter.__game_interface}}> GameAfterAction(
-      const {{cookiecutter.__action}}& action) const final;
+  [[nodiscard]] {{cookiecutter.__game_ptr}} GameAfterAction(
+      const {{cookiecutter.__action}}& action) const noexcept final;
 
   // --------------------------- String Conversions ----------------------------
 
@@ -244,7 +251,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @return std::string A human-readable string representing the current game
    * state.
    */
-  std::string BoardReadableString() const final;
+  [[nodiscard]] std::string BoardReadableString() const noexcept final;
 
   /**
    * @brief Convert a human-readable string to an action.
@@ -256,8 +263,8 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @return std::expected<{{cookiecutter.__action}}, std::string> The action if the string is
    * valid, or an error message if the string is invalid.
    */
-  std::expected<{{cookiecutter.__action}}, std::string> ActionFromString(
-      std::string_view action_str) const final;
+  [[nodiscard]] std::expected<{{cookiecutter.__action}}, std::string>
+      ActionFromString(std::string_view action_str) const noexcept final;
 
   /**
    * @brief Convert an action to a human-readable string.
@@ -268,7 +275,8 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @param action The action to be converted to string.
    * @return std::string A human-readable string representing the action.
    */
-  std::string ActionToString(const {{cookiecutter.__action}}& action) const final;
+  [[nodiscard]] std::string ActionToString(
+      const {{cookiecutter.__action}}& action) const noexcept final;
 
  private:
   /**
@@ -307,4 +315,3 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
 }  // namespace az::game::{{cookiecutter.game_slug}}
 
 #endif  // ALPHA_ZERO_GAME_{{cookiecutter.__include_guard_prj}}_INCLUDE_{{cookiecutter.__include_guard_slug}}_GAME_H_
-

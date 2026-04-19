@@ -12,17 +12,32 @@ namespace az::game::{{cookiecutter.game_slug}} {
 
 namespace {
 
-// Using statements, constexpr, helper functions here.
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__action}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__board}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_cls}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_ptr}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_result}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
+
+// Constants and helper functions here.
 
 }  // namespace
 
 {% if cookiecutter.llm[0] | lower == 'y' -%}
 // TODO(TASK-004): change, add, or delete this constructor implementation if necessary.
 {%- endif %}
-{{cookiecutter.__game_cls}}::{{cookiecutter.__game_cls}}(const {{cookiecutter.__player}}& player)
+{{cookiecutter.__game_cls}}::{{cookiecutter.__game_cls}}(
+    const {{cookiecutter.__player}}& player) noexcept
     : cur_player_{player} {}
 
-std::unique_ptr<const {{cookiecutter.__game_interface}}> {{cookiecutter.__game_cls}}::Copy() const {
+{{cookiecutter.__game_result}} {{cookiecutter.__game_cls}}::Create(
+    {{cookiecutter.__player}} starting_player) noexcept {
+  return {{cookiecutter.__game_ptr}}(
+      new {{cookiecutter.__game_cls}}(starting_player));
+}
+
+{{cookiecutter.__game_ptr}} {{cookiecutter.__game_cls}}::Copy()
+    const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -31,19 +46,22 @@ std::unique_ptr<const {{cookiecutter.__game_interface}}> {{cookiecutter.__game_c
   return nullptr;
 }
 
-const {{cookiecutter.__board}}& {{cookiecutter.__game_cls}}::GetBoard() const {
+const {{cookiecutter.__board}}& {{cookiecutter.__game_cls}}::GetBoard()
+    const noexcept {
   return board_;
 }
 
-uint32_t {{cookiecutter.__game_cls}}::CurrentRound() const {
+uint32_t {{cookiecutter.__game_cls}}::CurrentRound() const noexcept {
   return round_;
 }
 
-{{cookiecutter.__player}} {{cookiecutter.__game_cls}}::CurrentPlayer() const {
+{{cookiecutter.__player}} {{cookiecutter.__game_cls}}::CurrentPlayer()
+    const noexcept {
   return cur_player_;
 }
 
-std::optional<{{cookiecutter.__player}}> {{cookiecutter.__game_cls}}::LastPlayer() const {
+std::optional<{{cookiecutter.__player}}>
+{{cookiecutter.__game_cls}}::LastPlayer() const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -52,11 +70,13 @@ std::optional<{{cookiecutter.__player}}> {{cookiecutter.__game_cls}}::LastPlayer
   return {};
 }
 
-std::optional<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::LastAction() const {
+std::optional<{{cookiecutter.__action}}>
+{{cookiecutter.__game_cls}}::LastAction() const noexcept {
   return last_action_;
 }
 
-{{cookiecutter.__board}} {{cookiecutter.__game_cls}}::CanonicalBoard() const {
+{{cookiecutter.__board}} {{cookiecutter.__game_cls}}::CanonicalBoard()
+    const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -65,7 +85,7 @@ std::optional<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::LastAction
   return board_;
 }
 
-bool {{cookiecutter.__game_cls}}::IsOver() const {
+bool {{cookiecutter.__game_cls}}::IsOver() const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -74,7 +94,8 @@ bool {{cookiecutter.__game_cls}}::IsOver() const {
   return false;
 }
 
-float {{cookiecutter.__game_cls}}::GetScore(const {{cookiecutter.__player}}& player) const {
+float {{cookiecutter.__game_cls}}::GetScore(
+    const {{cookiecutter.__player}}& player) const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -83,7 +104,8 @@ float {{cookiecutter.__game_cls}}::GetScore(const {{cookiecutter.__player}}& pla
   return 0.0f;
 }
 
-std::vector<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::ValidActions() const {
+std::vector<{{cookiecutter.__action}}>
+{{cookiecutter.__game_cls}}::ValidActions() const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -92,8 +114,8 @@ std::vector<{{cookiecutter.__action}}> {{cookiecutter.__game_cls}}::ValidActions
   return {};
 }
 
-std::unique_ptr<const {{cookiecutter.__game_interface}}> {{cookiecutter.__game_cls}}::GameAfterAction(
-      const {{cookiecutter.__action}}& action) const {
+{{cookiecutter.__game_ptr}} {{cookiecutter.__game_cls}}::GameAfterAction(
+    const {{cookiecutter.__action}}& action) const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -102,7 +124,8 @@ std::unique_ptr<const {{cookiecutter.__game_interface}}> {{cookiecutter.__game_c
   return nullptr;
 }
 
-std::string {{cookiecutter.__game_cls}}::BoardReadableString() const {
+std::string {{cookiecutter.__game_cls}}::BoardReadableString()
+    const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -111,8 +134,9 @@ std::string {{cookiecutter.__game_cls}}::BoardReadableString() const {
   return "\"BoardReadableString()\" is not implemented!";
 }
 
-std::expected<{{cookiecutter.__action}}, std::string> {{cookiecutter.__game_cls}}::ActionFromString(
-      std::string_view action_str) const {
+std::expected<{{cookiecutter.__action}}, std::string>
+{{cookiecutter.__game_cls}}::ActionFromString(std::string_view action_str)
+    const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -121,7 +145,8 @@ std::expected<{{cookiecutter.__action}}, std::string> {{cookiecutter.__game_cls}
   return std::unexpected("\"ActionFromString(...)\" is not implemented!");
 }
 
-std::string {{cookiecutter.__game_cls}}::ActionToString(const {{cookiecutter.__action}}& action) const {
+std::string {{cookiecutter.__game_cls}}::ActionToString(
+    const {{cookiecutter.__action}}& action) const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-100): implementation
 {% else -%}
@@ -131,4 +156,3 @@ std::string {{cookiecutter.__game_cls}}::ActionToString(const {{cookiecutter.__a
 }
 
 }  // namespace az::game::{{ cookiecutter.game_slug }}
-
