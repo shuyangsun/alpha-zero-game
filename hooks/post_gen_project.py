@@ -36,17 +36,32 @@ def remove_llm():
 
 def symlink_llm():
     root = Path.cwd()
-    for name in ("CLAUDE.md", "GEMINI.md"):
-        target = root / name
-        if target.exists():
-            target.unlink()
+    # (symlink path relative to root, target relative to the symlink's parent)
+    links = (
+        ("CLAUDE.md", "AGENTS.md"),
+        ("GEMINI.md", "AGENTS.md"),
+        (".claude/skills", "../.agents/skills"),
+    )
+    for link_rel, target_rel in links:
+        link = root / link_rel
+        link.parent.mkdir(parents=True, exist_ok=True)
+
+        if link.is_symlink() or link.is_file():
+            link.unlink()
+        elif link.is_dir():
+            shutil.rmtree(link)
+
+        source = link.parent / target_rel
         try:
-            target.symlink_to("AGENTS.md")
+            link.symlink_to(target_rel, target_is_directory=source.is_dir())
         except (OSError, NotImplementedError):
             # Windows without dev-mode/admin: fall back to copy + warn
-            shutil.copy(root / "AGENTS.md", target)
+            if source.is_dir():
+                shutil.copytree(source, link)
+            else:
+                shutil.copy(source, link)
             print(
-                f"Note: copied {name} (symlinks unavailable on this platform).",
+                f"Note: copied {link_rel} (symlinks unavailable on this platform).",
                 file=sys.stderr,
             )
 
