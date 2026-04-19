@@ -1,6 +1,14 @@
-add_executable(game_constructors_test game_constructors.cc)
-target_link_libraries(game_constructors_test PRIVATE GTest::gtest_main
-    game_{{cookiecutter.game_slug}})
-
 include(GoogleTest)
-gtest_discover_tests(game_constructors_test)
+
+function(add_game_unit_test target_name source_name)
+    add_executable(${target_name} ${source_name})
+    target_link_libraries(${target_name} PRIVATE GTest::gtest_main
+        game_{{cookiecutter.game_slug}})
+    gtest_discover_tests(${target_name})
+endfunction()
+
+add_game_unit_test(game_constructors_test game_constructors.cc)
+add_game_unit_test(game_basic_test game_basic.cc)
+add_game_unit_test(game_state_test game_state.cc)
+add_game_unit_test(game_string_conv_test game_string_conv.cc)
+add_game_unit_test(game_action_test game_action.cc)
