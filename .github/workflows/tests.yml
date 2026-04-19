@@ -56,7 +56,7 @@ jobs:
         uses: actions/upload-artifact@v7.0.1
         with:
           name: project-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
           include-hidden-files: true
           retention-days: 1
 
@@ -83,7 +83,7 @@ jobs:
         uses: actions/download-artifact@v8.0.1
         with:
           name: project-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
 
       - name: Install formatters (Linux)
         if: runner.os == 'Linux'
@@ -99,12 +99,12 @@ jobs:
           pipx install cmakelang
 
       - name: Run clang-format
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         run: |
           find . -name '*.h' -o -name '*.cc' | xargs clang-format --style=file --dry-run --Werror
 
       - name: Run cmake-format
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         run: |
           find . -name 'CMakeLists.txt' -o -name '*.cmake' | xargs cmake-format --check
 
@@ -112,7 +112,7 @@ jobs:
         uses: actions/upload-artifact@v7.0.1
         with:
           name: project-formatted-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
           include-hidden-files: true
           retention-days: 1
 
@@ -140,21 +140,21 @@ jobs:
         uses: actions/download-artifact@v8.0.1
         with:
           name: project-formatted-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
 
       - name: Configure CMake
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         run: cmake --preset ${{ matrix.preset }}
 
       - name: Build the C++ project
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         run: cmake --build --preset ${{ matrix.preset }}
 
       - name: Upload built project
         uses: actions/upload-artifact@v7.0.1
         with:
           name: project-built-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
           include-hidden-files: true
           retention-days: 1
   run:
@@ -181,10 +181,10 @@ jobs:
         uses: actions/download-artifact@v8.0.1
         with:
           name: project-built-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
 
       - name: Run main
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         run: |
           chmod +x build/${{ matrix.preset }}/ttt
           ./build/${{ matrix.preset }}/ttt
@@ -213,21 +213,21 @@ jobs:
         uses: actions/download-artifact@v8.0.1
         with:
           name: project-formatted-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
 
       - name: Configure CMake (tests)
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         run: cmake --preset ${{ matrix.preset }}-test
 
       - name: Build tests
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         run: cmake --build --preset ${{ matrix.preset }}-test
 
       - name: Upload built test project
         uses: actions/upload-artifact@v7.0.1
         with:
           name: project-built-test-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
           include-hidden-files: true
           retention-days: 1
 
@@ -255,14 +255,14 @@ jobs:
         uses: actions/download-artifact@v8.0.1
         with:
           name: project-built-test-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
 
       - name: Set test binary permissions
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         run: chmod +x build/${{ matrix.preset }}/tests/unit/*_test
 
       - name: Run unit tests
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         run: ctest --preset ${{ matrix.preset }}-test
 
   test-scripts:
@@ -287,10 +287,10 @@ jobs:
         uses: actions/download-artifact@v8.0.1
         with:
           name: project-built-test-${{ matrix.name }}-${{ matrix.llm }}-${{ matrix.preset }}-${{ matrix.os }}
-          path: alpha-zero-game-tic-tac-toe
+          path: az-game-tic-tac-toe
 
       - name: Run tests
-        working-directory: alpha-zero-game-tic-tac-toe
+        working-directory: az-game-tic-tac-toe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

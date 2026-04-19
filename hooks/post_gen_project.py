@@ -130,7 +130,7 @@ except subprocess.CalledProcessError as e:
 print()
 print("Project generated successfully!")
 print()
-print("cd ./alpha-zero-game-{{ cookiecutter.game_name_kebab }}")
+print("cd ./az-game-{{ cookiecutter.game_name_kebab }}")
 print("cmake --preset debug && cmake --build --preset debug")
 print("./build/debug/{{ cookiecutter.game_slug }} --help")
 print()

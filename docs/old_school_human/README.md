@@ -26,7 +26,7 @@ uvx cookiecutter gh:shuyangsun/alpha-zero-game \
 ## Build & Run
 
 ```bash
-cd alpha-zero-game-<game-name-kebab-case>
+cd az-game-<game-name-kebab-case>
 
 # Debug
 cmake --preset debug && cmake --build --preset debug

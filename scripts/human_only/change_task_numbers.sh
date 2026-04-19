@@ -32,7 +32,7 @@ fi
 # Project root is the cookiecutter template directory
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 project_root="$(cd "$script_dir/../.." && pwd)"
-template_dir="$project_root/alpha-zero-game-{{cookiecutter.game_name_kebab}}"
+template_dir="$project_root/az-game-{{cookiecutter.game_name_kebab}}"
 
 exclude_file="memory/tasks.md"
 
