@@ -42,6 +42,21 @@ using {{cookiecutter.__player}} = bool;
 using {{cookiecutter.__game_interface}} = ::az::game::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}}, {{cookiecutter.__player}}>;
 
 /**
+ * @brief Error type for {{cookiecutter.__game_cls}} failure.
+ */
+enum class {{cookiecutter.__game_error}} : uint8_t {
+  kUnknownError = 0,
+  kNotImplemented,
+};
+
+using {{cookiecutter.__game_ptr}} = std::unique_ptr<const {{cookiecutter.__game_interface}}>;
+
+/**
+ * @brief Result type for {{cookiecutter.__game_cls}} construction.
+ */
+using {{cookiecutter.__game_result}} = std::expected<{{cookiecutter.__game_ptr}}, {{cookiecutter.__game_error}}>;
+
+/**
  * @brief An implementation of the {{cookiecutter.game_name}} game.
  *
  * All methods on this class are const, the game state is immutable. The only
@@ -52,7 +67,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
  public:
 
   /**
-   * @brief Construct a new {{cookiecutter.game_name}} Game object.
+   * @brief Construct a pointer to a new {{cookiecutter.game_name}} Game object.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    * 
    * TODO(TASK-004): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
@@ -62,11 +77,11 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * constructor? Delete or add constructor based on your design.
 {%- endif %}
    */
-  {{cookiecutter.__game_cls}}(const {{cookiecutter.__player}}& player);
+  [[nodiscard]] static {{cookiecutter.__game_result}} Create(
+      {{cookiecutter.__player}} starting_player = false) noexcept;
 
-  {{cookiecutter.__game_cls}}(const {{cookiecutter.__game_cls}}& other) = default;
-
-  {{cookiecutter.__game_cls}}({{cookiecutter.__game_cls}}&& other) = default;
+  {{cookiecutter.__game_cls}}(const {{cookiecutter.__game_cls}}& other) noexcept = default;
+  {{cookiecutter.__game_cls}}({{cookiecutter.__game_cls}}&& other) noexcept = default;
 
   ~{{cookiecutter.__game_cls}}() override = default;
 
@@ -256,6 +271,22 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
   std::string ActionToString(const {{cookiecutter.__action}}& action) const final;
 
  private:
+  /**
+   * @brief Construct a new {{cookiecutter.game_name}} Game object.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   * 
+   * TODO(TASK-004): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
+   *
+   * Does a default constructor make sense? Should we always explicitly pass in
+   * the current player to the constructor? Do we need more than one
+   * constructor? Delete or add constructor based on your design.
+{%- endif %}
+   *
+   * All class constructors must be private, use public static constructors that returns
+   * {{cookiecutter.__game_result}}.
+   */
+  {{cookiecutter.__game_cls}}(const {{cookiecutter.__player}}& player) noexcept;
+
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-004): design private members to keep track of the game state.
   //

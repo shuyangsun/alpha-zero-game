@@ -12,6 +12,9 @@
   "__player": "{{cookiecutter.game_slug | title}}P",
   "__game_interface": "{{cookiecutter.game_slug | title}}GameInterface",
   "__game_cls": "{{cookiecutter.game_slug | title}}Game",
+  "__game_ptr": "{{cookiecutter.__game_cls}}Ptr",
+  "__game_error": "{{cookiecutter.game_slug | title}}Error",
+  "__game_result": "{{cookiecutter.__game_cls}}Result",
   "__include_guard_prj": "{{cookiecutter.game_name | upper | replace(' ', '_') | replace('-', '_') }}",
   "__include_guard_slug": "{{cookiecutter.game_slug | upper }}",
   "__prompts__": {

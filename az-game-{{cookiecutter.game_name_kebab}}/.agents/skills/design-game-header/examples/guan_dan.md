@@ -115,16 +115,37 @@ using GdGameInterface = ::az::game::api::IGame<GdB, GdA, GdP>;
 
 namespace az::game::gd {
 
+enum class GdError : uint8_t {
+  kUnknownError = 0,
+  kNotImplemented,
+  kInvalidConstructorArguments,
+};
+
+using GdGamePtr = std::unique_ptr<const GdGameInterface>;
+using GdGameResult = std::expected<GdGamePtr, TttError>;
+
 class GdGame : public GdGameInterface {
  public:
-  GdGame(
-    Hands&& hands,
+
+  [[nodiscard]] static GdGameResult Create(
+    // If nullopt, randomly generate a last game finish order.
+    // Note that nullopt is different from 0, which represents a fresh game, and
+    // player 0 should start the trick.
     std::optional<uint8_t> last_game_finish_order_packed = std::nullopt,
-  );
+    // If nullopt, random current levels will be generated for both teams.
+    // Note that nullopt is different from 0, which represetns a fresh game.
+    std::optional<uint8_t> current_team_levels = std::nullopt,
+    // If nullopt, a random hand will be delt.
+    std::optional<Hands>&& hands = std::nullopt) noexcept;
 
   // other code...
 
  private:
+  GdGame(
+    std::optional<uint8_t> last_game_finish_order_packed,
+    std::optional<uint8_t> current_team_levels,
+    std::optional<Hands>&& hands) noexcept;
+
   GdB board_;
   GdP cur_player_;
   uint32_t round_;
