@@ -296,5 +296,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          chmod +x tests/*.sh scripts/*.sh
+          chmod +x tests/*.sh .agents/skills/*/scripts/*.sh
           ./tests/test_fetch_migration_guides.sh

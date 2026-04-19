@@ -2,8 +2,10 @@
 # fetch_migration_guides.sh
 # Run from project root dir
 
-ALPHA_ZERO_API_CURRENT_VER=$(./scripts/parse_current_api_ver.sh)
-ALPHA_ZERO_API_LATEST_VER=$(./scripts/fetch_latest_api_ver.sh)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+ALPHA_ZERO_API_CURRENT_VER=$("$SCRIPT_DIR/parse_current_api_ver.sh")
+ALPHA_ZERO_API_LATEST_VER=$("$SCRIPT_DIR/fetch_latest_api_ver.sh")
 
 if [ "${ALPHA_ZERO_API_CURRENT_VER}" = "${ALPHA_ZERO_API_LATEST_VER}" ]; then
     echo "Already at latest version"
