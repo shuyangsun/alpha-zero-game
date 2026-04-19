@@ -23,16 +23,15 @@ def remove_ci():
 
 def remove_llm():
     os.remove("AGENTS.md")
-
-    shutil.rmtree("prompts/")
     shutil.rmtree("memory/")
-
+    shutil.rmtree("prompts/")
+    shutil.rmtree(".agents/")
     shutil.rmtree(".claude/")
+    shutil.rmtree(".codex/")
     shutil.rmtree(".gemini/")
+    shutil.rmtree(".github/instructions")
 
     os.remove(".github/copilot-instructions.md")
-    shutil.rmtree(".github/instructions")
-    shutil.rmtree(".github/prompts")
 
 
 def symlink_llm():
