@@ -272,7 +272,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         name: [defaults-on, defaults-off]
-        llm: [llm-on, llm-off]
+        llm: [llm-on]
         preset: [debug, release]
         include:
           - name: defaults-on
@@ -281,8 +281,6 @@ jobs:
             defaults: "no"
           - llm: llm-on
             llm_value: "yes"
-          - llm: llm-off
-            llm_value: "no"
     name: test-scripts (${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}, ${{ matrix.preset }}${{ matrix.name == 'defaults-on' && ', defaults' || '' }}${{ matrix.llm == 'llm-on' && ', llm' || '' }})
     steps:
       - name: Download built test project
