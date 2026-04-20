@@ -24,24 +24,10 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(AlphaZeroAPI)
 
-add_library(game_{{cookiecutter.game_slug}} STATIC ${CMAKE_CURRENT_SOURCE_DIR}/src/{{ cookiecutter.game_slug }}/game.cc)
-target_link_libraries(game_{{cookiecutter.game_slug}} PUBLIC AlphaZeroAPI::api {% if cookiecutter.defaults[0] | lower == 'y' -%}AlphaZeroAPI::defaults{% endif -%})
-
-target_include_directories(game_{{cookiecutter.game_slug}} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
-add_executable({{ cookiecutter.game_slug }} src/main.cc)
-target_include_directories({{ cookiecutter.game_slug }} PRIVATE ${PROJECT_SOURCE_DIR})
-target_link_libraries({{ cookiecutter.game_slug }} PRIVATE AlphaZeroAPI::api game_{{cookiecutter.game_slug}})
-
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    if(APPLE)
-        target_link_options({{ cookiecutter.game_slug }} PRIVATE -Wl,-dead_strip -Wl,-x)
-    elseif(UNIX)
-        target_link_options({{ cookiecutter.game_slug }} PRIVATE -Wl,--gc-sections -Wl,--discard-all)
-    endif()
-endif()
-
 option(BUILD_TESTING "Build unit tests" OFF)
+
+add_subdirectory(src)
+
 if(BUILD_TESTING)
     enable_testing()
     add_subdirectory(tests)

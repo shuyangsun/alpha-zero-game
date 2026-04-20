@@ -1,0 +1,9 @@
+target_sources(
+    game_{{cookiecutter.game_slug}}
+    PRIVATE
+        constructors.cc
+        basic.cc
+        state.cc
+        action.cc
+        string_conv.cc
+)
