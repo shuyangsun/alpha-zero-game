@@ -33,7 +33,23 @@ review the task and mark it as complete. Before marking a task as complete, you
 must use the [find_task.sh](./scripts/find_task.sh) script to ensure all TODOs
 were addressed.
 
-Unless the user explicitly assigned you multiple tasks, do NOT continue to the
-next task after completing one. Stop, tell the user the task was completed, and
-ask them to start a new conversation to work on the next task to reduce context
-window pollution.
+## Continue or stop after completing a task?
+
+Check if the `/compact` skill is available. If it is and it is the start of the
+a new session, ask the user if they would like to automatically compact the
+conversation after marking each task as complete, then automatically continue to
+the next task. If the user agrees, use the `/compact` skill after each task, and
+then continue. You should use compaction in this way:
+
+```text
+/compact summarize high-level progress, keep very brief descriptions of key
+decisions and reasoning, remove all other details.
+```
+
+If the user did not want to automatically continue or if the `/compact` skill is
+not available, stop after each task completion and prompt the user to start a
+new conversation to work on the next task to reduce context window pollution.
+
+One exception to above rule is if the user explicitly assigned you multiple
+tasks. In that case, you can continue to work on the next task with or without
+compacting the conversation.
