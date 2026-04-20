@@ -19,6 +19,9 @@ review the game rules document and identify any missing or inconsistent items.
 If there are any, show the human a numbered list of all of them and ask them to
 confirm or select which ones to update.
 
+Do NOT remove the `TODO(TASK-REVIEW-GAME-FR-COV): ...` line, keep it at the top
+of the file, it is needed for other tasks.
+
 ## Examples
 
 - [guan_dan.md](./examples/guan_dan.md), from [this rule doc](../writing-game-rule-doc/examples/guan_dan.md).

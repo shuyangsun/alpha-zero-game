@@ -21,7 +21,7 @@ process. Instead, each checklist item should have a unique `FR-` identifier, add
 this identifier to the test name in CamelCase format. For example, `FR-001`
 would be `TEST(GameConstructors, FR_001_NoArgument)`, or `FR-CONSTRUCTOR-NO-ARG`
 would be `TEST(GameConstructors, FR_CONSTRUCTOR_NO_ARG)`. You can use
-`[find_fr.sh](./scripts/find_fr.sh) path/to/test/dir FR-...` to find test files
+[find_fr.sh](./scripts/find_fr.sh) `tests/unit/ FR-...` to find test files
 with specific `FR` identifiers.
 
 There may be existing placeholder tests created from the Cookiecutter template,
