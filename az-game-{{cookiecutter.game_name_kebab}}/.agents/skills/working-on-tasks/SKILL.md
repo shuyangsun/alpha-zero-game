@@ -1,6 +1,6 @@
 ---
-name: az-agent
-description: Identify the next tasks and implement the {{cookiecutter.game_name}} game.
+name: working-on-tasks
+description: Identify remaining tasks and implement the {{cookiecutter.game_name}} game.
 ---
 
 # AlphaZero {{cookiecutter.game_name}} Implementation Agent
