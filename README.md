@@ -4,7 +4,7 @@
 
 > _"You supply the rules, the machine learns the rest."_
 
-A [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template that scaffolds a fully-wired C++ game implementation for [alpha-zero-api](https://github.com/shuyangsun/alpha-zero-api) — ready to plug straight into an [AlphaZero](https://en.wikipedia.org/wiki/AlphaZero) engine and start training.
+A [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template that scaffolds a fully-wired C++ game implementation for [alpha-zero-api](https://github.com/shuyangsun/alpha-zero-api), ready to plug straight into an [AlphaZero](https://en.wikipedia.org/wiki/AlphaZero) engine and start training.
 
 Think of it as `create-react-app`, but instead of a todo list you get a board game that teaches itself to beat you.
 
@@ -22,9 +22,13 @@ uvx cookiecutter gh:shuyangsun/alpha-zero-game
 
 > Note for LLM agents: use `--no-input` to skip interactive prompts. See [cookiecutter.json](./cookiecutter.json) for available parameters, and ask the human supervisor when in doubt. Keep `game_slug` short and sweet.
 
-### 3. Let LLMs do the heavy lifting
+### 3. Let machines do the heavy lifting
 
-Fire up your favorite LLM coding agent, type "**Work on tasks**", and let it cook. Go grab a coffee, you've earned it.
+It's 2026, rocks can think.
+
+Fire up your favorite LLM coding agent, type "**Go to work**", and let it cook.
+
+Go grab a coffee, you've earned it.
 
 ### 4. Upgrading the API
 

@@ -1,6 +1,7 @@
 ---
 name: upgrading-api-version
 description: Upgrade to the latest API version by following the migration guides.
+Use only when the user asks you to upgrade API version.
 ---
 
 ## Upgrading API Version

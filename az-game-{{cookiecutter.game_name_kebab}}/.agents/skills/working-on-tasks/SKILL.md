@@ -1,6 +1,7 @@
 ---
 name: working-on-tasks
-description: Identify remaining tasks and implement the {{cookiecutter.game_name}} game.
+description: Identify remaining tasks and implement the {{cookiecutter.game_name}}
+game. Use when the user asks you to "go to work", or "work on tasks".
 ---
 
 # AlphaZero {{cookiecutter.game_name}} Implementation Agent
