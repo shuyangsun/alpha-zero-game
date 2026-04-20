@@ -4,4 +4,5 @@ Non-negotiable rules.
 
 ## Code Style
 
-All C++ code must follow [prompts/cpp-style-guide.md](../prompts/cpp-style-guide.md).
+All C++ and cmake code must follow guide in
+[reviewing-code/SKILL.md](../.agents/skills/reviewing-code/SKILL.md).

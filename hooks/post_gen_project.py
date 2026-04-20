@@ -24,7 +24,6 @@ def remove_ci():
 def remove_llm():
     os.remove("AGENTS.md")
     shutil.rmtree("memory/")
-    shutil.rmtree("prompts/")
     shutil.rmtree(".agents/")
     shutil.rmtree(".claude/")
     shutil.rmtree(".codex/")
