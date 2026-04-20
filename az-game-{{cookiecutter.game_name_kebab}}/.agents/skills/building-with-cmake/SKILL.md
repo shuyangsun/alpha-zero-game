@@ -1,6 +1,6 @@
 ---
 name: building-with-cmake
-description: Build C++ binary and tests with CMake.
+description: Build the C++ binary and tests with CMake.
 ---
 
 # Building with CMake

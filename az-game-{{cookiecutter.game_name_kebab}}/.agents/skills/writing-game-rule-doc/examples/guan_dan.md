@@ -16,7 +16,7 @@ This guide describes the standard four-player partnership version of Guan Dan
 - Each team keeps its own level from hand to hand, and the two teams may be on
   different levels.
 - At the start of the game, both teams begin at level `2`.
-- Teams level up through `3`, `4`, and so on up to ace.
+- Teams level up through `3`, `4`, and so on up to ace (`A`).
 - You cannot skip `A`. A team must play an `A`-level hand before it can win the
   match.
 - The match-winning result is passing `A` (`过A`). Older official Jiangsu
@@ -130,7 +130,7 @@ plus both wild hearts. This is very rare, but a legal move.
 - A tribute card is the giver's highest eligible single under the current
   single-card rank order, excluding the heart level card, even if this breaks
   another hand.
-- If several exact cards tie for highest, any of them may be given.
+- If several cards tie for highest, any of them may be given.
 - Check anti-tribute before any cards move.
 - In single tribute, anti-tribute happens if the tribute giver holds both big
   jokers.
@@ -139,10 +139,10 @@ plus both wild hearts. This is very rare, but a legal move.
 - If anti-tribute happens, no cards are exchanged and the previous hand's
   first-place player leads.
 - Otherwise, in double tribute the higher tribute goes to first place and the
-  lower to second place. If they tie, the giver reached first in clockwise
-  order from first place gives to first place.
+  lower goes to second place. If they tie, the giver encountered first in
+  clockwise order from first place gives to first place.
 - Each receiver returns one card to that same giver.
 - The returned card must have printed rank `10` or lower. If none exists,
-  return the lowest card in hand.
+  return the lowest card in the hand.
 - After single tribute, the tribute giver leads. After double tribute, the
   giver whose tribute went to first place leads.

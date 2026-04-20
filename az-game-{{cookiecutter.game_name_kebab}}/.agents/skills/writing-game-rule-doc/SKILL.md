@@ -1,11 +1,11 @@
 ---
 name: writing-game-rule-doc
-description: Write the game rules doc to inform game design.
+description: Write the game rules document to inform game design.
 ---
 
 # Writing Game Rule Document
 
-TODO(shuyangsun): write rule writing skill.
+TODO(shuyangsun): write the rule-writing skill.
 
 ## Specific tips for different types of games
 

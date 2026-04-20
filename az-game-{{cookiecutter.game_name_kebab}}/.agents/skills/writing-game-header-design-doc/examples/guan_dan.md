@@ -24,7 +24,7 @@ using GdP = uint8_t;
 ```cpp
 namespace az::game::gd {
 
-// 4-bits are enough, no need for 8
+// 4 bits are enough; no need for 8.
 enum class ActionType : uint8_t {
   kPass = 0,
   kSingle,
@@ -41,7 +41,7 @@ enum class ActionType : uint8_t {
   kReturnTribute,
 };
 
-// 4-bits are enough, no need for 8
+// 4 bits are enough; no need for 8.
 enum class KeyRank : uint8_t {
   kUnknown = 0,
   kAce,
@@ -61,14 +61,14 @@ enum class KeyRank : uint8_t {
   kBigJoker,
 };
 
-// First 4-bits are the underlying value of action type, the last 4-bits are the
-// underlying value of key rank.
+// The first 4 bits are the underlying value of the action type; the last 4 bits
+// are the underlying value of the key rank.
 using PackedTrick = uint8_t;
 
 // Guan Dan action type.
 //
-// The first 8 bits are PackedTrick, each of the remaining 108 bits
-// represents the presence of a card.
+// The first 8 bits are PackedTrick; each of the remaining 108 bits represents
+// the presence of a card.
 // Rank-major representation based on numerical value (A, 2, 3, ..., Big Joker).
 // Suits are ordered in clubs, diamonds, hearts, spades.
 // The last 15 * 8 - (8 + 108) = 4 bits are 0-padded.
@@ -93,8 +93,8 @@ enum class GdError : uint8_t {
 namespace az::game::gd {
 
 // 3 * (54 * 2) = 324 bits total. 3 bits for each card, representing 5 possible
-// states - no player holding the card (0b100), or player 0 through 3 holding
-// the card (0b000 through 0b011).
+// states: no player holds the card (0b100), or player 0 through 3 holds the
+// card (0b000 through 0b011).
 // Rank-major representation based on numerical value (A, 2, 3, ..., Big Joker).
 // Suits are ordered in clubs, diamonds, hearts, spades.
 // The first 54 * 3 = 162 bits are the first deck, the second 162 bits are the
@@ -116,11 +116,11 @@ struct GdBoard {
   // must play A again.
   uint8_t team_levels = 0;
 
-  // The current active trick
+  // The current active trick.
   PackedTrick active_trick;
 
   // First 4 bits = player who set active_trick
-  // Last 4 bits = number of players finished
+  // Last 4 bits = number of players who have finished
   uint8_t trick_player_num_finished_packed;
 
   // Four 2-bit finish slots packed into one byte.
@@ -151,14 +151,14 @@ class GdGame : public GdGameInterface {
  public:
 
   [[nodiscard]] static GdResult<GdGamePtr> Create(
-    // If nullopt, randomly generate a last game finish order.
+    // If nullopt, randomly generate the last game's finish order.
     // Note that nullopt is different from 0, which represents a fresh game, and
     // player 0 should start the trick.
     std::optional<uint8_t> last_game_finish_order_packed = std::nullopt,
     // If nullopt, random current levels will be generated for both teams.
-    // Note that nullopt is different from 0, which represetns a fresh game.
+    // Note that nullopt is different from 0, which represents a fresh game.
     std::optional<uint8_t> current_team_levels = std::nullopt,
-    // If nullopt, a random hand will be delt.
+    // If nullopt, a random hand will be dealt.
     std::optional<Hands>&& hands = std::nullopt) noexcept;
 
   // other code...
