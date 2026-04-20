@@ -8,12 +8,13 @@ namespace {
 
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__board}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_cls}};
-using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_result}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_ptr}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__result}};
 
 // TODO(TASK-006): delete this test if the default player constructor was deleted.
 TEST(GameConstructors, DefaultConstructor) {
-  {{cookiecutter.__game_result}} maybe_game =
+  {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}> maybe_game =
       {{cookiecutter.__game_cls}}::Create();
   ASSERT_TRUE(maybe_game.has_value());
 

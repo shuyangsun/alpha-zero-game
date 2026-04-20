@@ -39,7 +39,6 @@ using {{cookiecutter.__board}} = uint64_t;
 using {{cookiecutter.__action}} = int;
 using {{cookiecutter.__player}} = bool;
 {%- endif %}
-using {{cookiecutter.__game_interface}} = ::az::game::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}}, {{cookiecutter.__player}}>;
 
 /**
  * @brief Error type for {{cookiecutter.__game_cls}} failure.
@@ -49,12 +48,18 @@ enum class {{cookiecutter.__game_error}} : uint8_t {
   kNotImplemented,
 };
 
-using {{cookiecutter.__game_ptr}} = std::unique_ptr<const {{cookiecutter.__game_interface}}>;
+template <typename T>
+using {{cookiecutter.__result}} =
+    std::expected<T, {{cookiecutter.__game_error}}>;
 
-/**
- * @brief Result type for {{cookiecutter.__game_cls}} construction.
- */
-using {{cookiecutter.__game_result}} = std::expected<{{cookiecutter.__game_ptr}}, {{cookiecutter.__game_error}}>;
+using {{cookiecutter.__status}} = {{cookiecutter.__result}}<void>;
+
+using {{cookiecutter.__game_interface}} =
+    ::az::game::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}},
+                           {{cookiecutter.__player}},
+                           {{cookiecutter.__game_error}}>;
+
+using {{cookiecutter.__game_ptr}} = std::unique_ptr<const {{cookiecutter.__game_interface}}>;
 
 /**
  * @brief An implementation of the {{cookiecutter.game_name}} game.
@@ -77,10 +82,11 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * constructor? Delete or add constructor based on your design.
 {%- endif %}
    *
-   * @return {{cookiecutter.__game_result}} Result containing the constructed
-   * game state.
+   * @return {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}> Result
+   * containing the constructed game state.
    */
-  [[nodiscard]] static {{cookiecutter.__game_result}} Create(
+  [[nodiscard]] static {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}>
+  Create(
       {{cookiecutter.__player}} starting_player = false) noexcept;
 
   {{cookiecutter.__game_cls}}(const {{cookiecutter.__game_cls}}& other) noexcept = default;
@@ -260,10 +266,10 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * terminal.
    *
    * @param action_str The string representing the action.
-   * @return std::expected<{{cookiecutter.__action}}, std::string> The action if the string is
-   * valid, or an error message if the string is invalid.
+   * @return {{cookiecutter.__result}}<{{cookiecutter.__action}}> The action if
+   * the string is valid, or an error code if the string is invalid.
    */
-  [[nodiscard]] std::expected<{{cookiecutter.__action}}, std::string>
+  [[nodiscard]] {{cookiecutter.__result}}<{{cookiecutter.__action}}>
       ActionFromString(std::string_view action_str) const noexcept final;
 
   /**
@@ -290,8 +296,8 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * constructor? Delete or add constructor based on your design.
 {%- endif %}
    *
-   * All class constructors must be private, use public static constructors that returns
-   * {{cookiecutter.__game_result}}.
+   * All class constructors must be private, use public static constructors
+   * that return {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}>.
    */
   {{cookiecutter.__game_cls}}(const {{cookiecutter.__player}}& player) noexcept;
 

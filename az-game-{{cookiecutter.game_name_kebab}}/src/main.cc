@@ -10,14 +10,15 @@ namespace {
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_cls}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_error}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_ptr}};
-using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_result}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
+using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__result}};
 
 } // namespace
 
 int main() {
   std::cout << "Hello, {{ cookiecutter.game_name }}!" << std::endl;
-  {{cookiecutter.__game_result}} maybe_game = {{cookiecutter.__game_cls}}::Create();
+  {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}> maybe_game =
+      {{cookiecutter.__game_cls}}::Create();
   if (!maybe_game.has_value()) {
     std::cerr << "Error creating game: "
               << static_cast<std::underlying_type_t<{{cookiecutter.__game_error}}>>(
@@ -30,4 +31,3 @@ int main() {
   std::cout << game->BoardReadableString() << std::endl;
   return 0;
 }
-

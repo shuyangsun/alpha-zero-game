@@ -12,7 +12,7 @@ std::string {{cookiecutter.__game_cls}}::BoardReadableString()
   return "\"BoardReadableString()\" is not implemented!";
 }
 
-std::expected<{{cookiecutter.__action}}, std::string>
+{{cookiecutter.__result}}<{{cookiecutter.__action}}>
 {{cookiecutter.__game_cls}}::ActionFromString(std::string_view action_str)
     const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
@@ -20,7 +20,7 @@ std::expected<{{cookiecutter.__action}}, std::string>
 {% else -%}
   // TODO: implementation
 {%- endif %}
-  return std::unexpected("\"ActionFromString(...)\" is not implemented!");
+  return std::unexpected({{cookiecutter.__game_error}}::kNotImplemented);
 }
 
 std::string {{cookiecutter.__game_cls}}::ActionToString(

@@ -9,7 +9,8 @@ namespace az::game::{{cookiecutter.game_slug}} {
     const {{cookiecutter.__player}}& player) noexcept
     : cur_player_{player} {}
 
-{{cookiecutter.__game_result}} {{cookiecutter.__game_cls}}::Create(
+{{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}>
+{{cookiecutter.__game_cls}}::Create(
     {{cookiecutter.__player}} starting_player) noexcept {
   return {{cookiecutter.__game_ptr}}(
       new {{cookiecutter.__game_cls}}(starting_player));
