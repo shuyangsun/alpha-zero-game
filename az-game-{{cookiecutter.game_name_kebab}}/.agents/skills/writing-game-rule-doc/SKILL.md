@@ -5,4 +5,8 @@ description: Write the game rules doc to inform game design.
 
 # Writing Game Rule Document
 
-There are examples in the [examples](./examples/) folder.
+TODO(shuyangsun): write rule writing skill.
+
+## Specific tips for different types of games
+
+**Card games**: see [card_games.md](./card_games.md).
