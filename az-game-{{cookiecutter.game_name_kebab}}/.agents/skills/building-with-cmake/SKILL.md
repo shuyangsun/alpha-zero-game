@@ -1,9 +1,9 @@
 ---
-name: build-instructions
+name: building-with-cmake
 description: Build C++ binary and tests with CMake.
 ---
 
-# Build Instructions
+# Building with CMake
 
 ```bash
 cmake --preset debug && cmake --build --preset debug

@@ -8,7 +8,7 @@ cd "$PROJECT_ROOT"
 
 CMAKE_FILE="CMakeLists.txt"
 MEM_FILE="memory/migrations.md"
-SKILL_SCRIPTS=".agents/skills/az-upgrade-api/scripts"
+SKILL_SCRIPTS=".agents/skills/upgrading-api-version/scripts"
 
 # Save original version so we can restore it.
 ORIGINAL_VER=$("./$SKILL_SCRIPTS/parse_current_api_ver.sh")

@@ -1,9 +1,9 @@
 ---
-name: update-readme
+name: updating-readme
 description: Update high-level project description in README.md.
 ---
 
-# Update README.md
+# Updating README.md
 
 Check [memory/tasks.md](../../../memory/tasks.md) to see if TASK-001 has been
 completed. If not, follow instruction below; if it has been completed, ask the
