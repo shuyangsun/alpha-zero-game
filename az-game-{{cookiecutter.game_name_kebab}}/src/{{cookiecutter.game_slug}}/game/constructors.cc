@@ -3,11 +3,18 @@
 namespace az::game::{{cookiecutter.game_slug}} {
 
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-// TODO(TASK-004): change, add, or delete this constructor implementation if necessary.
+// TODO(TASK-UPDATE-GAME-HEADER): change, add, or delete this constructor implementation
+// to make the project build successfully, no need to implement constructors yet.
 {%- endif %}
 {{cookiecutter.__game_cls}}::{{cookiecutter.__game_cls}}(
     const {{cookiecutter.__player}}& player) noexcept
     : cur_player_{player} {}
+
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+  // TODO(TASK-GAME-CONSTRUCTOR-IMPL): add and implement all necessary constructors.
+{% else -%}
+  // TODO: implementation
+{%- endif %}
 
 {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}>
 {{cookiecutter.__game_cls}}::Create(
@@ -19,7 +26,7 @@ namespace az::game::{{cookiecutter.game_slug}} {
 {{cookiecutter.__game_ptr}} {{cookiecutter.__game_cls}}::Copy()
     const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-100): implementation
+  // TODO(TASK-GAME-CONSTRUCTOR-IMPL): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}

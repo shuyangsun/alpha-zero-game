@@ -12,7 +12,7 @@ using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_ptr}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__result}};
 
-// TODO(TASK-006): delete this test if the default player constructor was deleted.
+// TODO(TASK-GAME-CONSTRUCTOR-TEST): delete this test if the default player constructor was deleted.
 TEST(GameConstructors, DefaultConstructor) {
   {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}> maybe_game =
       {{cookiecutter.__game_cls}}::Create();
@@ -31,19 +31,15 @@ TEST(GameConstructors, DefaultConstructor) {
 }
 
 TEST(GameConstructors, ExplicitStartingPlayer) {
-  GTEST_SKIP() << "TODO(TASK-100): verify Create(starting_player).";
+  GTEST_SKIP() << "TODO(TASK-GAME-CONSTRUCTOR-TEST): verify Create(starting_player).";
 }
 
 TEST(GameConstructors, CopyConstructorPreservesState) {
-  GTEST_SKIP() << "TODO(TASK-100): verify the copy constructor preserves state.";
+  GTEST_SKIP() << "TODO(TASK-GAME-CONSTRUCTOR-TEST): verify the copy constructor preserves state.";
 }
 
 TEST(GameConstructors, MoveConstructorPreservesState) {
-  GTEST_SKIP() << "TODO(TASK-100): verify the move constructor preserves state.";
-}
-
-TEST(GameConstructors, CopyPreservesState) {
-  GTEST_SKIP() << "TODO(TASK-100): verify Copy() returns an equivalent game.";
+  GTEST_SKIP() << "TODO(TASK-GAME-CONSTRUCTOR-TEST): verify the move constructor preserves state.";
 }
 
 }  // namespace

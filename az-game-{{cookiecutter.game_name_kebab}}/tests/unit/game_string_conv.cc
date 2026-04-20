@@ -4,15 +4,15 @@ namespace az::game::{{cookiecutter.game_slug}} {
 namespace {
 
 TEST(GameStringConv, BoardReadableString) {
-  GTEST_SKIP() << "TODO(TASK-100): verify the human-readable board string.";
+  GTEST_SKIP() << "TODO(TASK-GAME-STR-TEST): verify the human-readable board string.";
 }
 
 TEST(GameStringConv, ActionFromString) {
-  GTEST_SKIP() << "TODO(TASK-100): verify parsing supported action strings.";
+  GTEST_SKIP() << "TODO(TASK-GAME-STR-TEST): verify parsing supported action strings.";
 }
 
 TEST(GameStringConv, ActionToString) {
-  GTEST_SKIP() << "TODO(TASK-100): verify formatting supported actions.";
+  GTEST_SKIP() << "TODO(TASK-GAME-STR-TEST): verify formatting supported actions.";
 }
 
 }  // namespace

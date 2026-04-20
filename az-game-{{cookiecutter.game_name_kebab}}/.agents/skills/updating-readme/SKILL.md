@@ -5,7 +5,7 @@ description: Update the high-level project description in README.md.
 
 # Updating README.md
 
-Check [memory/tasks.md](../../../memory/tasks.md) to see if TASK-001 has been
+Check [memory/tasks.md](../../../memory/tasks.md) to see if TASK-UPDATE-README has been
 completed. If not, follow the instructions below; if it has been completed, ask
 the user to confirm that they want to update [README.md](../../../README.md)
 again, and clarify what needs to be updated.

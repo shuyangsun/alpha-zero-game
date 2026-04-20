@@ -1,3 +1,3 @@
 # {{cookiecutter.game_name}} Game Header Design
 
-TODO(TASK-003): write design doc for the game header.
+TODO(TASK-DESIGN-DOC): write design doc for the game header.

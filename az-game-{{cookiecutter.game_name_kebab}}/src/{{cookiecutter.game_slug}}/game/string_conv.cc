@@ -5,7 +5,7 @@ namespace az::game::{{cookiecutter.game_slug}} {
 std::string {{cookiecutter.__game_cls}}::BoardReadableString()
     const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-100): implementation
+  // TODO(TASK-GAME-STR-IMPL): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -16,7 +16,7 @@ std::string {{cookiecutter.__game_cls}}::BoardReadableString()
 {{cookiecutter.__game_cls}}::ActionFromString(std::string_view action_str)
     const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-100): implementation
+  // TODO(TASK-GAME-STR-IMPL): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -26,7 +26,7 @@ std::string {{cookiecutter.__game_cls}}::BoardReadableString()
 std::string {{cookiecutter.__game_cls}}::ActionToString(
     const {{cookiecutter.__action}}& action) const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-100): implementation
+  // TODO(TASK-GAME-STR-IMPL): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}

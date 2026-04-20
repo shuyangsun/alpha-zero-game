@@ -59,10 +59,36 @@ aspects:
 Cover all of the above, but remember that this is not a design document. It is
 for human readers with no technical background.
 
-## Length and format
+## Format and length
 
 Although these documents are not skills, follow LLM skill best practices
 when applicable.
+
+Use different sections for different aspects of the game rules. Each section
+should have a very high-level overview of what it covers, and the rest should be
+bullet points or numbered markdown checklists to break down each rule. This
+format helps LLMs to write unittest checklists.
+
+Example:
+
+```markdown
+# Game Rules
+
+## Overview
+
+Briefly describe the game in 1-2 sentences.
+
+## Number of players
+
+- Rule 1
+- ...
+
+## Winning condition
+
+- Rule 1
+- Rule 2
+- ...
+```
 
 Keep the markdown document under 200 lines, with each line under 80 characters.
 These documents will be used by LLMs, so conciseness is key, don't pollute the

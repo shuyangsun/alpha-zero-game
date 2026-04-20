@@ -1,31 +1,36 @@
 #!/usr/bin/env bash
-# Replace a TASK-XXX identifier across all files in the cookiecutter template,
+# Replace a task name across all files in the cookiecutter template,
 # excluding memory/tasks.md which should be updated manually.
-# Usage: scripts/human_only/change-task-numbers.sh [--dry-run] TASK-001 TASK-002
+# Usage: scripts/human_only/replace_task_name.sh <old-task> <new-task> [--apply]
 set -euo pipefail
 
-dry_run=0
-if [[ "${1:-}" == "--dry-run" ]]; then
-  dry_run=1
-  shift
-fi
-
-if [[ $# -ne 2 ]]; then
-  echo "Usage: $0 [--dry-run] <old-task> <new-task>" >&2
-  echo "Example: $0 --dry-run TASK-001 TASK-002" >&2
+if [[ $# -lt 2 || $# -gt 3 ]]; then
+  echo "Usage: $0 <old-task> <new-task> [--apply]" >&2
+  echo "Example: $0 TASK-001 add-undo-support" >&2
+  echo "Dry-run is the default. Pass --apply as the last argument to apply changes." >&2
   exit 1
 fi
 
 old="$1"
 new="$2"
 
-task_pattern='^TASK-[0-9]{3}$'
+dry_run=1
+if [[ $# -eq 3 ]]; then
+  if [[ "$3" == "--apply" ]]; then
+    dry_run=0
+  else
+    echo "Error: unknown option '$3' (did you mean --apply?)" >&2
+    exit 1
+  fi
+fi
+
+task_pattern='^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$'
 if ! [[ "$old" =~ $task_pattern ]]; then
-  echo "Error: '$old' does not match TASK-XXX format" >&2
+  echo "Error: '$old' is not a valid task name (use alphanumeric segments joined by - or _)" >&2
   exit 1
 fi
 if ! [[ "$new" =~ $task_pattern ]]; then
-  echo "Error: '$new' does not match TASK-XXX format" >&2
+  echo "Error: '$new' is not a valid task name (use alphanumeric segments joined by - or _)" >&2
   exit 1
 fi
 

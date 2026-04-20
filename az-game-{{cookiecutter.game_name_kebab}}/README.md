@@ -1,6 +1,6 @@
 # {{cookiecutter.game_name}}
 
-**TODO(TASK-001)**: add a one-sentence game description for {{cookiecutter.game_name}} AlphaZero implementation.
+**TODO(TASK-UPDATE-README)**: add a one-sentence game description for {{cookiecutter.game_name}} AlphaZero implementation.
 
 ## Getting Started
 

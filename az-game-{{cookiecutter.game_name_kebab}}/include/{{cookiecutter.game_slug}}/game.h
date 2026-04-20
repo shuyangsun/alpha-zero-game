@@ -17,7 +17,7 @@
 namespace az::game::{{cookiecutter.game_slug}} {
 
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-// TODO(TASK-004): design board type, action type, and player type.
+// TODO(TASK-UPDATE-GAME-HEADER): design board type, action type, and player type.
 //
 // Type aliases below are only placeholders generated from the Cookiecutter template.
 //
@@ -75,7 +75,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @brief Construct a new {{cookiecutter.game_name}} game state.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    * 
-   * TODO(TASK-004): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
+   * TODO(TASK-UPDATE-GAME-HEADER): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
    *
    * Does a default constructor make sense? Should we always explicitly pass in
    * the current player to the constructor? Do we need more than one
@@ -149,7 +149,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * current player's perspective.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
-   * TODO(TASK-005): tailor this docstring to be {{cookiecutter.game_name}} specific, describe the canonical representation in
+   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be {{cookiecutter.game_name}} specific, describe the canonical representation in
    * detail, the length should still be suitable for docstring.
 {%- endif %}
    *
@@ -204,7 +204,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * current game state.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
-   * TODO(TASK-005): tailor this docstring to be {{cookiecutter.game_name}} specific.
+   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be {{cookiecutter.game_name}} specific.
 {%- endif %}
    *
    * The size of the vector is dynamic, there should be no duplicate actions.
@@ -224,7 +224,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * action.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
-   * TODO(TASK-005): tailor this docstring to be {{cookiecutter.game_name}} specific.
+   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be {{cookiecutter.game_name}} specific.
 {%- endif %}
    *
    * The action passed in should be only one of the actions returned by the
@@ -289,7 +289,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
    * @brief Construct a new {{cookiecutter.game_name}} Game object.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    * 
-   * TODO(TASK-004): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
+   * TODO(TASK-UPDATE-GAME-HEADER): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
    *
    * Does a default constructor make sense? Should we always explicitly pass in
    * the current player to the constructor? Do we need more than one
@@ -302,7 +302,7 @@ class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
   {{cookiecutter.__game_cls}}(const {{cookiecutter.__player}}& player) noexcept;
 
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-004): design private members to keep track of the game state.
+  // TODO(TASK-UPDATE-GAME-HEADER): design private members to keep track of the game state.
   //
   // `round_`, `cur_player_`, `last_action_`, and `board_`, likely won't change
   // much, but maybe changing them can help.

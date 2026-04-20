@@ -5,7 +5,7 @@ namespace az::game::{{cookiecutter.game_slug}} {
 {{cookiecutter.__board}} {{cookiecutter.__game_cls}}::CanonicalBoard()
     const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-100): implementation
+  // TODO(TASK-GAME-STATE-IMPL): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -14,7 +14,7 @@ namespace az::game::{{cookiecutter.game_slug}} {
 
 bool {{cookiecutter.__game_cls}}::IsOver() const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-100): implementation
+  // TODO(TASK-GAME-STATE-IMPL): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
@@ -24,7 +24,7 @@ bool {{cookiecutter.__game_cls}}::IsOver() const noexcept {
 float {{cookiecutter.__game_cls}}::GetScore(
     const {{cookiecutter.__player}}& player) const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-100): implementation
+  // TODO(TASK-GAME-STATE-IMPL): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
