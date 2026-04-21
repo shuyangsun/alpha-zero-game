@@ -5,6 +5,16 @@ description: Adding unittests based on the checklist and specific task at hand.
 
 # Adding Unittests
 
+## Scripts
+
+Run every command below from the **project root**. Do not `cd` into the skill
+folder. Invoke by the full project-root-relative path starting with
+`.agents/...`, NOT `./scripts/...` or `./script_name.sh`.
+
+- [`find_fr.sh`](./scripts/find_fr.sh) — `.agents/skills/adding-unittests/scripts/find_fr.sh SEARCH_DIR FR-ID`
+
+## Workflow
+
 Read [memory/unittest_checklists.md](../../../memory/unittest_checklists.md) to
 get a list of functionalities that need to be tested. Do NOT try to add all
 tests at once, focus on the current task at hand from
@@ -20,9 +30,9 @@ checklist items. Do NOT mark any item as complete, that will be done in a future
 process. Instead, each checklist item should have a unique `FR-` identifier, add
 this identifier to the test name in CamelCase format. For example, `FR-001`
 would be `TEST(GameConstructors, FR_001_NoArgument)`, or `FR-CONSTRUCTOR-NO-ARG`
-would be `TEST(GameConstructors, FR_CONSTRUCTOR_NO_ARG)`. You can use
-[find_fr.sh](./scripts/find_fr.sh) `tests/unit/ FR-...` to find test files
-with specific `FR` identifiers.
+would be `TEST(GameConstructors, FR_CONSTRUCTOR_NO_ARG)`. Use `find_fr.sh` (e.g.
+`find_fr.sh tests/unit FR-001`) to find test files with a specific `FR`
+identifier.
 
 There may be existing placeholder tests created from the Cookiecutter template,
 change their names to match the `FR-` identifiers using the convention mentioned

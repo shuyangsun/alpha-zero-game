@@ -1,6 +1,6 @@
 # Tasks
 
-- Use `working-on-tasks` skill and [find_task.sh](../.agents/skills/working-on-tasks/scripts/find_task.sh) script.
+- Use the `working-on-tasks` skill.
 - HRR: Human Review Required
 
 **Gate:** Do not proceed until all tasks with `HRR = Yes` are marked complete by a human.
