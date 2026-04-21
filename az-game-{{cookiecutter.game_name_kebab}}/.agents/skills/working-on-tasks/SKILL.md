@@ -40,8 +40,8 @@ folder. Invoke by the full project-root-relative path starting with
 - Flip the task's `[ ]` to `[x]` on its line in
   [memory/tasks.md](../../../memory/tasks.md). `next_task.sh` prints the exact
   line number — edit just that line; don't read the whole file.
-- **Exception:** if `HRR = Yes`, leave it unchecked and ask the user to review
-  and mark it complete.
+- **Exception:** "HRR" stands for human review required. If `HRR = Yes`, leave
+  it unchecked and ask the user to review and mark it complete.
 
 ## Continue or stop?
 

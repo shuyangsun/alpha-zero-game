@@ -1,9 +1,8 @@
 # Tasks
 
 - Use the `working-on-tasks` skill.
-- HRR: Human Review Required
-
-**Gate:** Do not proceed until all tasks with `HRR = Yes` are marked complete by a human.
+- HRR: **Human Review Required** after task completion. Prompt the human to
+  review the content **after** completing the task.
 
 | Index | Task                  | Completed | Difficulty | HRR | Description                                                                                                                            | Skills                                    | Related Files                                                                                                                                                                                 |
 | ----- | --------------------- | --------- | ---------- | --- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
