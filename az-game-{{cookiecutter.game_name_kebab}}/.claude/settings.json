@@ -1,15 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cmake --preset *)",
-      "Bash(cmake --build --preset *)",
-      "Bash(cmake --preset * && cmake --build --preset *)",
-      "Bash(ctest --preset *)",
-      "Bash(cmake --preset * && cmake --build --preset * && ctest --preset *)",
+      "Bash(cmake *)",
+      "Bash(ctest *)",
       "Bash({./,}build/debug/{{cookiecutter.game_slug}})",
       "Bash({./,}build/release/{{cookiecutter.game_slug}})",
-      "Bash(cmake --preset debug && cmake --build --preset debug && {./,}build/debug/{{cookiecutter.game_slug}})",
-      "Bash(cmake --preset release && cmake --build --preset release && {./,}build/release/{{cookiecutter.game_slug}})",
       "Bash({./,}{.claude,.agents}/skills/upgrading-api-version/scripts/fetch_latest_api_ver.sh)",
       "Bash({./,}{.claude,.agents}/skills/upgrading-api-version/scripts/fetch_migration_guides.sh)",
       "Bash({./,}{.claude,.agents}/skills/upgrading-api-version/scripts/parse_current_api_ver.sh)",
@@ -28,6 +23,7 @@
       "Bash(tail *)",
       "Bash(wc *)",
       "Read",
+      "Write",
       "Glob",
       "Grep",
       "Edit",
