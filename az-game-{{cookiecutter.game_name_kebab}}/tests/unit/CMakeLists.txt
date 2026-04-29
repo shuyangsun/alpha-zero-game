@@ -7,6 +7,7 @@ function(add_game_unit_test target_name source_name)
     gtest_discover_tests(${target_name})
 endfunction()
 
+# TODO(TASK-UNITTESTS-PASS): make sure all these tests pass, fix implementation if they don't.
 add_game_unit_test(game_constructors_test game_constructors.cc)
 add_game_unit_test(game_basic_test game_basic.cc)
 add_game_unit_test(game_state_test game_state.cc)
