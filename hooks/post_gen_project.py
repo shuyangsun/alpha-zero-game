@@ -15,6 +15,7 @@ def lower_first_ch(s: str) -> str:
 
 has_ci: bool = lower_first_ch("{{ cookiecutter.github_actions }}") == "y"
 has_llm: bool = lower_first_ch("{{ cookiecutter.llm }}") == "y"
+has_augmenter: bool = lower_first_ch("{{ cookiecutter.augmenter }}") == "y"
 
 
 def remove_ci():
@@ -31,6 +32,18 @@ def remove_llm():
     shutil.rmtree(".github/instructions")
 
     os.remove(".github/copilot-instructions.md")
+
+
+def remove_augmenter():
+    os.remove("include/{{ cookiecutter.game_slug }}/augmentation.h")
+    os.remove("include/{{ cookiecutter.game_slug }}/inference.h")
+    os.remove("include/{{ cookiecutter.game_slug }}/train.h")
+    shutil.rmtree("src/{{ cookiecutter.game_slug }}/augmentation")
+    shutil.rmtree("src/{{ cookiecutter.game_slug }}/inference")
+    shutil.rmtree("src/{{ cookiecutter.game_slug }}/train")
+    os.remove("tests/unit/augmentation.cc")
+    os.remove("tests/unit/inference.cc")
+    os.remove("tests/unit/train.cc")
 
 
 def symlink_llm():
@@ -72,6 +85,9 @@ else:
 
 if not has_ci and not has_llm:
     shutil.rmtree(".github")
+
+if not has_augmenter:
+    remove_augmenter()
 
 # Format C++ source and header files with clang-format
 cpp_files = glob.glob("**/*.h", recursive=True) + glob.glob("**/*.cc", recursive=True)

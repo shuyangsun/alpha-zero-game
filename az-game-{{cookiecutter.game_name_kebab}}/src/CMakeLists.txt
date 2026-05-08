@@ -7,7 +7,17 @@ set_target_properties(
         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
 )
 target_include_directories({{ cookiecutter.game_slug }} PRIVATE ${PROJECT_SOURCE_DIR})
-target_link_libraries({{ cookiecutter.game_slug }} PRIVATE game_{{cookiecutter.game_slug}})
+target_link_libraries(
+    {{ cookiecutter.game_slug }}
+    PRIVATE
+        game_{{cookiecutter.game_slug}}
+        serializer_{{cookiecutter.game_slug}}
+        deserializer_{{cookiecutter.game_slug}}
+{% if cookiecutter.augmenter[0] | lower == 'y' -%}
+        inference_{{cookiecutter.game_slug}}
+        train_{{cookiecutter.game_slug}}
+{%- endif %}
+)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     if(APPLE)
