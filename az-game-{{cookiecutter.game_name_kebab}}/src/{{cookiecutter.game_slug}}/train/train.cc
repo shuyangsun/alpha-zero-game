@@ -42,6 +42,12 @@ std::vector<std::tuple<{{cookiecutter.__board}}, {{cookiecutter.__player}},
 
   for (auto&& [key, game] : augmented) {
     auto& [aug_board, aug_player, aug_actions] = game;
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+    // TODO(TASK-TRAIN-IMPL): permute `output.probabilities` according to `key`
+    // so probabilities stay aligned with `aug_actions`. Copying `output`
+    // unchanged (as below) trains the network to be augmentation-invariant
+    // instead of equivariant — wrong, but lets the placeholder compile.
+{%- endif %}
     result.emplace_back(std::move(aug_board), aug_player, std::move(aug_actions),
                         output);
   }
