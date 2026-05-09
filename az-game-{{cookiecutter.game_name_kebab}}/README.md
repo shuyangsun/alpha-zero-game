@@ -11,7 +11,8 @@ cmake --preset debug && cmake --build --preset debug
 # Release
 cmake --preset release && cmake --build --preset release
 
-# Run terminal-GUI in ASCII art
+# Run interactive terminal REPL (play yourself, prints serializer
+# round-trip and augmentation debug info each turn)
 ./build/debug/{{cookiecutter.game_slug}}    # Debug build
 ./build/release/{{cookiecutter.game_slug}}  # Release build
 ```
