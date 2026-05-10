@@ -107,6 +107,33 @@ class {{cookiecutter.__game_cls}} {
   {%- endif %}
 
   /**
+   * @brief Per-state upper bound on `|ValidActions()|`.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   *
+   * TODO(TASK-UPDATE-GAME-HEADER): set this to the tightest per-state
+   * ceiling on legal actions across all reachable states. Must satisfy
+   * `kMaxLegalActions <= kPolicySize`. Dense games keep this equal to
+   * `kPolicySize`. Switch to a smaller value only if you have decided
+   * to use a compact policy head — see the
+   * [designing-serialization](../../.agents/skills/designing-serialization/SKILL.md)
+   * skill for when that's worth it.
+{%- endif %}
+   *
+   * Sized against `kPolicySize` for dense heads, or against the
+   * legal-action ceiling for compact heads. Changing the layout choice
+   * later is a coordinated breaking change across serializer,
+   * deserializer, and network output projection.
+   */
+  {% if cookiecutter.policy_head_layout == 'compact' -%}
+  // TODO(policy_head_layout=compact): replace 0 with the tightest
+  // per-state legal-action ceiling. Drives the width of the compact
+  // policy head.
+  static constexpr std::size_t kMaxLegalActions = 0;
+  {% else -%}
+  static constexpr std::size_t kMaxLegalActions = kPolicySize;
+  {%- endif %}
+
+  /**
    * @brief Self-play hard cap on `CurrentRound()`.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *

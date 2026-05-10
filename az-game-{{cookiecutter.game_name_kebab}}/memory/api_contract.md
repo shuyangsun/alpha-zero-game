@@ -30,7 +30,14 @@ instances by value.
 - `kHistoryLookback : std::size_t` — past states the serializer needs.
   Markov games declare 0. See [history_lookback.md](./history_lookback.md).
 - `kPolicySize : std::size_t` — cardinality of the full action space,
-  ignoring legality. Equals the network's policy-head width.
+  ignoring legality. Equals the network's policy-head width for a
+  dense head.
+- `kMaxLegalActions : std::size_t` — per-state upper bound on
+  `|ValidActions()|`. Must satisfy `kMaxLegalActions <= kPolicySize`.
+  Dense policy heads set `kMaxLegalActions = kPolicySize`. Compact
+  heads set this to a tight per-state ceiling — see the
+  [designing-serialization](../.agents/skills/designing-serialization/SKILL.md)
+  skill for when to choose compact.
 - `kMaxRounds : std::optional<uint32_t>` — self-play hard cap. If set,
   `IsOver()` must return `true` once `CurrentRound() >= *kMaxRounds`.
   Use `std::nullopt` for genuinely unbounded games.
@@ -80,6 +87,22 @@ API library. Concrete games never implement it themselves.
 
 Deserializers produce `Evaluation`; policy serializers consume
 `TrainingTarget`. Same ordering convention on both.
+
+For compact policy heads (width proportional to `kMaxLegalActions`),
+the API also ships:
+
+- `CompactPolicyTargetBlob { float value; std::size_t count;
+  std::vector<std::size_t> legal_indices; std::vector<float> values; }`
+  — what `ICompactPolicyOutputSerializer<G>` produces. `legal_indices[i]`
+  is `PolicyIndex(action)` for the i-th legal action; `values[i]` is
+  the matching policy probability.
+- `CompactPolicyOutputBlob { float value; std::span<const std::size_t>
+  legal_indices; std::span<const float> values; }` — what
+  `ICompactPolicyOutputDeserializer<G, E>` reads. The deserializer
+  reorders into `ValidActions()` order via `PolicyIndex`.
+
+Compact and dense interfaces are not interchangeable; pick one for
+the entire pipeline.
 
 ## Engine-owned history
 

@@ -59,6 +59,23 @@ Mirror of the default serializer:
 - Hardcodes `std::string` as `error_t`. Games with typed errors should
   implement `IPolicyOutputDeserializer<G, MyError>` directly.
 
+## `defaults/compact_serializer.h` — `DefaultCompactPolicyOutputSerializer<G>`
+
+Produces a `CompactPolicyTargetBlob{ value, count, legal_indices,
+values }` whose `legal_indices[i] = PolicyIndex(ValidActions()[i])`
+and `values[i] = target.pi[i]`. **Use it when** `kMaxLegalActions <<
+kPolicySize` and the network's policy head is sized to
+`kMaxLegalActions`. **Skip it when** the dense default is fine — the
+compact path adds an indirection per slot and is only worth it when
+the dense layout is genuinely wasteful.
+
+## `defaults/compact_deserializer.h` — `DefaultCompactPolicyOutputDeserializer<G>`
+
+Mirror of the above. Reads a `CompactPolicyOutputBlob` and gathers
+probabilities back into `ValidActions()` order. Returns `std::string`
+errors. Implement `ICompactPolicyOutputDeserializer<G, MyError>`
+directly for typed errors.
+
 ## When to use defaults vs. custom
 
 For {{cookiecutter.game_name}} the input encoding (`SerializeCurrentState`)
