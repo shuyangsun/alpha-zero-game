@@ -17,7 +17,7 @@ std::vector<std::pair<{{cookiecutter.__game_cls}},
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-TRAIN-IMPL): generate every augmented training example.
   // The policy probabilities must be permuted to match the augmented
-  // game's `ValidActions()` ordering so the network learns
+  // game's `ValidActionsInto(...)` ordering so the network learns
   // symmetry-equivariant policies. `target.z` is preserved unchanged.
 {% else -%}
   // TODO: implementation
@@ -32,9 +32,10 @@ std::vector<std::pair<{{cookiecutter.__game_cls}},
   for (auto&& aug_game : augmented) {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
     // TODO(TASK-TRAIN-IMPL): permute `target.pi` so probabilities stay
-    // aligned with `aug_game.ValidActions()`. Copying `target` unchanged
-    // (as below) trains the network to be augmentation-invariant instead
-    // of equivariant — wrong, but lets the placeholder compile.
+    // aligned with the actions written by `aug_game.ValidActionsInto(...)`.
+    // Copying `target` unchanged (as below) trains the network to be
+    // augmentation-invariant instead of equivariant — wrong, but lets the
+    // placeholder compile.
 {%- endif %}
     result.emplace_back(std::move(aug_game), target);
   }

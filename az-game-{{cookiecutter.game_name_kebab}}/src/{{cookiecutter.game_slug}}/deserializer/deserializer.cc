@@ -14,8 +14,9 @@ namespace az::game::{{cookiecutter.game_slug}} {
     std::span<const float> output) const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-DESERIALIZER-IMPL): map raw network output to an
-  // `Evaluation` over `game.ValidActions()`. Validate `output.size()`
-  // against the layout produced by
+  // `Evaluation` over the actions returned by
+  // `game.ValidActionsInto(...)`. Validate `output.size()` against the
+  // layout produced by
   // {{cookiecutter.__serializer_cls}}::SerializePolicyOutput, gather
   // masked policy values via `game.PolicyIndex`, softmax-normalize, and
   // return std::unexpected({{cookiecutter.__game_error}}::...) on

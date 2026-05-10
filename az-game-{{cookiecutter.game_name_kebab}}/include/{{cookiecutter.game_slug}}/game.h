@@ -1,13 +1,13 @@
 #ifndef ALPHA_ZERO_GAME_{{cookiecutter.__include_guard_prj}}_INCLUDE_{{cookiecutter.__include_guard_slug}}_GAME_H_
 #define ALPHA_ZERO_GAME_{{cookiecutter.__include_guard_prj}}_INCLUDE_{{cookiecutter.__include_guard_slug}}_GAME_H_
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <expected>
 #include <optional>
 #include <string>
 #include <string_view>
-#include <vector>
 
 {% if cookiecutter.defaults[0] | lower == 'y' -%}
 #include "alpha-zero-api/defaults/game.h"
@@ -107,7 +107,8 @@ class {{cookiecutter.__game_cls}} {
   {%- endif %}
 
   /**
-   * @brief Per-state upper bound on `|ValidActions()|`.
+   * @brief Per-state upper bound on the number of legal actions
+   * `ValidActionsInto` will write.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
    * TODO(TASK-UPDATE-GAME-HEADER): set this to the tightest per-state
@@ -119,6 +120,7 @@ class {{cookiecutter.__game_cls}} {
    * skill for when that's worth it.
 {%- endif %}
    *
+   * Also sizes the caller-owned buffer passed to `ValidActionsInto`.
    * Sized against `kPolicySize` for dense heads, or against the
    * legal-action ceiling for compact heads. Changing the layout choice
    * later is a coordinated breaking change across serializer,
@@ -224,23 +226,31 @@ class {{cookiecutter.__game_cls}} {
   [[nodiscard]] {{cookiecutter.__board}} CanonicalBoard() const noexcept;
 
   /**
-   * @brief All valid actions for the current player in the current state.
+   * @brief Write the current player's legal actions into `out` and
+   * return the count.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
    * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be
    * {{cookiecutter.game_name}} specific.
 {%- endif %}
    *
+   * Writes legal actions into `out[0..count)` and returns `count`.
+   * Callers must ignore entries at indices `>= count`. Allocation-free —
+   * the buffer is caller-owned and stack-allocated; the same MCTS
+   * expansion loop that previously paid for one `std::vector` per call
+   * now pays nothing.
+   *
    * Must be deterministic in the game state — a training tuple
    * `(s, π, z)` written under one ordering and replayed against a network
    * trained under another is corrupt.
    *
-   * No duplicates. Empty if and only if `IsOver()` returns true. While the
-   * game is not over, even if there are no "real" choices for the current
-   * player, return at least one action (e.g., a "pass") because
-   * `ApplyActionInPlace` requires an action.
+   * No duplicates. Returns `0` if and only if `IsOver()` returns true.
+   * While the game is not over, even if there are no "real" choices for
+   * the current player, write at least one action (e.g., a "pass")
+   * because `ApplyActionInPlace` requires an action.
    */
-  [[nodiscard]] std::vector<{{cookiecutter.__action}}> ValidActions()
+  [[nodiscard]] std::size_t ValidActionsInto(
+      std::array<{{cookiecutter.__action}}, kMaxLegalActions>& out)
       const noexcept;
 
   /**
@@ -292,7 +302,7 @@ class {{cookiecutter.__game_cls}} {
    *
    * Must be allocation-free — this is the MCTS hot-path primitive. The
    * caller is responsible for passing only actions returned by
-   * `ValidActions()`; behavior for an invalid action is undefined.
+   * `ValidActionsInto`; behavior for an invalid action is undefined.
    */
   void ApplyActionInPlace(const {{cookiecutter.__action}}& action) noexcept;
 

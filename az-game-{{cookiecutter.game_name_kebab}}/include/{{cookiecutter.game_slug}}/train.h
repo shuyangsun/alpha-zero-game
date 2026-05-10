@@ -33,8 +33,9 @@ class {{cookiecutter.__train_aug_cls}}
    * a single example.
    *
    * Each returned pair contains a {{cookiecutter.__game_cls}} variant and
-   * a `TrainingTarget` whose `pi[i]` corresponds to that variant's
-   * `ValidActions()[i]`. `target.z` is preserved unchanged.
+   * a `TrainingTarget` whose `pi[i]` corresponds to the i-th action
+   * written by that variant's `ValidActionsInto(...)`. `target.z` is
+   * preserved unchanged.
    *
    * Convention: result includes the identity (typically the first
    * element); callers should not rely on order.

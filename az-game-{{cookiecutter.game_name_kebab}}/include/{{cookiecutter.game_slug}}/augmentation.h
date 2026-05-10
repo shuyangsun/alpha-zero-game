@@ -38,9 +38,9 @@ enum class {{cookiecutter.__augmentation_enum}} : uint8_t {
 {%- endif %}
  *
  * Each returned `{{cookiecutter.__game_cls}}` must satisfy the same `Game`
- * contract as the input — including `ValidActions()` size and
- * deterministic ordering — so per-variant network outputs can be
- * inverse-mapped back to the original action space.
+ * contract as the input — including the same `ValidActionsInto(...)`
+ * count and deterministic ordering — so per-variant network outputs can
+ * be inverse-mapped back to the original action space.
  *
  * @param game Original game state.
  * @return Augmented variants in enum order.

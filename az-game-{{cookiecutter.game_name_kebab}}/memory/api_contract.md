@@ -32,8 +32,9 @@ instances by value.
 - `kPolicySize : std::size_t` — cardinality of the full action space,
   ignoring legality. Equals the network's policy-head width for a
   dense head.
-- `kMaxLegalActions : std::size_t` — per-state upper bound on
-  `|ValidActions()|`. Must satisfy `kMaxLegalActions <= kPolicySize`.
+- `kMaxLegalActions : std::size_t` — per-state upper bound on the
+  number of legal actions; sizes the caller-owned buffer passed to
+  `ValidActionsInto`. Must satisfy `kMaxLegalActions <= kPolicySize`.
   Dense policy heads set `kMaxLegalActions = kPolicySize`. Compact
   heads set this to a tight per-state ceiling — see the
   [designing-serialization](../.agents/skills/designing-serialization/SKILL.md)
@@ -52,7 +53,7 @@ instances by value.
 | `LastPlayer()` | `std::optional<player_t>` (nullopt before any move) |
 | `LastAction()` | `std::optional<action_t>` (nullopt before any move) |
 | `CanonicalBoard()` | `board_t` from the current player's perspective |
-| `ValidActions()` | `std::vector<action_t>` — deterministic, no dupes |
+| `ValidActionsInto(out)` | writes legal actions into `out[0..count)` and returns `count`; `out` is `std::array<action_t, kMaxLegalActions>&`; deterministic, no dupes, allocation-free |
 | `IsOver()` | `bool` |
 | `GetScore(player)` | `float` in `[-1, +1]` from `player`'s perspective |
 | `PolicyIndex(action)` | `std::size_t` in `[0, kPolicySize)`; bijection |
@@ -78,12 +79,12 @@ API library. Concrete games never implement it themselves.
 
 - `Evaluation { float value; std::vector<float> probabilities; }` — what
   the network produced. `value ∈ [-1, +1]` from the current player's
-  perspective. `probabilities[i]` is the prior for
-  `game.ValidActions()[i]`.
+  perspective. `probabilities[i]` is the prior for the i-th action
+  written by `game.ValidActionsInto(...)`.
 - `TrainingTarget { float z; std::vector<float> pi; }` — what the
   network is asked to learn. `z` is the actual game outcome from
   `GetScore(state.CurrentPlayer())`. `pi[i]` is the MCTS visit-count
-  prior for `game.ValidActions()[i]`.
+  prior for the i-th action written by `game.ValidActionsInto(...)`.
 
 Deserializers produce `Evaluation`; policy serializers consume
 `TrainingTarget`. Same ordering convention on both.
@@ -99,7 +100,7 @@ the API also ships:
 - `CompactPolicyOutputBlob { float value; std::span<const std::size_t>
   legal_indices; std::span<const float> values; }` — what
   `ICompactPolicyOutputDeserializer<G, E>` reads. The deserializer
-  reorders into `ValidActions()` order via `PolicyIndex`.
+  reorders into `ValidActionsInto(...)` order via `PolicyIndex`.
 
 Compact and dense interfaces are not interchangeable; pick one for
 the entire pipeline.
@@ -129,11 +130,13 @@ When `augmenter = yes`:
 - `IInferenceAugmenter<G>::Interpret(original, augmented, evals) ->
   Evaluation` — combine per-variant evaluations back into one for
   `original`, inverting whatever symmetry was applied so the returned
-  probabilities align with `original.ValidActions()`.
+  probabilities align 1:1 with the actions returned by
+  `original.ValidActionsInto(...)`.
 - `ITrainingAugmenter<G>::Augment(game, target) ->
   std::vector<std::pair<G, TrainingTarget>>` — return every augmented
   `(game, target)` pair. The augmented `pi[i]` corresponds to the
-  augmented game's `ValidActions()[i]`. `target.z` is preserved.
+  i-th action returned by the augmented game's
+  `ValidActionsInto(...)`. `target.z` is preserved.
 
 See [augmentation_strategy.md](./augmentation_strategy.md) for design
 guidance.

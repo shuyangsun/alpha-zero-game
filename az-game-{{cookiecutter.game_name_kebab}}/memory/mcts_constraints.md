@@ -69,13 +69,30 @@ uint16_t history_size_ = 0;
 The tic-tac-toe reference implementation upstream uses exactly this
 pattern.
 
+## `ValidActionsInto` is allocation-free too
+
+`ValidActionsInto(out)` is the v0.2.1 replacement for the old
+heap-allocating `ValidActions() -> std::vector<action_t>`. It writes
+legal actions into the caller-provided
+`std::array<action_t, kMaxLegalActions>&` and returns the count. The
+MCTS expansion path used to pay one `std::vector` allocation per call;
+the new contract pays nothing. Implications:
+
+- Implement it as a tight loop that writes into `out[count++]`. Do not
+  zero the rest of the buffer; entries `>= count` are unspecified by
+  contract and callers must not read them.
+- Return `0` (and leave `out` untouched) when `IsOver()` returns
+  `true`.
+- `kMaxLegalActions` sizes the buffer; configuring it to `0` is a
+  contract error for any state with legal moves.
+
 ## Determinism inside the engine
 
-`ValidActions()` ordering is part of the contract. A training tuple
-`(state, π, z)` is recorded under one ordering and replayed against a
-network trained under another — if the orderings disagree, the policy
-labels are scrambled. The ordering must depend only on the current
-game state, never on time, RNG, or call history.
+`ValidActionsInto(...)` ordering is part of the contract. A training
+tuple `(state, π, z)` is recorded under one ordering and replayed
+against a network trained under another — if the orderings disagree,
+the policy labels are scrambled. The ordering must depend only on the
+current game state, never on time, RNG, or call history.
 
 `PolicyIndex(action)` must be a **bijection** over the entire action
 space. The default policy serializer scatters into the slot
@@ -87,7 +104,7 @@ mapping silently corrupts training.
 `error_t` is for `ActionFromString` and the deserializer. It is **not**
 called on the MCTS hot path — `ApplyActionInPlace` does not validate
 its input. The engine is responsible for only ever passing actions
-returned by `ValidActions()`. Behavior on an invalid action is
+returned by `ValidActionsInto(...)`. Behavior on an invalid action is
 undefined.
 
 If the design needs validated apply for debug builds, add a separate

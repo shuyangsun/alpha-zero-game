@@ -185,9 +185,11 @@ void PrintAugmentationDebug(
       inference.Augment(game);
   os << "[debug] inference variants:   " << augmented.size() << "\n";
   for (std::size_t i = 0; i < augmented.size(); ++i) {
-    const std::vector<{{cookiecutter.__action}}> aug_actions =
-        augmented[i].ValidActions();
-    os << "[debug]   key=" << i << " actions=" << aug_actions.size() << "\n";
+    std::array<{{cookiecutter.__action}},
+               {{cookiecutter.__game_cls}}::kMaxLegalActions>
+        aug_actions{};
+    const std::size_t aug_count = augmented[i].ValidActionsInto(aug_actions);
+    os << "[debug]   key=" << i << " actions=" << aug_count << "\n";
   }
 
   std::vector<float> probs(actions.size(), 0.0F);
@@ -275,9 +277,14 @@ int main() {
       return 0;
     }
 
-    const std::vector<{{cookiecutter.__action}}> valid_actions =
-        game.ValidActions();
-    std::cout << "\nValid actions: " << valid_actions.size()
+    std::array<{{cookiecutter.__action}},
+               {{cookiecutter.__game_cls}}::kMaxLegalActions>
+        valid_actions_buf{};
+    const std::size_t valid_count =
+        game.ValidActionsInto(valid_actions_buf);
+    const std::span<const {{cookiecutter.__action}}> valid_actions{
+        valid_actions_buf.data(), valid_count};
+    std::cout << "\nValid actions: " << valid_count
               << " (type \"actions\" to list)\n";
 
     PrintSerializationDebug(std::cout, game, serializer, deserializer, history,

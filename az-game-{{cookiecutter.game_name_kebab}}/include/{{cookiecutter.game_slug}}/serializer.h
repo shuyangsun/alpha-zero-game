@@ -73,13 +73,14 @@ class {{cookiecutter.__serializer_cls}}
 {%- endif %}
    *
    * The returned vector MUST be of fixed length across all reachable game
-   * states. Probability mass for actions not in `game.ValidActions()`
-   * should be zero so the network learns the valid-action mask
-   * implicitly.
+   * states. Probability mass for actions not written by
+   * `game.ValidActionsInto(...)` should be zero so the network learns
+   * the valid-action mask implicitly.
    *
-   * `target.pi[i]` corresponds to `game.ValidActions()[i]`. The
-   * implementation is responsible for scattering those values into the
-   * fixed-size policy slot via `game.PolicyIndex(action)`.
+   * `target.pi[i]` corresponds to the i-th legal action — the i-th
+   * entry written by `game.ValidActionsInto(...)`. The implementation is
+   * responsible for scattering those values into the fixed-size policy
+   * slot via `game.PolicyIndex(action)`.
    *
    * @param game Game state the target was produced for.
    * @param target Training target (`z`, `pi`).

@@ -139,19 +139,19 @@ must match what the deserializer reads.** Decide:
 2. **Probability vs logit.** Targets are probabilities (MCTS visit
    distribution). The network may emit logits and the deserializer
    may apply softmax. Document who normalizes — pick one place.
-3. **Mask handling.** Slots not in `game.ValidActions()` get `0` in
-   the target so the network learns the mask implicitly. The
-   deserializer typically also zeros illegal slots before softmax /
+3. **Mask handling.** Slots not written by `game.ValidActionsInto(...)`
+   get `0` in the target so the network learns the mask implicitly.
+   The deserializer typically also zeros illegal slots before softmax /
    renormalization. Keep both ends consistent.
 4. **Pointer-style heads.** Transformers can emit a policy by
-   attending a query over per-action input tokens. With v0.2.0's
-   compact serializer/deserializer this is a first-class layout —
-   the network produces `kMaxLegalActions` slot logits aligned with
+   attending a query over per-action input tokens. The compact
+   serializer/deserializer make this a first-class layout — the
+   network produces `kMaxLegalActions` slot logits aligned with
    `legal_indices`, and `DefaultCompactPolicyOutputDeserializer`
-   reorders them into `ValidActions()` order via `PolicyIndex`. Do
-   **not** flatten back to `kPolicySize` slots if you are using
-   compact; the whole point is to keep the output width
-   proportional to the legal-action ceiling.
+   reorders them into `ValidActionsInto(...)` order via `PolicyIndex`.
+   Do **not** flatten back to `kPolicySize` slots if you are using
+   compact; the whole point is to keep the output width proportional
+   to the legal-action ceiling.
 5. **Action factorization (optional).** Composite actions (move
    piece A from X to Y) tempt a multi-token decomposition. Doing so
    breaks the single-distribution AlphaZero contract; only consider
@@ -161,8 +161,9 @@ must match what the deserializer reads.** Decide:
 ## Deserializer mirror
 
 The deserializer's job is the inverse of `SerializePolicyOutput`:
-read the flat float vector, gather slots for `game.ValidActions()` via
-`game.PolicyIndex(action)`, and produce an `Evaluation`. Spell out:
+read the flat float vector, gather slots for the actions returned by
+`game.ValidActionsInto(...)` via `game.PolicyIndex(action)`, and
+produce an `Evaluation`. Spell out:
 
 - expected `output.size()` (e.g. `kPolicySize + 1` for the default
   layout),

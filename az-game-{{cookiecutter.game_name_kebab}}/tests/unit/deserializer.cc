@@ -11,7 +11,8 @@ TEST(Deserializer, RejectsWrongSize) {
 TEST(Deserializer, ProbabilitiesParallelToValidActions) {
   GTEST_SKIP() << "TODO(TASK-DESERIALIZER-TEST): verify the returned "
                   "Evaluation.probabilities vector has the same length as "
-                  "game.ValidActions() and corresponds 1:1.";
+                  "the count returned by game.ValidActionsInto(...) and "
+                  "corresponds 1:1 to that buffer's first `count` entries.";
 }
 
 TEST(Deserializer, RoundTripsThroughSerializer) {

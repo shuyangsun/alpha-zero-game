@@ -1,16 +1,25 @@
 #include "include/{{cookiecutter.game_slug}}/game.h"
 
+#include <array>
+#include <cstddef>
+
 namespace az::game::{{cookiecutter.game_slug}} {
 
-std::vector<{{cookiecutter.__action}}>
-{{cookiecutter.__game_cls}}::ValidActions() const noexcept {
+std::size_t {{cookiecutter.__game_cls}}::ValidActionsInto(
+    std::array<{{cookiecutter.__action}},
+               {{cookiecutter.__game_cls}}::kMaxLegalActions>& out)
+    const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-GAME-ACTION-IMPL): implementation. Must be deterministic in
-  // the game state and empty iff `IsOver()` returns `true`.
+  // TODO(TASK-GAME-ACTION-IMPL): implementation. Write each legal action
+  // into `out[0..count)` and return `count`. Must be deterministic in
+  // the game state, allocation-free, and return `0` iff `IsOver()`
+  // returns `true`. Callers ignore entries at indices `>= count`, so do
+  // not zero the rest of the buffer.
 {% else -%}
   // TODO: implementation
 {%- endif %}
-  return {};
+  (void)out;
+  return 0;
 }
 
 std::size_t {{cookiecutter.__game_cls}}::PolicyIndex(

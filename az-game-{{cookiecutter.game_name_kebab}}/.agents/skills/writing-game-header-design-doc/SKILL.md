@@ -58,11 +58,12 @@ werewolf.
 
 A single action that a player can take given the current state. Many
 games have a "pass" action, which should be explicitly represented by
-this type — an empty `ValidActions()` is reserved for "the game is
-over." Optimize this type aggressively for memory footprint, especially
-for games with a very large action space whose space complexity may grow
-exponentially. Do not pack multiple actions into one instance: each
-action must produce a distinct game state in the MCTS search tree.
+this type — `ValidActionsInto(...)` returning `0` is reserved for "the
+game is over." Optimize this type aggressively for memory footprint,
+especially for games with a very large action space whose space
+complexity may grow exponentially. Do not pack multiple actions into
+one instance: each action must produce a distinct game state in the
+MCTS search tree.
 
 ## Error
 

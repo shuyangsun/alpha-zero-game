@@ -3,12 +3,13 @@
 namespace az::game::{{cookiecutter.game_slug}} {
 namespace {
 
-// TODO(TASK-GAME-ACTION-TEST): add tests for `ValidActions`, `PolicyIndex`,
-// `ApplyActionInPlace`, and `UndoLastAction`. Make sure test names are
-// meaningful but not too long.
+// TODO(TASK-GAME-ACTION-TEST): add tests for `ValidActionsInto`,
+// `PolicyIndex`, `ApplyActionInPlace`, and `UndoLastAction`. Make sure
+// test names are meaningful but not too long.
 
-TEST(GameAction, ValidActions1) {
-  GTEST_SKIP() << "TODO(TASK-GAME-ACTION-TEST): verify ValidActions() for the initial state.";
+TEST(GameAction, ValidActionsInto1) {
+  GTEST_SKIP() << "TODO(TASK-GAME-ACTION-TEST): verify ValidActionsInto() "
+                  "count and contents for the initial state.";
 }
 
 TEST(GameAction, ApplyActionInPlace1) {

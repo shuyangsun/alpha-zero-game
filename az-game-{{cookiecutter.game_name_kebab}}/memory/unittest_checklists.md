@@ -18,15 +18,18 @@ each section.
 - `BoardReadableString` returns a non-empty string and is distinct
   across representative boards (initial, mid-game, terminal).
 - `ActionToString` is deterministic and produces a distinct string per
-  distinct action in `ValidActions()`.
+  distinct action returned by `ValidActionsInto(...)`.
 - `ActionFromString(ActionToString(a))` round-trips for every action
   `a` reachable through legal play.
 - `ActionFromString` returns an `error_t` (not the unknown default)
   for representative malformed inputs (empty, garbage, partial).
 - `PolicyIndex` is a bijection from `Action` into `[0, kPolicySize)`.
-- `ValidActions()` is deterministic for a given game state — calling
-  it twice in a row returns the same vector.
-- `ValidActions()` is empty if and only if `IsOver()` returns `true`.
+- `ValidActionsInto(...)` is deterministic for a given game state —
+  calling it twice in a row writes the same prefix and returns the same
+  count.
+- `ValidActionsInto(...)` returns `0` if and only if `IsOver()` returns
+  `true`.
+- `ValidActionsInto(...)` count never exceeds `kMaxLegalActions`.
 - `LastAction()` and `LastPlayer()` are `std::nullopt` on a
   freshly-constructed game; both are populated after the first
   `ApplyActionInPlace` call.
@@ -54,7 +57,8 @@ each section.
   `kHistoryLookback`) without crashing, and zero-pads or otherwise
   handles missing history channels deterministically.
 - `SerializePolicyOutput` slot 0 carries `target.z` (default layout)
-  and policy slots not in `ValidActions()` are zero.
+  and policy slots whose action was not written by
+  `ValidActionsInto(...)` are zero.
 - `Deserialize(SerializePolicyOutput(target))` recovers an
   `Evaluation` whose `value` and `probabilities` match `target.z` and
   `target.pi` within numerical tolerance.
@@ -69,16 +73,18 @@ each section.
   satisfies the same `Game` contract as the input.
 - `Augment(game)[0]` is the identity (`game` itself, by observable
   state).
-- Each augmented variant has the same `ValidActions().size()` as the
-  input (symmetry preserves legality).
+- Each augmented variant returns the same `ValidActionsInto(...)`
+  count as the input (symmetry preserves legality).
 - `Interpret(original, Augment(original), evaluations)` returns
-  probabilities whose length matches `original.ValidActions().size()`
-  and whose ordering matches `original.ValidActions()`.
+  probabilities whose length matches the count returned by
+  `original.ValidActionsInto(...)` and whose ordering matches that
+  buffer's first `count` entries.
 - `InverseTransformAction(transform_action(a, sym), sym) == a` for
   every supported `sym` and every representative action `a`.
 - Training-time `Augment` returns one `(game, target)` pair per
   augmentation, with `target.pi` permuted to stay aligned with the
-  augmented game's `ValidActions()` and `target.z` preserved.
+  actions written by the augmented game's `ValidActionsInto(...)`
+  and `target.z` preserved.
 {%- endif %}
 
 ## REPL contract (from [main_binary.md](./main_binary.md))

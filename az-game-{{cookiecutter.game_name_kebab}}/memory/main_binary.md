@@ -16,8 +16,8 @@ For the current game state it calls and prints, in order:
 - `BoardReadableString()`
 - `IsOver()`; if true, `GetScore()` for both players (Player=bool) or for
   the current and last player otherwise, then exit.
-- `ValidActions()` count is printed every round; the `actions` REPL
-  command lists each action's `ActionToString` form.
+- `ValidActionsInto(...)` count is printed every round; the `actions`
+  REPL command lists each action's `ActionToString` form.
 - `[debug]` lines for serialization:
   - `SerializeCurrentState()` length (with the engine-owned
     `RingBufferView` history)
@@ -36,9 +36,9 @@ For the current game state it calls and prints, in order:
 
 The user types the action as a string — exactly what `ActionToString`
 returns for one of the currently valid actions. The REPL parses it with
-`ActionFromString`, then matches the parsed action against the
-`ValidActions()` list by comparing string forms (so the game's `Action`
-type does not need `operator==`).
+`ActionFromString`, then matches the parsed action against the buffer
+written by `ValidActionsInto(...)` by comparing string forms (so the
+game's `Action` type does not need `operator==`).
 
 This means the implementation must guarantee:
 
@@ -75,7 +75,7 @@ useful:
   board string, lists 0 valid actions, and idles at the prompt.
 - After `GAME-BASIC-IMPL` and `GAME-STATE-IMPL`: round number and game
   termination begin to be honored.
-- After `GAME-ACTION-IMPL`: `ValidActions()`, `PolicyIndex()`,
+- After `GAME-ACTION-IMPL`: `ValidActionsInto()`, `PolicyIndex()`,
   `ApplyActionInPlace()`, and `UndoLastAction()` produce real moves; the
   REPL becomes playable via the `actions` list but typed strings still
   fail until string conversion is done.

@@ -22,8 +22,9 @@ namespace az::game::{{cookiecutter.game_slug}} {
  * The deserializer must mirror the layout produced by
  * `{{cookiecutter.__serializer_cls}}::SerializePolicyOutput`. The
  * `Evaluation::probabilities` vector returned must have the same length
- * as `game.ValidActions()`. Implementations typically gather the masked
- * subset of policy slots via `game.PolicyIndex(action)`.
+ * as the count returned by `game.ValidActionsInto(...)` and align 1:1
+ * with the actions written into that buffer. Implementations typically
+ * gather the masked subset of policy slots via `game.PolicyIndex(action)`.
  */
 class {{cookiecutter.__deserializer_cls}}
     : public ::az::game::api::IPolicyOutputDeserializer<
@@ -34,7 +35,7 @@ class {{cookiecutter.__deserializer_cls}}
 
   /**
    * @brief Convert raw neural network output into an `Evaluation`
-   * restricted to `game.ValidActions()`.
+   * restricted to the actions returned by `game.ValidActionsInto(...)`.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
    * TODO(TASK-DESERIALIZER-IMPL): document the expected output size, the

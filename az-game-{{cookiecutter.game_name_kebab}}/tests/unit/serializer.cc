@@ -26,8 +26,8 @@ TEST(Serializer, SerializePolicyOutputPlacesValueFirst) {
 
 TEST(Serializer, SerializePolicyOutputZeroesInvalidActions) {
   GTEST_SKIP() << "TODO(TASK-SERIALIZER-TEST): verify slots for actions whose "
-                  "PolicyIndex is outside the current ValidActions() set have "
-                  "zero probability.";
+                  "PolicyIndex is outside the buffer written by "
+                  "ValidActionsInto(...) have zero probability.";
 }
 
 }  // namespace

@@ -51,7 +51,7 @@ Mirror of the default serializer:
 
 - Validates `output.size() == kPolicySize + 1`.
 - Returns `Evaluation{output[0], gather of output[1 + PolicyIndex(a)] for
-  a in ValidActions()}`.
+  each `a` written by `ValidActionsInto(...)`}`.
 - Returns the gathered values **verbatim** — no implicit softmax or
   renormalization. If the network emits logits, compose your own
   softmax (the tic-tac-toe example does this in its custom
@@ -62,8 +62,9 @@ Mirror of the default serializer:
 ## `defaults/compact_serializer.h` — `DefaultCompactPolicyOutputSerializer<G>`
 
 Produces a `CompactPolicyTargetBlob{ value, count, legal_indices,
-values }` whose `legal_indices[i] = PolicyIndex(ValidActions()[i])`
-and `values[i] = target.pi[i]`. **Use it when** `kMaxLegalActions <<
+values }` whose `legal_indices[i]` equals `PolicyIndex(actions[i])`
+for the i-th action written by `ValidActionsInto(...)` and
+`values[i] = target.pi[i]`. **Use it when** `kMaxLegalActions <<
 kPolicySize` and the network's policy head is sized to
 `kMaxLegalActions`. **Skip it when** the dense default is fine — the
 compact path adds an indirection per slot and is only worth it when
@@ -72,9 +73,10 @@ the dense layout is genuinely wasteful.
 ## `defaults/compact_deserializer.h` — `DefaultCompactPolicyOutputDeserializer<G>`
 
 Mirror of the above. Reads a `CompactPolicyOutputBlob` and gathers
-probabilities back into `ValidActions()` order. Returns `std::string`
-errors. Implement `ICompactPolicyOutputDeserializer<G, MyError>`
-directly for typed errors.
+probabilities back into `ValidActionsInto(...)` order. Returns
+`std::string` errors. Implement
+`ICompactPolicyOutputDeserializer<G, MyError>` directly for typed
+errors.
 
 ## When to use defaults vs. custom
 

@@ -10,7 +10,8 @@ TEST(TrainingAugmenter, AugmentReturnsOnePerVariant) {
 
 TEST(TrainingAugmenter, AugmentPermutesPolicyAlongsideBoard) {
   GTEST_SKIP() << "TODO(TASK-TRAIN-TEST): verify TrainingTarget.pi is "
-                  "permuted to match each augmented game's ValidActions().";
+                  "permuted to match each augmented game's "
+                  "ValidActionsInto(...) ordering.";
 }
 
 TEST(TrainingAugmenter, AugmentPreservesValue) {

@@ -51,9 +51,9 @@ class {{cookiecutter.__infer_aug_cls}}
    *
    * `augmented` and `evaluations` are aligned: `evaluations[i]`
    * corresponds to `augmented[i]`. The returned `Evaluation`'s
-   * probabilities must align with `original.ValidActions()`; the
-   * implementation is responsible for inverting whatever symmetry it
-   * applied.
+   * probabilities must align 1:1 with the actions returned by
+   * `original.ValidActionsInto(...)`; the implementation is responsible
+   * for inverting whatever symmetry it applied.
    */
   [[nodiscard]] ::az::game::api::Evaluation Interpret(
       const {{cookiecutter.__game_cls}}& original,
