@@ -13,11 +13,12 @@ namespace az::game::{{cookiecutter.game_slug}}::internal {
  * game state.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
  *
- * TODO(TASK-AUGMENTATION-IMPL): enumerate every augmentation that
+ * TODO(TASK-AUGMENTATION-ENUM): enumerate every augmentation that
  * preserves {{cookiecutter.game_name}} game equivalence (e.g., rotations,
  * mirrors, color swaps). For games with no useful symmetry, keep just
  * `kOriginal` and the augmenters will degenerate into identity
- * transforms.
+ * transforms. See `memory/augmentation_strategy.md` for design
+ * conventions (identity-first, ordering, common symmetry groups).
 {%- endif %}
  */
 enum class {{cookiecutter.__augmentation_enum}} : uint8_t {
