@@ -5,15 +5,27 @@ on: [push, pull_request]
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - preset: debug-test
+            build_dir: debug
+          - preset: release-test
+            build_dir: release
+    name: {% raw %}${{ matrix.preset }}{% endraw %}
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
 
-      - name: Configure CMake
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Configure
+        run: cmake --preset {% raw %}${{ matrix.preset }}{% endraw %}
 
       - name: Build
-        run: cmake --build build
+        run: cmake --build --preset {% raw %}${{ matrix.preset }}{% endraw %}
 
-      - name: Run
-        run: ./build/{{ cookiecutter.game_slug }}
+      - name: Run binary (terminates on EOF)
+        run: ./build/{% raw %}${{ matrix.build_dir }}{% endraw %}/{{ cookiecutter.game_slug }} </dev/null
+
+      - name: Test
+        run: ctest --preset {% raw %}${{ matrix.preset }}{% endraw %}
