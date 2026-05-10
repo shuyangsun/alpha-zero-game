@@ -19,14 +19,16 @@ For the current game state it calls and prints, in order:
 - `ValidActions()` count is printed every round; the `actions` REPL
   command lists each action's `ActionToString` form.
 - `[debug]` lines for serialization:
-  - `SerializeCurrentState()` length
-  - `SerializePolicyOutput()` length on a probe `PolicyOutput`
-    (`value=0.5`, uniform probabilities)
+  - `SerializeCurrentState()` length (with the engine-owned
+    `RingBufferView` history)
+  - `SerializePolicyOutput()` length on a probe `TrainingTarget`
+    (`z=0.5`, uniform `pi`)
   - `Deserialize()` round-trip vs the probe → `match`, `MISMATCH`,
     `failed (...)`, or `skipped (... empty vector)`
 {%- if cookiecutter.augmenter[0] | lower == 'y' %}
 - `[debug]` lines for augmentation:
-  - inference-time `Augment()` variant count, then per-key action count
+  - inference-time `Augment()` variant count, then per-variant action
+    count
   - training-time `Augment()` example count
 {%- endif %}
 
@@ -73,9 +75,10 @@ useful:
   board string, lists 0 valid actions, and idles at the prompt.
 - After `GAME-BASIC-IMPL` and `GAME-STATE-IMPL`: round number and game
   termination begin to be honored.
-- After `GAME-ACTION-IMPL`: `ValidActions()` and `GameAfterAction()`
-  produce real moves; the REPL becomes playable via the `actions` list
-  but typed strings still fail until string conversion is done.
+- After `GAME-ACTION-IMPL`: `ValidActions()`, `PolicyIndex()`,
+  `ApplyActionInPlace()`, and `UndoLastAction()` produce real moves; the
+  REPL becomes playable via the `actions` list but typed strings still
+  fail until string conversion is done.
 - After `GAME-STR-IMPL`: the REPL accepts typed action strings.
 - After `SERIALIZER-IMPL` + `DESERIALIZER-IMPL`: `[debug] round-trip:`
   flips from `skipped`/`failed` to `match`.

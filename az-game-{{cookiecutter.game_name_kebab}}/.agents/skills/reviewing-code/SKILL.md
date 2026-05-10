@@ -29,7 +29,9 @@ internet unless you do not remember certain details.
   `using TttStatus = TttResult<void>;`).
 - Mark functions as `[nodiscard]` and `noexcept` whenever possible.
 - Prefer private constructors and public static factory methods that return
-  result types when creating objects, to avoid exceptions.
+  result types when construction can fail. Public constructors are fine for
+  value-semantic types whose construction cannot fail (e.g., a game state
+  satisfying `::az::game::api::Game`).
 - Use `std::string_view` for immutable string parameters instead of
   `const std::string&`. Use `std::span` for immutable array parameters instead
   of `const std::vector<T>&`.

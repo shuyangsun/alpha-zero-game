@@ -1,5 +1,3 @@
-#include <utility>
-
 #include "gtest/gtest.h"
 #include "include/{{cookiecutter.game_slug}}/game.h"
 
@@ -8,30 +6,21 @@ namespace {
 
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__board}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_cls}};
-using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_ptr}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
-using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__result}};
 
-// TODO(TASK-GAME-CONSTRUCTOR-TEST): delete this test if the default player constructor was deleted.
+// TODO(TASK-GAME-CONSTRUCTOR-TEST): delete this test if the default
+// constructor was deleted.
 TEST(GameConstructors, DefaultConstructor) {
-  {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}> maybe_game =
-      {{cookiecutter.__game_cls}}::Create();
-  ASSERT_TRUE(maybe_game.has_value());
-
-  auto game = std::move(*maybe_game);
-  ASSERT_NE(game, nullptr);
-
-  const auto& concrete_game =
-      *static_cast<const {{cookiecutter.__game_cls}}*>(game.get());
-  EXPECT_EQ(concrete_game.GetBoard(), {{cookiecutter.__board}}{});
-  EXPECT_EQ(concrete_game.CurrentRound(), 0u);
-  EXPECT_EQ(concrete_game.CurrentPlayer(), {{cookiecutter.__player}}{});
-  EXPECT_EQ(concrete_game.LastPlayer(), std::nullopt);
-  EXPECT_FALSE(concrete_game.LastAction().has_value());
+  {{cookiecutter.__game_cls}} game;
+  EXPECT_EQ(game.GetBoard(), {{cookiecutter.__board}}{});
+  EXPECT_EQ(game.CurrentRound(), 0u);
+  EXPECT_EQ(game.CurrentPlayer(), {{cookiecutter.__player}}{});
+  EXPECT_EQ(game.LastPlayer(), std::nullopt);
+  EXPECT_FALSE(game.LastAction().has_value());
 }
 
 TEST(GameConstructors, ExplicitStartingPlayer) {
-  GTEST_SKIP() << "TODO(TASK-GAME-CONSTRUCTOR-TEST): verify Create(starting_player).";
+  GTEST_SKIP() << "TODO(TASK-GAME-CONSTRUCTOR-TEST): verify the explicit-starting-player constructor.";
 }
 
 TEST(GameConstructors, CopyConstructorPreservesState) {

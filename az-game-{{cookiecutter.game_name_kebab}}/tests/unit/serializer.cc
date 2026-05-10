@@ -21,12 +21,13 @@ TEST(Serializer, SerializePolicyOutputHasFixedLength) {
 
 TEST(Serializer, SerializePolicyOutputPlacesValueFirst) {
   GTEST_SKIP() << "TODO(TASK-SERIALIZER-TEST): verify result[0] equals "
-                  "PolicyOutput.value.";
+                  "TrainingTarget.z.";
 }
 
 TEST(Serializer, SerializePolicyOutputZeroesInvalidActions) {
-  GTEST_SKIP() << "TODO(TASK-SERIALIZER-TEST): verify positions for actions "
-                  "outside the input span have zero probability.";
+  GTEST_SKIP() << "TODO(TASK-SERIALIZER-TEST): verify slots for actions whose "
+                  "PolicyIndex is outside the current ValidActions() set have "
+                  "zero probability.";
 }
 
 }  // namespace

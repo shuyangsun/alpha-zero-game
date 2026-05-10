@@ -5,13 +5,13 @@ namespace {
 
 TEST(InferenceAugmenter, AugmentMatchesAugmentAll) {
   GTEST_SKIP() << "TODO(TASK-INFERENCE-TEST): verify {{cookiecutter.__infer_aug_cls}}::"
-                  "Augment matches the keys/values produced by "
+                  "Augment matches the variants produced by "
                   "internal::AugmentAll for the inference set.";
 }
 
 TEST(InferenceAugmenter, InterpretReturnsOriginalActionSpace) {
-  GTEST_SKIP() << "TODO(TASK-INFERENCE-TEST): verify Interpret() returns a "
-                  "PolicyOutput whose probabilities are parallel to the "
+  GTEST_SKIP() << "TODO(TASK-INFERENCE-TEST): verify Interpret() returns an "
+                  "Evaluation whose probabilities are parallel to the "
                   "ORIGINAL valid actions.";
 }
 

@@ -1,9 +1,5 @@
 #include "include/{{cookiecutter.game_slug}}/train.h"
 
-#include <cstdint>
-#include <span>
-#include <tuple>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -13,43 +9,34 @@
 
 namespace az::game::{{cookiecutter.game_slug}} {
 
-std::vector<std::tuple<{{cookiecutter.__board}}, {{cookiecutter.__player}},
-                       std::vector<{{cookiecutter.__action}}>,
-                       ::az::game::api::PolicyOutput>>
+std::vector<std::pair<{{cookiecutter.__game_cls}},
+                      ::az::game::api::TrainingTarget>>
 {{cookiecutter.__train_aug_cls}}::Augment(
-    const {{cookiecutter.__board}}& board,
-    const {{cookiecutter.__player}}& player,
-    std::span<const {{cookiecutter.__action}}> actions,
-    ::az::game::api::PolicyOutput&& output) const noexcept {
+    const {{cookiecutter.__game_cls}}& game,
+    const ::az::game::api::TrainingTarget& target) const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-TRAIN-IMPL): generate every augmented training example. The
-  // policy probabilities must be permuted to match the augmented action
-  // ordering so the network learns symmetry-equivariant policies.
+  // TODO(TASK-TRAIN-IMPL): generate every augmented training example.
+  // The policy probabilities must be permuted to match the augmented
+  // game's `ValidActions()` ordering so the network learns
+  // symmetry-equivariant policies. `target.z` is preserved unchanged.
 {% else -%}
   // TODO: implementation
 {%- endif %}
-  std::unordered_map<uint8_t,
-                     std::tuple<{{cookiecutter.__board}},
-                                {{cookiecutter.__player}},
-                                std::vector<{{cookiecutter.__action}}>>>
-      augmented = internal::AugmentAll(board, player, actions);
+  std::vector<{{cookiecutter.__game_cls}}> augmented = internal::AugmentAll(game);
 
-  std::vector<std::tuple<{{cookiecutter.__board}}, {{cookiecutter.__player}},
-                         std::vector<{{cookiecutter.__action}}>,
-                         ::az::game::api::PolicyOutput>>
+  std::vector<std::pair<{{cookiecutter.__game_cls}},
+                        ::az::game::api::TrainingTarget>>
       result;
   result.reserve(augmented.size());
 
-  for (auto&& [key, game] : augmented) {
-    auto& [aug_board, aug_player, aug_actions] = game;
+  for (auto&& aug_game : augmented) {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-    // TODO(TASK-TRAIN-IMPL): permute `output.probabilities` according to `key`
-    // so probabilities stay aligned with `aug_actions`. Copying `output`
-    // unchanged (as below) trains the network to be augmentation-invariant
-    // instead of equivariant — wrong, but lets the placeholder compile.
+    // TODO(TASK-TRAIN-IMPL): permute `target.pi` so probabilities stay
+    // aligned with `aug_game.ValidActions()`. Copying `target` unchanged
+    // (as below) trains the network to be augmentation-invariant instead
+    // of equivariant — wrong, but lets the placeholder compile.
 {%- endif %}
-    result.emplace_back(std::move(aug_board), aug_player, std::move(aug_actions),
-                        output);
+    result.emplace_back(std::move(aug_game), target);
   }
 
   return result;

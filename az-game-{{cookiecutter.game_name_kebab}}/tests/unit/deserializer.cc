@@ -8,16 +8,16 @@ TEST(Deserializer, RejectsWrongSize) {
                   "an error when the network output has the wrong length.";
 }
 
-TEST(Deserializer, ProbabilitiesParallelToActions) {
+TEST(Deserializer, ProbabilitiesParallelToValidActions) {
   GTEST_SKIP() << "TODO(TASK-DESERIALIZER-TEST): verify the returned "
-                  "probabilities vector has the same length as the input "
-                  "actions span and corresponds 1:1.";
+                  "Evaluation.probabilities vector has the same length as "
+                  "game.ValidActions() and corresponds 1:1.";
 }
 
 TEST(Deserializer, RoundTripsThroughSerializer) {
   GTEST_SKIP() << "TODO(TASK-DESERIALIZER-TEST): verify Deserialize composed "
                   "with Serializer::SerializePolicyOutput recovers the "
-                  "original (up to renormalization).";
+                  "original value/probabilities (up to renormalization).";
 }
 
 }  // namespace

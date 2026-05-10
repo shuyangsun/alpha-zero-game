@@ -6,7 +6,8 @@
 - Action: `std::array<uint8_t, 15>`
 - Error: `uint8_t (enum)`
 - Board: `custom struct`
-- Constructor and private data members
+- Static contract: `kHistoryLookback`, `kPolicySize`, `kMaxRounds`, `PolicyIndex`
+- Constructors and private data members
 
 ## Player
 
@@ -61,17 +62,16 @@ enum class KeyRank : uint8_t {
   kBigJoker,
 };
 
-// The first 4 bits are the underlying value of the action type; the last 4 bits
+// First 4 bits are the underlying value of the action type; last 4 bits
 // are the underlying value of the key rank.
 using PackedTrick = uint8_t;
 
 // Guan Dan action type.
 //
-// The first 8 bits are PackedTrick; each of the remaining 108 bits represents
-// the presence of a card.
-// Rank-major representation based on numerical value (A, 2, 3, ..., Big Joker).
-// Suits are ordered in clubs, diamonds, hearts, spades.
-// The last 15 * 8 - (8 + 108) = 4 bits are 0-padded.
+// First 8 bits are PackedTrick; each of the remaining 108 bits represents
+// the presence of a card. Rank-major (A, 2, ..., Big Joker), suits in
+// clubs/diamonds/hearts/spades. The last 15 * 8 - (8 + 108) = 4 bits are
+// 0-padded.
 using GdA = std::array<uint8_t, 15>;
 
 }  // namespace az::game::gd
@@ -92,87 +92,107 @@ enum class GdError : uint8_t {
 ```cpp
 namespace az::game::gd {
 
-// 3 * (54 * 2) = 324 bits total. 3 bits for each card, representing 5 possible
-// states: no player holds the card (0b100), or player 0 through 3 holds the
-// card (0b000 through 0b011).
-// Rank-major representation based on numerical value (A, 2, 3, ..., Big Joker).
-// Suits are ordered in clubs, diamonds, hearts, spades.
-// The first 54 * 3 = 162 bits are the first deck, the second 162 bits are the
-// second deck. The last (41 * 8) - 324 = 4 bits are 0-padded.
+// 3 * (54 * 2) = 324 bits total. 3 bits per card encode 5 states: no
+// holder (0b100) or player 0..3 (0b000..0b011). Rank-major; suits in
+// clubs/diamonds/hearts/spades. First 54 * 3 = 162 bits are deck 0,
+// second 162 bits are deck 1. Last (41 * 8) - 324 = 4 bits are 0-padded.
 using Hands = std::array<uint8_t, 41>;
 
 struct GdBoard {
   Hands hands;
 
   // First 4 bits = team 0 (players 0 and 2)
-  // Last 4 bits = team 1 (players 1 and 3)
-  // Team levels are persistent match levels:
-  //   0 -> 2, 1 -> 3, ..., 11 -> K, 12 -> A.
-  // Official competitive Guan Dan does not use extra in-play post-A
-  // pseudo-levels to count failed attempts. Instead, a team at level A wins
-  // the match only by passing A: one player must finish first and the partner
-  // must not finish last.
-  // A 1-4 finish at level A does not end the match; the team stays at A and
-  // must play A again.
+  // Last 4 bits  = team 1 (players 1 and 3)
+  // Persistent match levels: 0 -> 2, 1 -> 3, ..., 11 -> K, 12 -> A.
+  // A team at level A wins only by passing A (one player finishes first
+  // and the partner does not finish last).
   uint8_t team_levels = 0;
 
-  // The current active trick.
   PackedTrick active_trick;
 
   // First 4 bits = player who set active_trick
-  // Last 4 bits = number of players who have finished
+  // Last 4 bits  = number of players who have finished
   uint8_t trick_player_num_finished_packed;
 
-  // Four 2-bit finish slots packed into one byte.
-  // Slot i stores the player who finished in place i.
+  // Four 2-bit finish slots packed into one byte. Slot i stores the
+  // player who finished in place i.
   uint8_t finish_order_packed = 0;
 };
 
 using GdB = GdBoard;
 
-using GdGameInterface = ::az::game::api::IGame<GdB, GdA, GdP, GdError>;
-
 }  // namespace az::game::gd
 ```
 
-## Constructor and private data members
+## Static contract
 
 ```cpp
 namespace az::game::gd {
 
-using GdGamePtr = std::unique_ptr<const GdGameInterface>;
+// Markov: the network input only needs the current state.
+inline constexpr std::size_t kGdHistoryLookback = 0;
 
-template<typename T>
+// Cardinality of the full action space (ignoring legality).
+// 13 ActionType * 16 KeyRank = 208 PackedTrick values; for the masked
+// scatter to work we just need a bijection into a fixed range. Reuse
+// PackedTrick as the slot id, padded to a power of two.
+inline constexpr std::size_t kGdPolicySize = 256;
+
+// Cap to prevent infinite loops when an early-iteration network plays
+// itself. ~150 ply is well above any realistic Guan Dan match length.
+inline constexpr std::optional<uint32_t> kGdMaxRounds = 256;
+
+}  // namespace az::game::gd
+```
+
+## Class and private data members
+
+```cpp
+namespace az::game::gd {
+
+template <typename T>
 using GdResult = std::expected<T, GdError>;
 
 using GdStatus = GdResult<void>;
 
-class GdGame : public GdGameInterface {
+class GdGame {
  public:
+  using board_t = GdB;
+  using action_t = GdA;
+  using player_t = GdP;
+  using error_t = GdError;
 
-  [[nodiscard]] static GdResult<GdGamePtr> Create(
-    // If nullopt, randomly generate the last game's finish order.
-    // Note that nullopt is different from 0, which represents a fresh game, and
-    // player 0 should start the trick.
-    std::optional<uint8_t> last_game_finish_order_packed = std::nullopt,
-    // If nullopt, random current levels will be generated for both teams.
-    // Note that nullopt is different from 0, which represents a fresh game.
-    std::optional<uint8_t> current_team_levels = std::nullopt,
-    // If nullopt, a random hand will be dealt.
-    std::optional<Hands>&& hands = std::nullopt) noexcept;
+  static constexpr std::size_t kHistoryLookback = kGdHistoryLookback;
+  static constexpr std::size_t kPolicySize = kGdPolicySize;
+  static constexpr std::optional<uint32_t> kMaxRounds = kGdMaxRounds;
 
-  // other code...
+  // Public constructors (value semantics).
+  GdGame() noexcept = default;
+  GdGame(
+      // If nullopt, randomly generate the last game's finish order.
+      // nullopt is different from 0, which represents a fresh game.
+      std::optional<uint8_t> last_game_finish_order_packed,
+      // If nullopt, random current levels are generated for both teams.
+      std::optional<uint8_t> current_team_levels,
+      // If nullopt, a random hand is dealt.
+      std::optional<Hands>&& hands) noexcept;
+
+  // Observers, PolicyIndex, ApplyActionInPlace, UndoLastAction,
+  // string conversions ... see ::az::game::api::Game for the full
+  // contract.
 
  private:
-  GdGame(
-    std::optional<uint8_t> last_game_finish_order_packed,
-    std::optional<uint8_t> current_team_levels,
-    std::optional<Hands>&& hands) noexcept;
-
   GdB board_;
-  GdP cur_player_;
-  uint32_t round_;
+  GdP cur_player_ = 0;
+  uint32_t round_ = 0;
+
+  // Action history sized to `kMaxRounds` so MCTS can undo a full rollout
+  // without allocations on the hot path.
+  std::array<GdA, *kMaxRounds> action_history_;
+  uint16_t history_size_ = 0;
 };
+
+static_assert(::az::game::api::Game<GdGame>);
 
 }  // namespace az::game::gd
 ```

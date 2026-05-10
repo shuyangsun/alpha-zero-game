@@ -13,15 +13,20 @@ back the interactive REPL contract from [main_binary.md](./main_binary.md):
   distinct action in `ValidActions()`.
 - `ActionFromString(ActionToString(a))` round-trips for every action `a`
   reachable through legal play.
+- `PolicyIndex` is a bijection from `Action` into `[0, kPolicySize)`.
+- `ApplyActionInPlace` followed by `UndoLastAction` returns the game to
+  its previous state across the deepest MCTS rollout the engine will
+  run.
 - `SerializeCurrentState` and `SerializePolicyOutput` return fixed-length
   vectors across reachable game states.
-- `Deserialize(SerializePolicyOutput(p))` recovers a `PolicyOutput`
-  whose `value` and `probabilities` match `p` within numerical
-  tolerance.
+- `Deserialize(SerializePolicyOutput(target))` recovers an `Evaluation`
+  whose `value` and `probabilities` match `target.z` and `target.pi`
+  within numerical tolerance.
 {% if cookiecutter.augmenter[0] | lower == 'y' -%}
 - Inference-time `Augment` returns one entry per
-  `{{cookiecutter.__augmentation_enum}}` member; each entry's action
-  count equals the input action count.
-- Training-time `Augment` returns one tuple per augmentation, with
-  `probabilities` permuted to stay aligned with the augmented actions.
+  `{{cookiecutter.__augmentation_enum}}` member; each variant satisfies
+  the same `Game` contract as the input.
+- Training-time `Augment` returns one `(game, target)` pair per
+  augmentation, with `target.pi` permuted to stay aligned with the
+  augmented game's `ValidActions()`.
 {%- endif %}

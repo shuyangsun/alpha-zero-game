@@ -2,9 +2,6 @@
 #define ALPHA_ZERO_GAME_{{cookiecutter.__include_guard_prj}}_INCLUDE_{{cookiecutter.__include_guard_slug}}_AUGMENTATION_H_
 
 #include <cstdint>
-#include <span>
-#include <tuple>
-#include <unordered_map>
 #include <vector>
 
 #include "include/{{cookiecutter.game_slug}}/game.h"
@@ -16,10 +13,11 @@ namespace az::game::{{cookiecutter.game_slug}}::internal {
  * game state.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
  *
- * TODO(TASK-AUGMENTATION-IMPL): enumerate every augmentation that preserves
- * {{cookiecutter.game_name}} game equivalence (e.g., rotations, mirrors, color
- * swaps). For games with no useful symmetry, keep just `kOriginal` and the
- * augmenters will degenerate into identity transforms.
+ * TODO(TASK-AUGMENTATION-IMPL): enumerate every augmentation that
+ * preserves {{cookiecutter.game_name}} game equivalence (e.g., rotations,
+ * mirrors, color swaps). For games with no useful symmetry, keep just
+ * `kOriginal` and the augmenters will degenerate into identity
+ * transforms.
 {%- endif %}
  */
 enum class {{cookiecutter.__augmentation_enum}} : uint8_t {
@@ -27,29 +25,27 @@ enum class {{cookiecutter.__augmentation_enum}} : uint8_t {
 };
 
 /**
- * @brief Apply every supported augmentation to (board, player, actions) and
- * return a map keyed by the augmentation identifier.
+ * @brief Apply every supported augmentation to `game` and return the
+ * resulting variants.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
  *
- * TODO(TASK-AUGMENTATION-IMPL): implement the augmentation logic. Each entry
- * in the returned map must include the same number of valid actions as the
- * input span; the action ordering inside each variant is implementation
- * defined but must be consistent with what `Interpret` in
- * {{cookiecutter.__infer_aug_cls}} expects.
+ * TODO(TASK-AUGMENTATION-IMPL): implement the augmentation logic. The
+ * returned vector must have one entry per member of
+ * `{{cookiecutter.__augmentation_enum}}`, in enum order, so the index of
+ * each variant doubles as its augmentation key. `result[0]` must be the
+ * identity (`game` itself).
 {%- endif %}
  *
- * @param board Original board state.
- * @param player Original current player.
- * @param actions Valid actions for the original game state.
- * @return Map from augmentation key to (augmented board, augmented player,
- * augmented actions).
+ * Each returned `{{cookiecutter.__game_cls}}` must satisfy the same `Game`
+ * contract as the input — including `ValidActions()` size and
+ * deterministic ordering — so per-variant network outputs can be
+ * inverse-mapped back to the original action space.
+ *
+ * @param game Original game state.
+ * @return Augmented variants in enum order.
  */
-[[nodiscard]] std::unordered_map<
-    uint8_t, std::tuple<{{cookiecutter.__board}}, {{cookiecutter.__player}},
-                        std::vector<{{cookiecutter.__action}}>>>
-AugmentAll(const {{cookiecutter.__board}}& board,
-           const {{cookiecutter.__player}}& player,
-           std::span<const {{cookiecutter.__action}}> actions) noexcept;
+[[nodiscard]] std::vector<{{cookiecutter.__game_cls}}> AugmentAll(
+    const {{cookiecutter.__game_cls}}& game) noexcept;
 
 }  // namespace az::game::{{cookiecutter.game_slug}}::internal
 

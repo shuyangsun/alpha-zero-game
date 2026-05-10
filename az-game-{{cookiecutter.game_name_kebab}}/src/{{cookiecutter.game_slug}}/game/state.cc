@@ -14,7 +14,8 @@ namespace az::game::{{cookiecutter.game_slug}} {
 
 bool {{cookiecutter.__game_cls}}::IsOver() const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-GAME-STATE-IMPL): implementation
+  // TODO(TASK-GAME-STATE-IMPL): implementation. If `kMaxRounds` is set,
+  // this must return `true` once `CurrentRound() >= *kMaxRounds`.
 {% else -%}
   // TODO: implementation
 {%- endif %}

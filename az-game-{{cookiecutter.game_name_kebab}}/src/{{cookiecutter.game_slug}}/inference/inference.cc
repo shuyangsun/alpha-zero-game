@@ -1,9 +1,6 @@
 #include "include/{{cookiecutter.game_slug}}/inference.h"
 
-#include <cstdint>
 #include <span>
-#include <tuple>
-#include <unordered_map>
 #include <vector>
 
 #include "alpha-zero-api/policy_output.h"
@@ -12,37 +9,31 @@
 
 namespace az::game::{{cookiecutter.game_slug}} {
 
-std::unordered_map<uint8_t, std::tuple<{{cookiecutter.__board}},
-                                       {{cookiecutter.__player}},
-                                       std::vector<{{cookiecutter.__action}}>>>
+std::vector<{{cookiecutter.__game_cls}}>
 {{cookiecutter.__infer_aug_cls}}::Augment(
-    const {{cookiecutter.__board}}& board,
-    const {{cookiecutter.__player}}& player,
-    std::span<const {{cookiecutter.__action}}> actions) const noexcept {
+    const {{cookiecutter.__game_cls}}& game) const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-INFERENCE-IMPL): typically just delegates to
   // internal::AugmentAll. Override only if inference needs a different
   // (usually smaller) augmentation set than training.
 {%- endif %}
-  return internal::AugmentAll(board, player, actions);
+  return internal::AugmentAll(game);
 }
 
-::az::game::api::PolicyOutput {{cookiecutter.__infer_aug_cls}}::Interpret(
-    const std::unordered_map<
-        uint8_t, std::tuple<{{cookiecutter.__board}},
-                            {{cookiecutter.__player}},
-                            std::vector<{{cookiecutter.__action}}>>>&
-        augmented_games,
-    const std::unordered_map<uint8_t, ::az::game::api::PolicyOutput>& outputs)
-    const noexcept {
+::az::game::api::Evaluation {{cookiecutter.__infer_aug_cls}}::Interpret(
+    const {{cookiecutter.__game_cls}}& original,
+    std::span<const {{cookiecutter.__game_cls}}> augmented,
+    std::span<const ::az::game::api::Evaluation> evaluations) const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-INFERENCE-IMPL): for each augmentation key, map every per-
-  // variant action probability back to its original-frame action and
-  // accumulate. Average values across variants.
+  // TODO(TASK-INFERENCE-IMPL): for each (augmented[i], evaluations[i]),
+  // map every per-variant action probability back to its original-frame
+  // action (typically by composing the inverse symmetry with
+  // `original.PolicyIndex`) and accumulate. Average values across
+  // variants.
 {% else -%}
   // TODO: implementation
 {%- endif %}
-  return ::az::game::api::PolicyOutput{0.0f, std::vector<float>{}};
+  return ::az::game::api::Evaluation{0.0f, std::vector<float>{}};
 }
 
 }  // namespace az::game::{{cookiecutter.game_slug}}

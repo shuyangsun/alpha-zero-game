@@ -11,7 +11,7 @@ namespace az::game::{{cookiecutter.game_slug}} {
 
 /**
  * @brief Deserializes the raw float output from the policy/value neural
- * network into a {{cookiecutter.game_name}} ::az::game::api::PolicyOutput.
+ * network into an `::az::game::api::Evaluation`.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
  *
  * TODO(TASK-DESERIALIZER-IMPL): tailor this docstring to describe how the
@@ -20,41 +20,37 @@ namespace az::game::{{cookiecutter.game_slug}} {
 {%- endif %}
  *
  * The deserializer must mirror the layout produced by
- * {{cookiecutter.__serializer_cls}}::SerializePolicyOutput. The probability
- * vector returned in the PolicyOutput must have the same length as the
- * `actions` span passed to `Deserialize`. The library asserts on this.
+ * `{{cookiecutter.__serializer_cls}}::SerializePolicyOutput`. The
+ * `Evaluation::probabilities` vector returned must have the same length
+ * as `game.ValidActions()`. Implementations typically gather the masked
+ * subset of policy slots via `game.PolicyIndex(action)`.
  */
 class {{cookiecutter.__deserializer_cls}}
-    : public ::az::game::api::IPolicyOutputDeserializer<{{cookiecutter.__board}},
-                                                        {{cookiecutter.__action}},
-                                                        {{cookiecutter.__player}},
-                                                        {{cookiecutter.__game_error}}> {
+    : public ::az::game::api::IPolicyOutputDeserializer<
+          {{cookiecutter.__game_cls}}, {{cookiecutter.__game_error}}> {
  public:
   {{cookiecutter.__deserializer_cls}}() = default;
   ~{{cookiecutter.__deserializer_cls}}() override = default;
 
   /**
-   * @brief Convert raw neural network output into a PolicyOutput restricted
-   * to the given valid actions.
+   * @brief Convert raw neural network output into an `Evaluation`
+   * restricted to `game.ValidActions()`.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
    * TODO(TASK-DESERIALIZER-IMPL): document the expected output size, the
-   * action -> index mapping, and the renormalization strategy (e.g., softmax
-   * over masked logits).
+   * action -> index mapping (typically via `game.PolicyIndex`), and the
+   * renormalization strategy (e.g., softmax over masked logits).
 {%- endif %}
    *
-   * @param board Board state used to produce the network input.
-   * @param player Current player.
-   * @param actions Valid actions; the returned probabilities vector must be
-   * parallel to this.
-   * @param output Raw network output tensor (flat).
-   * @return {{cookiecutter.__result}}<::az::game::api::PolicyOutput>
-   *         PolicyOutput on success, error on malformed output.
+   * @param game Game state used to produce the network input.
+   * @param output Raw network output tensor (flat). Callers must
+   * up-convert FP16/BF16 outputs to FP32 before invoking the
+   * deserializer.
+   * @return {{cookiecutter.__result}}<::az::game::api::Evaluation>
+   *         `Evaluation` on success, error on malformed input.
    */
-  [[nodiscard]] {{cookiecutter.__result}}<::az::game::api::PolicyOutput>
-  Deserialize(const {{cookiecutter.__board}}& board,
-              const {{cookiecutter.__player}}& player,
-              std::span<const {{cookiecutter.__action}}> actions,
+  [[nodiscard]] {{cookiecutter.__result}}<::az::game::api::Evaluation>
+  Deserialize(const {{cookiecutter.__game_cls}}& game,
               std::span<const float> output) const noexcept final;
 };
 

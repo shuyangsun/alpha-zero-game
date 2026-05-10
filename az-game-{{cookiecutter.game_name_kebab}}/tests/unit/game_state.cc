@@ -15,9 +15,5 @@ TEST(GameState, GetScoreReturnsExpectedTerminalScores) {
   GTEST_SKIP() << "TODO(TASK-GAME-STATE-TEST): verify terminal scores for each player.";
 }
 
-TEST(GameConstructors, CopyPreservesState) {
-  GTEST_SKIP() << "TODO(TASK-GAME-STATE-TEST): verify Copy() returns an equivalent game.";
-}
-
 }  // namespace
 }  // namespace az::game::{{cookiecutter.game_slug}}

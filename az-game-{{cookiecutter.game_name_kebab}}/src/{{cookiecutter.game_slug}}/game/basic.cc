@@ -3,12 +3,12 @@
 namespace az::game::{{cookiecutter.game_slug}} {
 
 const {{cookiecutter.__board}}& {{cookiecutter.__game_cls}}::GetBoard()
+    const noexcept {
 {% if cookiecutter.llm[0] | lower == 'y' -%}
   // TODO(TASK-GAME-BASIC-IMPL): implementation
 {% else -%}
   // TODO: implementation
 {%- endif %}
-    const noexcept {
   return board_;
 }
 
@@ -38,7 +38,7 @@ std::optional<{{cookiecutter.__player}}>
 {% else -%}
   // TODO: implementation
 {%- endif %}
-  return {};
+  return last_player_;
 }
 
 std::optional<{{cookiecutter.__action}}>

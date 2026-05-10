@@ -1,9 +1,9 @@
 #ifndef ALPHA_ZERO_GAME_{{cookiecutter.__include_guard_prj}}_INCLUDE_{{cookiecutter.__include_guard_slug}}_GAME_H_
 #define ALPHA_ZERO_GAME_{{cookiecutter.__include_guard_prj}}_INCLUDE_{{cookiecutter.__include_guard_slug}}_GAME_H_
 
+#include <cstddef>
 #include <cstdint>
 #include <expected>
-#include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -54,269 +54,279 @@ using {{cookiecutter.__result}} =
 
 using {{cookiecutter.__status}} = {{cookiecutter.__result}}<void>;
 
-using {{cookiecutter.__game_interface}} =
-    ::az::game::api::IGame<{{cookiecutter.__board}}, {{cookiecutter.__action}},
-                           {{cookiecutter.__player}},
-                           {{cookiecutter.__game_error}}>;
-
-using {{cookiecutter.__game_ptr}} = std::unique_ptr<const {{cookiecutter.__game_interface}}>;
-
 /**
- * @brief An implementation of the {{cookiecutter.game_name}} game.
+ * @brief A value-typed implementation of the {{cookiecutter.game_name}} game.
  *
- * All methods on this class are const, the game state is immutable. The only
- * way to create a new game state is to call GameAfterAction() with a valid
- * action, which returns a {{cookiecutter.__game_ptr}} to the new game state.
+ * Conforms to `::az::game::api::Game`. The MCTS engine is templated on this
+ * concrete type, so there is no virtual dispatch and the compiler can see
+ * `sizeof({{cookiecutter.__game_cls}})`. Apply transitions in place via
+ * `ApplyActionInPlace` and step back via `UndoLastAction`; both are the
+ * allocation-free contract used on the MCTS hot path. For cold-path
+ * snapshots, prefer the free function
+ * `::az::game::api::ApplyAction(game, action)`, which is defined once for
+ * any conforming `Game`.
  */
-class {{cookiecutter.__game_cls}} : public {{cookiecutter.__game_interface}} {
+class {{cookiecutter.__game_cls}} {
  public:
+  // ----------------------------- Associated types -----------------------------
+  using board_t = {{cookiecutter.__board}};
+  using action_t = {{cookiecutter.__action}};
+  using player_t = {{cookiecutter.__player}};
+  using error_t = {{cookiecutter.__game_error}};
+
+  // ------------------------------ Static contract -----------------------------
 
   /**
-   * @brief Construct a new {{cookiecutter.game_name}} game state.
+   * @brief Number of past states the serializer needs as input.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-   * 
-   * TODO(TASK-UPDATE-GAME-HEADER): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
    *
-   * Does a default constructor make sense? Should we always explicitly pass in
-   * the current player to the constructor? Do we need more than one
-   * constructor? Delete or add constructor based on your design.
+   * TODO(TASK-UPDATE-GAME-HEADER): set this to the lookback depth required
+   * by your network (Markov games keep 0; Atari-style games typically use
+   * 4–8).
 {%- endif %}
    *
-   * @return {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}> Result
-   * containing the constructed game state.
+   * Markov games declare 0; the engine still owns the history `RingBuffer`
+   * but the view passed to the serializer is always empty.
    */
-  [[nodiscard]] static {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}>
-  Create(
-      {{cookiecutter.__player}} starting_player = false) noexcept;
+  static constexpr std::size_t kHistoryLookback = 0;
+
+  /**
+   * @brief Cardinality of the full action space — fixed-size policy head.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   *
+   * TODO(TASK-UPDATE-GAME-HEADER): set this to the cardinality of your
+   * action space, ignoring legality. The bijection between an
+   * `{{cookiecutter.__action}}` and a slot in `[0, kPolicySize)` is given
+   * by `PolicyIndex`.
+{%- endif %}
+   */
+  {% if cookiecutter.defaults[0] | lower == 'y' -%}
+  static constexpr std::size_t kPolicySize = 9;
+  {% else -%}
+  static constexpr std::size_t kPolicySize = 1;
+  {%- endif %}
+
+  /**
+   * @brief Self-play hard cap on `CurrentRound()`.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   *
+   * TODO(TASK-UPDATE-GAME-HEADER): set this to the maximum number of
+   * rounds your game can possibly run. Use `std::nullopt` for genuinely
+   * unbounded games. The cap exists so pathological loops in
+   * early-iteration networks still terminate; if set, `IsOver()` must
+   * return `true` once `CurrentRound() >= *kMaxRounds`.
+{%- endif %}
+   */
+  static constexpr std::optional<uint32_t> kMaxRounds = std::nullopt;
+
+  // ------------------------------- Constructors -------------------------------
+
+  /**
+   * @brief Construct a fresh {{cookiecutter.game_name}} game state.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   *
+   * TODO(TASK-UPDATE-GAME-HEADER): tailor constructors to your game.
+   * Decide whether a default constructor is meaningful, whether the
+   * starting player needs to be passed in, and whether more constructors
+   * are needed.
+{%- endif %}
+   */
+  {{cookiecutter.__game_cls}}() noexcept = default;
+
+  explicit {{cookiecutter.__game_cls}}(
+      const {{cookiecutter.__player}}& starting_player) noexcept;
 
   {{cookiecutter.__game_cls}}(const {{cookiecutter.__game_cls}}& other) noexcept = default;
   {{cookiecutter.__game_cls}}({{cookiecutter.__game_cls}}&& other) noexcept = default;
+  {{cookiecutter.__game_cls}}& operator=(const {{cookiecutter.__game_cls}}& other) noexcept = default;
+  {{cookiecutter.__game_cls}}& operator=({{cookiecutter.__game_cls}}&& other) noexcept = default;
+  ~{{cookiecutter.__game_cls}}() = default;
 
-  ~{{cookiecutter.__game_cls}}() override = default;
-
-  /**
-   * @brief Make an identical copy of the current game state.
-   *
-   * The returned pointer cannot be nullptr, and it points to a new game state
-   * that is identical to the current one.
-   *
-   * @return {{cookiecutter.__game_ptr}} Unique pointer to the new copy of the
-   * game state.
-   */
-  [[nodiscard]] {{cookiecutter.__game_ptr}} Copy() const noexcept final;
+  // -------------------------------- Observers ---------------------------------
 
   /**
    * @brief Get the current game board state.
-   *
-   * @return const {{cookiecutter.__board}}& Const reference to the current game board state.
    */
-  [[nodiscard]] const {{cookiecutter.__board}}& GetBoard() const noexcept final;
+  [[nodiscard]] const {{cookiecutter.__board}}& GetBoard() const noexcept;
 
   /**
    * @brief Get the current round number.
-   *
-   * @return uint32_t The current round number.
    */
-  [[nodiscard]] uint32_t CurrentRound() const noexcept final;
+  [[nodiscard]] uint32_t CurrentRound() const noexcept;
 
   /**
    * @brief Get the current player.
-   *
-   * @return {{cookiecutter.__player}} The current player.
    */
-  [[nodiscard]] {{cookiecutter.__player}} CurrentPlayer() const noexcept final;
+  [[nodiscard]] {{cookiecutter.__player}} CurrentPlayer() const noexcept;
 
   /**
-   * @brief Get the player from last round.
-   *
-   * @return std::optional<{{cookiecutter.__player}}> The player from last round, or
-   * std::nullopt if the game has not started yet.
+   * @brief Get the player from last round, or `std::nullopt` if the game
+   * has not started yet.
    */
   [[nodiscard]] std::optional<{{cookiecutter.__player}}> LastPlayer()
-      const noexcept final;
+      const noexcept;
 
   /**
-   * @brief Get the last action taken by the last player.
-   *
-   * @return std::optional<{{cookiecutter.__action}}> The last action taken by the last player,
-   * or std::nullopt if the game has not started yet.
+   * @brief Get the last action taken, or `std::nullopt` if the game has
+   * not started yet.
    */
   [[nodiscard]] std::optional<{{cookiecutter.__action}}> LastAction()
-      const noexcept final;
+      const noexcept;
 
   /**
-   * @brief The canonical representation of the current board state from the
-   * current player's perspective.
+   * @brief Canonical board representation from the current player's
+   * perspective.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
-   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be {{cookiecutter.game_name}} specific, describe the canonical representation in
-   * detail, the length should still be suitable for docstring.
+   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be
+   * {{cookiecutter.game_name}} specific; describe the canonical
+   * representation in detail without exceeding a reasonable docstring
+   * length.
 {%- endif %}
    *
-   * For example, for Tic Tac Toe, the canonical form of the board can be
-   * represented as a 2D array where the current player's pieces are marked with
-   * 1, the opponent's pieces are marked with -1, and empty cells are marked
-   * with 0. For games with incomplete information (e.g., card games), the
-   * canonical form should only include information that is visible to the
-   * current player.
+   * For example, for Tic Tac Toe, the canonical form can be a 2D array
+   * where the current player's pieces are 1, the opponent's are -1, and
+   * empty cells are 0. For incomplete-information games (e.g., card
+   * games), the canonical form should only include information visible to
+   * the current player.
    *
-   * This helps with training machine learning models by providing a consistent
-   * representation of the game state from the perspective of the current
-   * player during inference time.
-   *
-   * If variations from different perspectives are desired to increase variance
-   * in the training data, that should be handled by augmenters. More details at
+   * Variations from different perspectives belong in augmenters rather
+   * than here. See
    * https://github.com/shuyangsun/alpha-zero-api/blob/main/src/include/alpha-zero-api/augmenter.h
-   *
-   * @return {{cookiecutter.__board}} The canonical representation of the current board state.
    */
-  [[nodiscard]] {{cookiecutter.__board}} CanonicalBoard() const noexcept final;
+  [[nodiscard]] {{cookiecutter.__board}} CanonicalBoard() const noexcept;
 
   /**
-   * @brief Check if the game is over.
-   *
-   * If the game is over, no more round can be played by any player. It is safe
-   * to call GetScore() after the game is over.
-   *
-   * @return true If the game is over.
-   * @return false If the game is not over.
-   */
-  [[nodiscard]] bool IsOver() const noexcept final;
-
-  /**
-   * @brief Get the score of the given player in the current game state.
-   *
-   * Only guaranteed to return a meaningful score when the game is over. If the
-   * game is not over, the returned score may be arbitrary and should not be
-   * used for any purpose. The implementation may choose to skip game status
-   * check to optimize for performance.
-   *
-   * @param player The player for which to get the score.
-   * @return float The score of the player.
-   */
-  [[nodiscard]] float GetScore(const {{cookiecutter.__player}}& player)
-      const noexcept final;
-
-  // --------------------------------- Actions ---------------------------------
-
-  /**
-   * @brief Returns a vector of all valid actions for the current player in the
-   * current game state.
+   * @brief All valid actions for the current player in the current state.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
-   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be {{cookiecutter.game_name}} specific.
+   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be
+   * {{cookiecutter.game_name}} specific.
 {%- endif %}
    *
-   * The size of the vector is dynamic, there should be no duplicate actions.
-   * This vector should be empty if and only if the game is over. While the game
-   * is not over, even if there is no valid action for the current player, the
-   * vector should contain at least one action to represent the "pass" action,
-   * because the GameAfterAction method requires an action as input.
+   * Must be deterministic in the game state — a training tuple
+   * `(s, π, z)` written under one ordering and replayed against a network
+   * trained under another is corrupt.
    *
-   * @return std::vector<{{cookiecutter.__action}}> Vector of all valid actions for the current
-   * player.
+   * No duplicates. Empty if and only if `IsOver()` returns true. While the
+   * game is not over, even if there are no "real" choices for the current
+   * player, return at least one action (e.g., a "pass") because
+   * `ApplyActionInPlace` requires an action.
    */
   [[nodiscard]] std::vector<{{cookiecutter.__action}}> ValidActions()
-      const noexcept final;
+      const noexcept;
 
   /**
-   * @brief Returns a new game state after the current player takes the given
-   * action.
+   * @brief Whether the game has reached a terminal state.
+   *
+   * If `kMaxRounds` is set, must return `true` once
+   * `CurrentRound() >= *kMaxRounds`. After `IsOver()` is true,
+   * `GetScore` is the only method called on this state.
+   */
+  [[nodiscard]] bool IsOver() const noexcept;
+
+  /**
+   * @brief Score for `player` in the current state.
+   *
+   * Only guaranteed to be meaningful when `IsOver()` is true. Conventional
+   * range is `[-1, +1]` from the given player's perspective.
+   */
+  [[nodiscard]] float GetScore(const {{cookiecutter.__player}}& player)
+      const noexcept;
+
+  // ------------------------------ Policy layout -------------------------------
+
+  /**
+   * @brief Map an `{{cookiecutter.__action}}` to its slot in the
+   * fixed-size policy head.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
    *
-   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be {{cookiecutter.game_name}} specific.
+   * TODO(TASK-HEADER-DOCSTR): describe how the bijection works for
+   * {{cookiecutter.game_name}}.
 {%- endif %}
    *
-   * The action passed in should be only one of the actions returned by the
-   * ValidActions() method. The behavior is undefined if the action is invalid.
-   * The implementation may choose to return nullptr after checking the validity
-   * of the action, or it may return an invalid game state without paying the
-   * performance penalty of validation. Most implementations should choose the
-   * latter approach, because the library user is responsible for passing a
-   * valid action. However, the library user should program defensively and
-   * avoid null pointer dereference.
-   *
-   * @param action The action to be taken by the current player.
-   *
-   * @return {{cookiecutter.__game_ptr}} A pointer to the new game state after
-   * taking the action.
+   * The returned index must be in `[0, kPolicySize)` and the mapping must
+   * be a bijection over the entire action space (legal or not). The
+   * default policy serializer/deserializer use this to scatter and gather
+   * masked policy values.
    */
-  [[nodiscard]] {{cookiecutter.__game_ptr}} GameAfterAction(
-      const {{cookiecutter.__action}}& action) const noexcept final;
+  [[nodiscard]] std::size_t PolicyIndex(
+      const {{cookiecutter.__action}}& action) const noexcept;
+
+  // -------------------------------- Mutation ----------------------------------
+
+  /**
+   * @brief Apply `action` to this state in place.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   *
+   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be
+   * {{cookiecutter.game_name}} specific.
+{%- endif %}
+   *
+   * Must be allocation-free — this is the MCTS hot-path primitive. The
+   * caller is responsible for passing only actions returned by
+   * `ValidActions()`; behavior for an invalid action is undefined.
+   */
+  void ApplyActionInPlace(const {{cookiecutter.__action}}& action) noexcept;
+
+  /**
+   * @brief Reverse the most recent `ApplyActionInPlace`.
+{% if cookiecutter.llm[0] | lower == 'y' -%}
+   *
+   * TODO(TASK-HEADER-DOCSTR): tailor this docstring to be
+   * {{cookiecutter.game_name}} specific. Make sure your private state
+   * (e.g., `action_history_`) supports the depth of undo MCTS will need.
+{%- endif %}
+   *
+   * No-op if there is nothing to undo. Must be allocation-free.
+   */
+  void UndoLastAction() noexcept;
 
   // --------------------------- String Conversions ----------------------------
 
   /**
-   * @brief Human-readable string to represent the current game state during
-   * gameplay in terminal or for debugging.
+   * @brief Human-readable string of the current board state.
    *
-   * This is the most basic form of user interface for the game, should be easy
-   * to understand for both human and LLM players. LLM agents may choose to run
-   * the main binary in the terminal to debug game implementation.
-   *
-   * @return std::string A human-readable string representing the current game
-   * state.
+   * Used in the terminal UI and during debugging. Should be readable by
+   * both human and LLM players.
    */
-  [[nodiscard]] std::string BoardReadableString() const noexcept final;
+  [[nodiscard]] std::string BoardReadableString() const noexcept;
 
   /**
-   * @brief Convert a human-readable string to an action.
-   *
-   * May be used by a human player or an LLM agent to play the game in the
-   * terminal.
-   *
-   * @param action_str The string representing the action.
-   * @return {{cookiecutter.__result}}<{{cookiecutter.__action}}> The action if
-   * the string is valid, or an error code if the string is invalid.
+   * @brief Parse a human-readable action string.
    */
   [[nodiscard]] {{cookiecutter.__result}}<{{cookiecutter.__action}}>
-      ActionFromString(std::string_view action_str) const noexcept final;
+      ActionFromString(std::string_view action_str) const noexcept;
 
   /**
-   * @brief Convert an action to a human-readable string.
-   *
-   * Used to display past actions or available actions to human players or LLM
-   * agents in the terminal.
-   *
-   * @param action The action to be converted to string.
-   * @return std::string A human-readable string representing the action.
+   * @brief Format an action as a human-readable string.
    */
   [[nodiscard]] std::string ActionToString(
-      const {{cookiecutter.__action}}& action) const noexcept final;
+      const {{cookiecutter.__action}}& action) const noexcept;
 
  private:
-  /**
-   * @brief Construct a new {{cookiecutter.game_name}} Game object.
 {% if cookiecutter.llm[0] | lower == 'y' -%}
-   * 
-   * TODO(TASK-UPDATE-GAME-HEADER): design constructors, then change the docstring to be {{cookiecutter.game_name}} specific.
-   *
-   * Does a default constructor make sense? Should we always explicitly pass in
-   * the current player to the constructor? Do we need more than one
-   * constructor? Delete or add constructor based on your design.
-{%- endif %}
-   *
-   * All class constructors must be private, use public static constructors
-   * that return {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}>.
-   */
-  {{cookiecutter.__game_cls}}(const {{cookiecutter.__player}}& player) noexcept;
-
-{% if cookiecutter.llm[0] | lower == 'y' -%}
-  // TODO(TASK-UPDATE-GAME-HEADER): design private members to keep track of the game state.
+  // TODO(TASK-UPDATE-GAME-HEADER): design private members to keep track of
+  // the game state.
   //
-  // `round_`, `cur_player_`, `last_action_`, and `board_`, likely won't change
-  // much, but maybe changing them can help.
-  //
-  // Should we keep track of certain (maybe all) past actions or states that's
-  // not fully in the board state? Some game rules may require previous
-  // histories. Should they be tracked separately or just baked into the board
-  // state?
+  // The fields below are placeholders. Likely changes:
+  //   - `last_action_` / `last_player_` are single-slot; an MCTS rollout
+  //     will undo many actions in a row, so you'll usually want a
+  //     fixed-size or std::vector-backed action history sized to the
+  //     deepest MCTS rollout.
+  //   - Some games need richer history (e.g., card-played stack, repeated
+  //     position counters). Decide whether to bake those into `board_` or
+  //     track them separately.
 {%- endif %}
   uint32_t round_ = 0;
   {{cookiecutter.__board}} board_ = {{cookiecutter.__board}}{};
   {{cookiecutter.__player}} cur_player_ = {{cookiecutter.__player}}{};
   std::optional<{{cookiecutter.__action}}> last_action_ = std::nullopt;
+  std::optional<{{cookiecutter.__player}}> last_player_ = std::nullopt;
 };
+
+static_assert(::az::game::api::Game<{{cookiecutter.__game_cls}}>,
+              "{{cookiecutter.__game_cls}} must satisfy ::az::game::api::Game.");
 
 }  // namespace az::game::{{cookiecutter.game_slug}}
 

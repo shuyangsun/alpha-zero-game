@@ -1,23 +1,21 @@
 #include <algorithm>
+#include <array>
 #include <cctype>
 #include <cmath>
 #include <cstddef>
-#include <cstdint>
 #include <iostream>
-#include <memory>
 #include <optional>
 #include <ostream>
 #include <span>
 #include <sstream>
 #include <string>
 #include <string_view>
-#include <tuple>
 #include <type_traits>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include "alpha-zero-api/policy_output.h"
+#include "alpha-zero-api/ring_buffer.h"
 #include "include/{{cookiecutter.game_slug}}/deserializer.h"
 #include "include/{{cookiecutter.game_slug}}/game.h"
 {% if cookiecutter.augmenter[0] | lower == 'y' -%}
@@ -28,30 +26,29 @@
 
 namespace {
 
-using ::az::game::api::PolicyOutput;
+using ::az::game::api::Evaluation;
+using ::az::game::api::RingBuffer;
+using ::az::game::api::TrainingTarget;
 
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__action}};
-using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__board}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__deserializer_cls}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_cls}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_error}};
-using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_interface}};
-using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__game_ptr}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__player}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__result}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__serializer_cls}};
 {% if cookiecutter.augmenter[0] | lower == 'y' -%}
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__infer_aug_cls}};
 using ::az::game::{{cookiecutter.game_slug}}::{{cookiecutter.__train_aug_cls}};
-
-using AugmentedGames =
-    std::unordered_map<uint8_t, std::tuple<{{cookiecutter.__board}},
-                                           {{cookiecutter.__player}},
-                                           std::vector<{{cookiecutter.__action}}>>>;
-using TrainingExamples =
-    std::vector<std::tuple<{{cookiecutter.__board}}, {{cookiecutter.__player}},
-                           std::vector<{{cookiecutter.__action}}>, PolicyOutput>>;
 {%- endif %}
+
+// History buffer for the network input. Capacity is set by
+// `{{cookiecutter.__game_cls}}::kHistoryLookback`; for Markov games the
+// capacity is 0 and `View()` always returns an empty view.
+using GameHistory =
+    RingBuffer<{{cookiecutter.__game_cls}},
+               std::array<{{cookiecutter.__game_cls}},
+                          {{cookiecutter.__game_cls}}::kHistoryLookback>>;
 
 constexpr std::string_view kCmdActions = "actions";
 constexpr std::string_view kCmdHelp = "help";
@@ -109,7 +106,7 @@ void PrintHelp(std::ostream& os) {
 }
 
 void PrintValidActions(std::ostream& os,
-                       const {{cookiecutter.__game_interface}}& game,
+                       const {{cookiecutter.__game_cls}}& game,
                        std::span<const {{cookiecutter.__action}}> actions) {
   os << "Valid actions (" << actions.size() << "):\n";
   for (std::size_t i = 0; i < actions.size(); ++i) {
@@ -127,12 +124,13 @@ bool ApproxEqual(float a, float b) noexcept {
 
 void PrintSerializationDebug(
     std::ostream& os,
-    const {{cookiecutter.__game_interface}}& game,
+    const {{cookiecutter.__game_cls}}& game,
     const {{cookiecutter.__serializer_cls}}& serializer,
     const {{cookiecutter.__deserializer_cls}}& deserializer,
+    const GameHistory& history,
     std::span<const {{cookiecutter.__action}}> actions) {
-  const std::vector<float> nn_input = serializer.SerializeCurrentState(
-      game.GetBoard(), game.CurrentPlayer(), actions);
+  const std::vector<float> nn_input =
+      serializer.SerializeCurrentState(game, history.View());
   os << "[debug] state vector length:  " << nn_input.size() << "\n";
 
   std::vector<float> probs(actions.size(), 0.0F);
@@ -140,9 +138,9 @@ void PrintSerializationDebug(
     std::fill(probs.begin(), probs.end(),
               1.0F / static_cast<float>(actions.size()));
   }
-  const PolicyOutput probe{0.5F, probs};
-  const std::vector<float> nn_output = serializer.SerializePolicyOutput(
-      game.GetBoard(), game.CurrentPlayer(), actions, probe);
+  const TrainingTarget probe{0.5F, probs};
+  const std::vector<float> nn_output =
+      serializer.SerializePolicyOutput(game, probe);
   os << "[debug] policy vector length: " << nn_output.size() << "\n";
 
   if (nn_output.empty()) {
@@ -151,28 +149,27 @@ void PrintSerializationDebug(
     return;
   }
 
-  const {{cookiecutter.__result}}<PolicyOutput> roundtrip =
-      deserializer.Deserialize(game.GetBoard(), game.CurrentPlayer(), actions,
-                               nn_output);
+  const {{cookiecutter.__result}}<Evaluation> roundtrip =
+      deserializer.Deserialize(game, nn_output);
   if (!roundtrip.has_value()) {
     os << "[debug] round-trip:           failed (Deserialize error="
        << ErrorCode(roundtrip.error()) << ")\n";
     return;
   }
-  const PolicyOutput& got = *roundtrip;
-  bool match = got.probabilities.size() == probe.probabilities.size() &&
-               ApproxEqual(got.value, probe.value);
-  for (std::size_t i = 0; match && i < probe.probabilities.size(); ++i) {
-    if (!ApproxEqual(got.probabilities[i], probe.probabilities[i])) {
+  const Evaluation& got = *roundtrip;
+  bool match = got.probabilities.size() == probe.pi.size() &&
+               ApproxEqual(got.value, probe.z);
+  for (std::size_t i = 0; match && i < probe.pi.size(); ++i) {
+    if (!ApproxEqual(got.probabilities[i], probe.pi[i])) {
       match = false;
     }
   }
   os << "[debug] round-trip:           " << (match ? "match" : "MISMATCH")
      << "\n";
   if (!match) {
-    os << "[debug]   probe.value=" << probe.value
+    os << "[debug]   probe.z=" << probe.z
        << " got.value=" << got.value << "\n";
-    os << "[debug]   probe.probs.size=" << probe.probabilities.size()
+    os << "[debug]   probe.pi.size=" << probe.pi.size()
        << " got.probs.size=" << got.probabilities.size() << "\n";
   }
 }
@@ -180,18 +177,17 @@ void PrintSerializationDebug(
 {% if cookiecutter.augmenter[0] | lower == 'y' -%}
 void PrintAugmentationDebug(
     std::ostream& os,
-    const {{cookiecutter.__game_interface}}& game,
+    const {{cookiecutter.__game_cls}}& game,
     const {{cookiecutter.__infer_aug_cls}}& inference,
     const {{cookiecutter.__train_aug_cls}}& trainer,
     std::span<const {{cookiecutter.__action}}> actions) {
-  const AugmentedGames augmented = inference.Augment(
-      game.GetBoard(), game.CurrentPlayer(), actions);
+  const std::vector<{{cookiecutter.__game_cls}}> augmented =
+      inference.Augment(game);
   os << "[debug] inference variants:   " << augmented.size() << "\n";
-  for (const auto& [key, value] : augmented) {
-    const std::vector<{{cookiecutter.__action}}>& aug_actions =
-        std::get<2>(value);
-    os << "[debug]   key=" << static_cast<unsigned>(key)
-       << " actions=" << aug_actions.size() << "\n";
+  for (std::size_t i = 0; i < augmented.size(); ++i) {
+    const std::vector<{{cookiecutter.__action}}> aug_actions =
+        augmented[i].ValidActions();
+    os << "[debug]   key=" << i << " actions=" << aug_actions.size() << "\n";
   }
 
   std::vector<float> probs(actions.size(), 0.0F);
@@ -199,9 +195,8 @@ void PrintAugmentationDebug(
     std::fill(probs.begin(), probs.end(),
               1.0F / static_cast<float>(actions.size()));
   }
-  const TrainingExamples training = trainer.Augment(
-      game.GetBoard(), game.CurrentPlayer(), actions,
-      PolicyOutput{0.0F, probs});
+  const std::vector<std::pair<{{cookiecutter.__game_cls}}, TrainingTarget>>
+      training = trainer.Augment(game, TrainingTarget{0.0F, probs});
   os << "[debug] training examples:    " << training.size() << "\n";
 }
 {%- endif %}
@@ -229,7 +224,7 @@ void PrintFinalScores(std::ostream& os, const G& game) {
 }
 
 bool FindMatchingValidAction(
-    const {{cookiecutter.__game_interface}}& game,
+    const {{cookiecutter.__game_cls}}& game,
     std::span<const {{cookiecutter.__action}}> actions,
     const {{cookiecutter.__action}}& parsed,
     {{cookiecutter.__action}}* out) {
@@ -250,56 +245,45 @@ int main() {
             << "Type \"help\" for commands, \"actions\" to list valid moves, "
             << "\"quit\" to exit.\n";
 
-  {{cookiecutter.__result}}<{{cookiecutter.__game_ptr}}> maybe_game =
-      {{cookiecutter.__game_cls}}::Create();
-  if (!maybe_game.has_value()) {
-    std::cerr << "Error creating game: " << ErrorCode(maybe_game.error())
-              << std::endl;
-    return 1;
-  }
-  {{cookiecutter.__game_ptr}} game = std::move(*maybe_game);
+  {{cookiecutter.__game_cls}} game;
+  GameHistory history;
 
-  const std::unique_ptr<{{cookiecutter.__serializer_cls}}> serializer =
-      std::make_unique<{{cookiecutter.__serializer_cls}}>();
-  const std::unique_ptr<{{cookiecutter.__deserializer_cls}}> deserializer =
-      std::make_unique<{{cookiecutter.__deserializer_cls}}>();
+  const {{cookiecutter.__serializer_cls}} serializer;
+  const {{cookiecutter.__deserializer_cls}} deserializer;
 {% if cookiecutter.augmenter[0] | lower == 'y' -%}
-  const std::unique_ptr<{{cookiecutter.__infer_aug_cls}}> inference =
-      std::make_unique<{{cookiecutter.__infer_aug_cls}}>();
-  const std::unique_ptr<{{cookiecutter.__train_aug_cls}}> trainer =
-      std::make_unique<{{cookiecutter.__train_aug_cls}}>();
+  const {{cookiecutter.__infer_aug_cls}} inference;
+  const {{cookiecutter.__train_aug_cls}} trainer;
 {%- endif %}
 
   while (true) {
-    std::cout << "\n--- Round " << game->CurrentRound() << " ---\n"
-              << "Current: " << PlayerString(game->CurrentPlayer()) << "\n";
+    std::cout << "\n--- Round " << game.CurrentRound() << " ---\n"
+              << "Current: " << PlayerString(game.CurrentPlayer()) << "\n";
 
     const std::optional<{{cookiecutter.__player}}> last_player =
-        game->LastPlayer();
+        game.LastPlayer();
     const std::optional<{{cookiecutter.__action}}> last_action =
-        game->LastAction();
+        game.LastAction();
     if (last_player.has_value() && last_action.has_value()) {
       std::cout << "Last:    " << PlayerString(*last_player) << " played "
-                << game->ActionToString(*last_action) << "\n";
+                << game.ActionToString(*last_action) << "\n";
     }
-    std::cout << "\n" << game->BoardReadableString() << "\n";
+    std::cout << "\n" << game.BoardReadableString() << "\n";
 
-    if (game->IsOver()) {
+    if (game.IsOver()) {
       std::cout << "\nGame over.\n";
-      PrintFinalScores(std::cout, *game);
+      PrintFinalScores(std::cout, game);
       return 0;
     }
 
     const std::vector<{{cookiecutter.__action}}> valid_actions =
-        game->ValidActions();
+        game.ValidActions();
     std::cout << "\nValid actions: " << valid_actions.size()
               << " (type \"actions\" to list)\n";
 
-    PrintSerializationDebug(std::cout, *game, *serializer, *deserializer,
+    PrintSerializationDebug(std::cout, game, serializer, deserializer, history,
                             valid_actions);
 {% if cookiecutter.augmenter[0] | lower == 'y' -%}
-    PrintAugmentationDebug(std::cout, *game, *inference, *trainer,
-                           valid_actions);
+    PrintAugmentationDebug(std::cout, game, inference, trainer, valid_actions);
 {%- endif %}
 
     while (true) {
@@ -321,12 +305,12 @@ int main() {
         continue;
       }
       if (typed == kCmdActions) {
-        PrintValidActions(std::cout, *game, valid_actions);
+        PrintValidActions(std::cout, game, valid_actions);
         continue;
       }
 
       const {{cookiecutter.__result}}<{{cookiecutter.__action}}> parsed =
-          game->ActionFromString(typed);
+          game.ActionFromString(typed);
       if (!parsed.has_value()) {
         std::cout << "Could not parse \"" << typed << "\" as an action "
                   << "(ActionFromString error=" << ErrorCode(parsed.error())
@@ -335,21 +319,18 @@ int main() {
       }
 
       {{cookiecutter.__action}} chosen{};
-      if (!FindMatchingValidAction(*game, valid_actions, *parsed, &chosen)) {
+      if (!FindMatchingValidAction(game, valid_actions, *parsed, &chosen)) {
         std::cout << "\"" << typed
                   << "\" parsed but is not a currently valid action. "
                   << "Type \"actions\" to see what is allowed.\n";
         continue;
       }
 
-      {{cookiecutter.__game_ptr}} next = game->GameAfterAction(chosen);
-      if (next == nullptr) {
-        std::cerr << "GameAfterAction returned nullptr; cannot continue. "
-                  << "If GameAfterAction is still a placeholder, implement it "
-                  << "before playing." << std::endl;
-        return 1;
-      }
-      game = std::move(next);
+      // Push the current state to history before transitioning so the
+      // serializer's view at the next round contains this round's state.
+      // For Markov games (kHistoryLookback == 0) this is a no-op.
+      history.Push(game);
+      game.ApplyActionInPlace(chosen);
       break;
     }
   }
