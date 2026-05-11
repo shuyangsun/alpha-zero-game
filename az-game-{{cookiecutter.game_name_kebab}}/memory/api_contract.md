@@ -24,6 +24,12 @@ instances by value.
 ### Required associated types
 
 - `board_t` / `action_t` / `player_t` / `error_t`
+- `action_t` must satisfy `std::equality_comparable`. The MCTS engine,
+  the REPL, and tests rely on `operator==` to match an action against
+  the buffer written by `ValidActionsInto(...)`. Arithmetic types,
+  `enum class`, and `std::array` of equality-comparable elements get
+  this for free; custom struct/class action types must define
+  `operator==` explicitly (a defaulted `friend` is usually correct).
 
 ### Required `static constexpr` members
 

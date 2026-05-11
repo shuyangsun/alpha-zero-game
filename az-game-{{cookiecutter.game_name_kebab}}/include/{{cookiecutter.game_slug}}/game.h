@@ -25,7 +25,11 @@ namespace az::game::{{cookiecutter.game_slug}} {
 // sacrifice runtime efficiency for memory efficiency?
 //
 // Action type: can we use a small integer type (e.g., uint8_t) to represent all
-// possible actions? What's the smallest type we can use here?
+// possible actions? What's the smallest type we can use here? The action type
+// MUST be equality-comparable (`std::equality_comparable`) — arithmetic types,
+// `enum class`, and `std::array` of equality-comparable elements get this for
+// free; a custom struct/class action type must define `operator==` (a defaulted
+// `friend bool operator==(const A&, const A&) = default;` is usually correct).
 //
 // Player type: is it a two-player game? Is it a group game? For most two-player
 // games, boolean is sufficient.

@@ -65,6 +65,16 @@ complexity may grow exponentially. Do not pack multiple actions into
 one instance: each action must produce a distinct game state in the
 MCTS search tree.
 
+The action type **must be equality-comparable** (`std::equality_comparable`):
+the MCTS engine, the REPL, and tests all need to match an action against
+the buffer returned by `ValidActionsInto(...)`. Arithmetic types,
+`enum class`, and `std::array` of equality-comparable elements get
+`operator==` for free. If the design uses a custom struct or class,
+the design doc must declare an `operator==` (prefer
+`friend bool operator==(const A&, const A&) = default;` when bitwise
+equality is correct) and, for non-aggregate cases, spell out the
+intended equivalence relation.
+
 ## Error
 
 Define an error type to represent invalid actions or game states.

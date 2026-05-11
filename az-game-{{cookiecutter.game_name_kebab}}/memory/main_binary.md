@@ -37,8 +37,11 @@ For the current game state it calls and prints, in order:
 The user types the action as a string — exactly what `ActionToString`
 returns for one of the currently valid actions. The REPL parses it with
 `ActionFromString`, then matches the parsed action against the buffer
-written by `ValidActionsInto(...)` by comparing string forms (so the
-game's `Action` type does not need `operator==`).
+written by `ValidActionsInto(...)` using `operator==`. The `Action`
+type must therefore be equality-comparable; arithmetic types,
+`enum class`, and `std::array` of equality-comparable elements get
+this for free, while custom struct/class action types must define
+`operator==` explicitly (a defaulted `friend` is usually correct).
 
 This means the implementation must guarantee:
 
