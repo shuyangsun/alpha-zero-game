@@ -43,3 +43,9 @@ would make an LLM cry.
 We don't judge. Head over to
 [docs/old_school_human/README.md](./docs/old_school_human/README.md) and do
 things the old-fashioned way.
+
+## Documentation Map
+
+See [docs/README.md](./docs/README.md) for the docs index and
+[docs/template_source_map.md](./docs/template_source_map.md) for the template
+source map used by humans and local RAG retrieval.
